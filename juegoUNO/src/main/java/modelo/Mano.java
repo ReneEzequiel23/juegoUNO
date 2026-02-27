@@ -4,10 +4,25 @@
  */
 package modelo;
 
+import java.util.List;
+
 /**
  *
  * @author renee
  */
 public class Mano {
+ 
+    private final List<Carta> cartas;
+    
+    public Mano(List<Carta> cartas){
+        this.cartas = cartas;
+    }
+
+    public List<Carta> getCartas() {
+        return cartas;
+    }
+    
+    
+    
     
 }

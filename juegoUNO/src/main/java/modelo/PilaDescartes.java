@@ -4,10 +4,23 @@
  */
 package modelo;
 
+import java.util.List;
+
 /**
  *
  * @author renee
  */
 public class PilaDescartes {
+   
+    private final List<Carta> cartas;
+
+    public PilaDescartes(List<Carta> cartas) {
+        this.cartas = cartas;
+    }
+
+    public List<Carta> getCartas() {
+        return cartas;
+    }
+    
     
 }

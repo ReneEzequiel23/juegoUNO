@@ -4,10 +4,22 @@
  */
 package modelo;
 
+import java.util.List;
+
 /**
  *
  * @author renee
  */
 public class Mazo {
+    private final List<Carta> cartas;
+    
+    public Mazo(List<Carta> cartas){
+        this.cartas = cartas;
+    }
+
+    public List<Carta> getCartas() {
+        return cartas;
+    }
+    
     
 }
