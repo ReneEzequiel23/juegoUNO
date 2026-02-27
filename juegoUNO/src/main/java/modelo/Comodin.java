@@ -9,5 +9,8 @@ package modelo;
  * @author renee
  */
 public class Comodin {
+
+    public Comodin() {
+    }
     
 }

@@ -10,4 +10,23 @@ package modelo;
  */
 public class Numerica {
     
+    String numero;
+
+    public Numerica() {
+    }
+
+    public Numerica(String numero) {
+        this.numero = numero;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+    
+    
+    
 }
