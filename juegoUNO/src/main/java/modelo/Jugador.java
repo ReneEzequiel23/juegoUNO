@@ -9,5 +9,5 @@ package modelo;
  * @author renee
  */
 public class Jugador {
-    
+    public String id;
 }
