@@ -9,6 +9,9 @@ package modelo;
  * @author Adrián
  */
 public enum Color {
+    /*
+    Ver si se pueden hacer constantes
+    */
     ROJO,
     AZUL, 
     AMARILLO,

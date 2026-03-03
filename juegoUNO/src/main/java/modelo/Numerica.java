@@ -6,11 +6,17 @@ package modelo;
 
 /**
  *
- * @author renee
+ * @author renee, edgar
  */
 public class Numerica {
     
+<<<<<<< codigo
+<<<<<<< Updated upstream
+=======
+    public String numero;
+=======
     String numero;
+>>>>>>> main
 
     public Numerica() {
     }
@@ -29,4 +35,8 @@ public class Numerica {
     
     
     
+<<<<<<< codigo
+>>>>>>> Stashed changes
+=======
+>>>>>>> main
 }

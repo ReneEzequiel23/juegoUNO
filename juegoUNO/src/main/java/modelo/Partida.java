@@ -8,10 +8,15 @@ import java.util.List;
 
 /**
  *
- * @author renee
+ * @author renee, edgar
  */
 public class Partida {
     
+<<<<<<< codigo
+<<<<<<< Updated upstream
+=======
+=======
+>>>>>>> main
     private final List<Jugador> jugadores;
     private final Turno turno;
     private final PilaDescartes pilaDescartes;
@@ -22,7 +27,11 @@ public class Partida {
         this.turno = turno;
         this.pilaDescartes = pilaDescartes;
         this.mazo = mazo;
+<<<<<<< codigo
+    }    
+=======
     }
+>>>>>>> main
 
     public List<Jugador> getJugadores() {
         return jugadores;
@@ -47,4 +56,8 @@ public class Partida {
 
 
     
+<<<<<<< codigo
+>>>>>>> Stashed changes
+=======
+>>>>>>> main
 }

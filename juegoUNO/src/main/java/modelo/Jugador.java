@@ -6,19 +6,29 @@ package modelo;
 
 /**
  *
- * @author renee
+ * @author renee, edgar
  */
 public class Jugador {
+<<<<<<< Updated upstream
+    public String id;
+=======
     
     public Jugador(){
         
     }
     
     private Mano mano;
+<<<<<<< codigo
+    public String nombre;
+    public String avatar;
+    public int puntaje;
+    public boolean estadoUNO;
+=======
     String nombre;
     String avatar;
     int puntaje;
     boolean estadoUNO;
+>>>>>>> main
 
     public Jugador(Mano mano, String nombre, String avatar, int puntaje, boolean estadoUNO) {
         this.mano = mano;
@@ -26,6 +36,21 @@ public class Jugador {
         this.avatar = avatar;
         this.puntaje = puntaje;
         this.estadoUNO = estadoUNO;
+    }
+
+    /**
+     * Constructor para crear un jugador que aun no este en una partida
+     * @param nombre El nombre del usuario
+     * @param avatar el avattar del usuario
+     */
+    public Jugador(String nombre, String avatar) {
+        /*
+        Este constructor es para aquel jugador que apenas entro al juego o aun no esta en
+        partida
+        by Edgar
+        */
+        this.nombre = nombre;
+        this.avatar = avatar;
     }
 
     public String getNombre() {
@@ -71,4 +96,8 @@ public class Jugador {
     }
     
     
+<<<<<<< codigo
+>>>>>>> Stashed changes
+=======
+>>>>>>> main
 }

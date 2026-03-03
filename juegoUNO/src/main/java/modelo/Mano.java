@@ -8,9 +8,14 @@ import java.util.List;
 
 /**
  *
- * @author renee
+ * @author renee, edgar
  */
 public class Mano {
+<<<<<<< codigo
+<<<<<<< Updated upstream
+=======
+=======
+>>>>>>> main
  
     private final List<Carta> cartas;
     
@@ -22,7 +27,39 @@ public class Mano {
         return cartas;
     }
     
+<<<<<<< codigo
+    /**
+     * Metodo para Agregar una carta a tu mano
+     * @param Carta Carta a Agregar a la mano
+     */
+    public void agregarCarta(String Carta){
+        /*Aqui seria pensar en qu8e se va a agregar, si la carta completa o
+        el strihg de la carta. Sies el string Seria buscarlo por idCarta por otro metodo
+        Y este va a hacer directo, en el control podemos hacer que sea el que este validado
+        by Edgar Acevedo
+        */
+    }
+    
+    public void eliminarCarta(String Carta){
+        /*Lo mismo para agreagar
+        by Edgar Acevedo
+        */
+    }
+    
+    public int contarCartaS(){
+        /*
+        En el control validar si esta vacio
+        by Edgar Acevedo
+        */
+        return cartas.size();
+    }
     
     
+    
+>>>>>>> Stashed changes
+=======
+    
+    
+>>>>>>> main
     
 }

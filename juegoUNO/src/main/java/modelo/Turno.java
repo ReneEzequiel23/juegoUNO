@@ -10,10 +10,28 @@ package modelo;
  */
 public class Turno {
     
+<<<<<<< codigo
+<<<<<<< Updated upstream
+=======
+    private final Jugador jugadorActual;
+    public boolean sentido;
+    public int tiempoLimite;
+    public int tiempoRestante;
+    
+    /*
+    Yo digo que para el tiempo limite se un final, o con un valor definido por
+    que todos van a tener el mismo tiempo hacer una jugada.
+    Y el setter de este sea reiniciar su tiempo
+    Para El tiempo restante no se si entre para este caso, por que va a ser mas para
+    o maybe si entre para el mvc. Pero ahi vemos.
+    By Edgar Acevedo
+    */
+=======
     private final Jugador jugadorActual;
     boolean sentido;
     int tiempoLimite;
     int tiempoRestante;
+>>>>>>> main
 
     public Turno(Jugador jugadorActual, boolean sentido, int tiempoLimite, int tiempoRestante) {
         this.jugadorActual = jugadorActual;
@@ -53,4 +71,8 @@ public class Turno {
     
     
     
+<<<<<<< codigo
+>>>>>>> Stashed changes
+=======
+>>>>>>> main
 }

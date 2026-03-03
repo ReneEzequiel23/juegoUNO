@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  *
- * @author renee
+ * @author renee, edgar
  */
 public class Mazo {
     private final List<Carta> cartas;

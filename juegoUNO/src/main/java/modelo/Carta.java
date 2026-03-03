@@ -6,16 +6,33 @@ package modelo;
 
 /**
  *
- * @author renee
+ * @author renee. edgar
  */
 public class Carta {
     
+<<<<<<< codigo
+<<<<<<< Updated upstream
+=======
+    
+    private String idCarta;
+=======
     
     String idCarta;
+>>>>>>> main
     public Carta(){
         
     }
     
+<<<<<<< codigo
+    /*
+    O hacer un interface de las especificaciones de las cartas o maybe hacer qur color
+    y numerico sean de sus clases ejemplo el color seria de Color color. ek numero 
+    seria de Numerica numero; no se si publico o privado. Comodin igual o que sea condicionad
+    ejemplo en el constructor seria de uno para los numeros y el otro para los comodines
+    By Edgar Acevedo
+    */
+=======
+>>>>>>> main
     
 //    
 //    String color;
@@ -56,4 +73,8 @@ public class Carta {
 //    
     
     
+<<<<<<< codigo
+>>>>>>> Stashed changes
+=======
+>>>>>>> main
 }
