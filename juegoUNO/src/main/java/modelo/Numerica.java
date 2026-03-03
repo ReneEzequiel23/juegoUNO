@@ -6,8 +6,30 @@ package modelo;
 
 /**
  *
- * @author renee
+ * @author renee, edgar
  */
 public class Numerica {
     
+<<<<<<< Updated upstream
+=======
+    public String numero;
+
+    public Numerica() {
+    }
+
+    public Numerica(String numero) {
+        this.numero = numero;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+    
+    
+    
+>>>>>>> Stashed changes
 }

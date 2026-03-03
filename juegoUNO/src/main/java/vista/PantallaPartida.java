@@ -44,6 +44,8 @@ public class PantallaPartida extends javax.swing.JFrame {
 
     /**
      * @param args the command line arguments
+     * Yo quitaria ek main, para que nadamas se inicialioe cuando sea necesario
+     * by Edgar Acevedo
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

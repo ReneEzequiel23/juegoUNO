@@ -6,7 +6,7 @@ package modelo;
 
 /**
  *
- * @author renee
+ * @author renee, edgar
  */
 public class Mazo {
     

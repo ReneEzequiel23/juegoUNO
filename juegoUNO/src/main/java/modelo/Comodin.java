@@ -10,4 +10,8 @@ package modelo;
  */
 public class Comodin {
     
+    public void obtenerAccion(){
+        
+    }
+    
 }
