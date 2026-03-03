@@ -18,10 +18,17 @@ public class Jugador {
     }
     
     private Mano mano;
+<<<<<<< codigo
     public String nombre;
     public String avatar;
     public int puntaje;
     public boolean estadoUNO;
+=======
+    String nombre;
+    String avatar;
+    int puntaje;
+    boolean estadoUNO;
+>>>>>>> main
 
     public Jugador(Mano mano, String nombre, String avatar, int puntaje, boolean estadoUNO) {
         this.mano = mano;
@@ -89,5 +96,8 @@ public class Jugador {
     }
     
     
+<<<<<<< codigo
 >>>>>>> Stashed changes
+=======
+>>>>>>> main
 }

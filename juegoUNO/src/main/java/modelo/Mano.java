@@ -4,13 +4,18 @@
  */
 package modelo;
 
+import java.util.List;
+
 /**
  *
  * @author renee, edgar
  */
 public class Mano {
+<<<<<<< codigo
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> main
  
     private final List<Carta> cartas;
     
@@ -22,6 +27,7 @@ public class Mano {
         return cartas;
     }
     
+<<<<<<< codigo
     /**
      * Metodo para Agregar una carta a tu mano
      * @param Carta Carta a Agregar a la mano
@@ -51,5 +57,9 @@ public class Mano {
     
     
 >>>>>>> Stashed changes
+=======
+    
+    
+>>>>>>> main
     
 }

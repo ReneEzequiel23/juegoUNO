@@ -4,13 +4,18 @@
  */
 package modelo;
 
+import java.util.List;
+
 /**
  *
  * @author renee
  */
 public class PilaDescartes {
+<<<<<<< codigo
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> main
    
     private final List<Carta> cartas;
 
@@ -22,6 +27,7 @@ public class PilaDescartes {
         return cartas;
     }
     
+<<<<<<< codigo
     /**
      * Metodo para obtener la ultima carta de la pida de descarte
      * @return La carta que Este Arriba de la Pila de Descarte
@@ -45,5 +51,7 @@ public class PilaDescartes {
         */
     }
 >>>>>>> Stashed changes
+=======
+>>>>>>> main
     
 }

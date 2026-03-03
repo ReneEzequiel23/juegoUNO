@@ -10,6 +10,7 @@ package modelo;
  */
 public class Turno {
     
+<<<<<<< codigo
 <<<<<<< Updated upstream
 =======
     private final Jugador jugadorActual;
@@ -25,6 +26,12 @@ public class Turno {
     o maybe si entre para el mvc. Pero ahi vemos.
     By Edgar Acevedo
     */
+=======
+    private final Jugador jugadorActual;
+    boolean sentido;
+    int tiempoLimite;
+    int tiempoRestante;
+>>>>>>> main
 
     public Turno(Jugador jugadorActual, boolean sentido, int tiempoLimite, int tiempoRestante) {
         this.jugadorActual = jugadorActual;
@@ -64,5 +71,8 @@ public class Turno {
     
     
     
+<<<<<<< codigo
 >>>>>>> Stashed changes
+=======
+>>>>>>> main
 }
