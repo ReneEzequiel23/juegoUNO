@@ -12,5 +12,6 @@ public enum Accion {
     TOMA2,
     TOMA4,
     CAMBIARCOLOR,
-    SALTAR
+    SALTAR,
+    REVERSA
 }

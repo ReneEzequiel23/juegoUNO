@@ -11,27 +11,30 @@ import java.util.List;
  * @author renee, edgar
  */
 public class Partida {
-    
-<<<<<<< codigo
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> main
     private final List<Jugador> jugadores;
     private final Turno turno;
     private final PilaDescartes pilaDescartes;
     private final Mazo mazo;
+    public Color colorActivo;
+    
 
     public Partida(List<Jugador> jugadores, Turno turno, PilaDescartes pilaDescartes, Mazo mazo) {
         this.jugadores = jugadores;
         this.turno = turno;
         this.pilaDescartes = pilaDescartes;
         this.mazo = mazo;
-<<<<<<< codigo
-    }    
-=======
+        
     }
->>>>>>> main
+    
+    public void actualizarColorActivo(Color color){
+        colorActivo= color;
+    }
+    
+    public Jugador obtenerSiguienteJugador(){
+        
+        return null;
+        
+    }
 
     public List<Jugador> getJugadores() {
         return jugadores;
@@ -55,9 +58,5 @@ public class Partida {
     }
 
 
-    
-<<<<<<< codigo
->>>>>>> Stashed changes
-=======
->>>>>>> main
+
 }

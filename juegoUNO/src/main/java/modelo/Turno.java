@@ -10,9 +10,6 @@ package modelo;
  */
 public class Turno {
     
-<<<<<<< codigo
-<<<<<<< Updated upstream
-=======
     private final Jugador jugadorActual;
     public boolean sentido;
     public int tiempoLimite;
@@ -26,18 +23,27 @@ public class Turno {
     o maybe si entre para el mvc. Pero ahi vemos.
     By Edgar Acevedo
     */
-=======
-    private final Jugador jugadorActual;
-    boolean sentido;
-    int tiempoLimite;
-    int tiempoRestante;
->>>>>>> main
-
     public Turno(Jugador jugadorActual, boolean sentido, int tiempoLimite, int tiempoRestante) {
         this.jugadorActual = jugadorActual;
         this.sentido = sentido;
         this.tiempoLimite = tiempoLimite;
         this.tiempoRestante = tiempoRestante;
+    }
+    
+    public void cambiarJugadorActual(String jugador){
+        
+    }
+    
+    public void cambiarSentido(){
+        if(sentido ==true){
+            sentido=false;
+        }else{
+            sentido=true;
+        }
+    }
+    
+    public void saltarJugador(){
+        //Este es mas de partida que de turno
     }
 
     public boolean isSentido() {
@@ -69,10 +75,4 @@ public class Turno {
         return "Turno{" + "jugadorActual=" + jugadorActual + ", sentido=" + sentido + ", tiempoLimite=" + tiempoLimite + ", tiempoRestante=" + tiempoRestante + '}';
     }
     
-    
-    
-<<<<<<< codigo
->>>>>>> Stashed changes
-=======
->>>>>>> main
 }

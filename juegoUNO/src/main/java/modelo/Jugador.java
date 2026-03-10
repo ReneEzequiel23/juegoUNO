@@ -9,26 +9,16 @@ package modelo;
  * @author renee, edgar
  */
 public class Jugador {
-<<<<<<< Updated upstream
     public String id;
-=======
-    
-    public Jugador(){
-        
-    }
-    
     private Mano mano;
-<<<<<<< codigo
     public String nombre;
     public String avatar;
     public int puntaje;
     public boolean estadoUNO;
-=======
-    String nombre;
-    String avatar;
-    int puntaje;
-    boolean estadoUNO;
->>>>>>> main
+ 
+    public Jugador(){
+        
+    }
 
     public Jugador(Mano mano, String nombre, String avatar, int puntaje, boolean estadoUNO) {
         this.mano = mano;
@@ -51,6 +41,19 @@ public class Jugador {
         */
         this.nombre = nombre;
         this.avatar = avatar;
+    }
+    
+    public void actualizarEstadoUNO(){
+        
+    }
+    
+    // No se que tanto entre este metodo 
+    public void marcarUNO(){
+        
+    }
+    
+    public void penalizar(){
+        
     }
 
     public String getNombre() {
@@ -95,9 +98,5 @@ public class Jugador {
         return "Jugador{" + "mano=" + mano + ", nombre=" + nombre + ", avatar=" + avatar + ", puntaje=" + puntaje + ", estadoUNO=" + estadoUNO + '}';
     }
     
-    
-<<<<<<< codigo
->>>>>>> Stashed changes
-=======
->>>>>>> main
+
 }

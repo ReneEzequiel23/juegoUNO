@@ -11,12 +11,7 @@ import java.util.List;
  * @author renee, edgar
  */
 public class Mano {
-<<<<<<< codigo
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> main
- 
+
     private final List<Carta> cartas;
     
     public Mano(List<Carta> cartas){
@@ -27,7 +22,6 @@ public class Mano {
         return cartas;
     }
     
-<<<<<<< codigo
     /**
      * Metodo para Agregar una carta a tu mano
      * @param Carta Carta a Agregar a la mano
@@ -38,7 +32,9 @@ public class Mano {
         Y este va a hacer directo, en el control podemos hacer que sea el que este validado
         by Edgar Acevedo
         */
+        
     }
+    
     
     public void eliminarCarta(String Carta){
         /*Lo mismo para agreagar
@@ -53,13 +49,5 @@ public class Mano {
         */
         return cartas.size();
     }
-    
-    
-    
->>>>>>> Stashed changes
-=======
-    
-    
->>>>>>> main
     
 }
