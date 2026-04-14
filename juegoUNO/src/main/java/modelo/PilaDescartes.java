@@ -11,6 +11,7 @@ import java.util.List;
  * @author renee
  */
 public class PilaDescartes {
+
    
     private final List<Carta> cartas;
 
@@ -21,7 +22,7 @@ public class PilaDescartes {
     public List<Carta> getCartas() {
         return cartas;
     }
-    
+
     /**
      * Metodo para obtener la ultima carta de la pida de descarte
      * @return La carta que Este Arriba de la Pila de Descarte
@@ -44,4 +45,6 @@ public class PilaDescartes {
         by Edgar Acevedo
         */
     }
+
+    
 }

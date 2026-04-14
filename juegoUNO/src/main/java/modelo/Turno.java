@@ -10,6 +10,7 @@ package modelo;
  */
 public class Turno {
     
+
     private final Jugador jugadorActual;
     public boolean sentido;
     public int tiempoLimite;
@@ -23,6 +24,8 @@ public class Turno {
     o maybe si entre para el mvc. Pero ahi vemos.
     By Edgar Acevedo
     */
+
+
     public Turno(Jugador jugadorActual, boolean sentido, int tiempoLimite, int tiempoRestante) {
         this.jugadorActual = jugadorActual;
         this.sentido = sentido;
@@ -75,4 +78,6 @@ public class Turno {
         return "Turno{" + "jugadorActual=" + jugadorActual + ", sentido=" + sentido + ", tiempoLimite=" + tiempoLimite + ", tiempoRestante=" + tiempoRestante + '}';
     }
     
+    
+
 }

@@ -11,6 +11,7 @@ import java.util.List;
  * @author renee, edgar
  */
 public class Partida {
+
     private final List<Jugador> jugadores;
     private final Turno turno;
     private final PilaDescartes pilaDescartes;
@@ -23,17 +24,6 @@ public class Partida {
         this.turno = turno;
         this.pilaDescartes = pilaDescartes;
         this.mazo = mazo;
-        
-    }
-    
-    public void actualizarColorActivo(Color color){
-        colorActivo= color;
-    }
-    
-    public Jugador obtenerSiguienteJugador(){
-        
-        return null;
-        
     }
 
     public List<Jugador> getJugadores() {
@@ -56,7 +46,6 @@ public class Partida {
     public String toString() {
         return "Partida{" + "jugadores=" + jugadores + ", turno=" + turno + ", pilaDescartes=" + pilaDescartes + ", mazo=" + mazo + '}';
     }
-
 
 
 }

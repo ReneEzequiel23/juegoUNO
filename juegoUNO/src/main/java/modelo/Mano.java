@@ -22,6 +22,7 @@ public class Mano {
         return cartas;
     }
     
+
     /**
      * Metodo para Agregar una carta a tu mano
      * @param Carta Carta a Agregar a la mano
@@ -49,5 +50,6 @@ public class Mano {
         */
         return cartas.size();
     }
+    
     
 }

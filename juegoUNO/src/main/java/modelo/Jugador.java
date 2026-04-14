@@ -15,10 +15,6 @@ public class Jugador {
     public String avatar;
     public int puntaje;
     public boolean estadoUNO;
- 
-    public Jugador(){
-        
-    }
 
     public Jugador(Mano mano, String nombre, String avatar, int puntaje, boolean estadoUNO) {
         this.mano = mano;
