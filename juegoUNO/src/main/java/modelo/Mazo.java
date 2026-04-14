@@ -80,4 +80,15 @@ public class Mazo {
         pueda modificar la lista original usando mazo.getCartas().clear() por error**/
         return new ArrayList<>(cartas);
     }
+    
+    /**
+     * Recibe las cartas de la pila de descartes, las añade al mazo y las baraja.
+     */
+    public void reciclarCartas(List<Carta> cartasRecicladas) {
+        if (cartasRecicladas != null && !cartasRecicladas.isEmpty()) {
+            this.cartas.addAll(cartasRecicladas);
+            barajar();
+            System.out.println("¡El mazo ha sido reciclado y barajado!");
+        }
+    }
 }
