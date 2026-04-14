@@ -8,13 +8,21 @@ package modelo;
  *
  * @author renee
  */
-public class Comodin {
+public class Comodin extends Carta {
     
-    public Comodin() {
+    private final Accion accion;
+
+    public Comodin(String idCarta, Color color, Accion accion) {
+        super(idCarta, color);
+        this.accion = accion;
     }
     
-    public void obtenerAccion(){
-        
+    public Accion obtenerAccion(){
+        return accion;
     }
-    
+
+    @Override
+    public String obtenerTipo() {
+        return "COMODIN";
+    }
 }
