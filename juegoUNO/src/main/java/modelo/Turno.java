@@ -73,6 +73,11 @@ public class Turno {
         this.tiempoRestante = tiempoRestante;
     }
 
+    public Jugador getJugadorActual() {
+        return jugadorActual;
+    }
+    
+
     @Override
     public String toString() {
         return "Turno{" + "jugadorActual=" + jugadorActual + ", sentido=" + sentido + ", tiempoLimite=" + tiempoLimite + ", tiempoRestante=" + tiempoRestante + '}';

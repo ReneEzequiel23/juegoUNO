@@ -35,8 +35,11 @@ public class Jugador {
         partida
         by Edgar
         */
+        this.mano = new Mano();
         this.nombre = nombre;
         this.avatar = avatar;
+        this.puntaje = 0;
+        this.estadoUNO = false;
     }
     
     public void actualizarEstadoUNO(){

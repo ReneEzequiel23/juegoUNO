@@ -4,6 +4,7 @@
  */
 package modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,40 +12,59 @@ import java.util.List;
  * @author renee
  */
 public class PilaDescartes {
-
    
     private final List<Carta> cartas;
 
-    public PilaDescartes(List<Carta> cartas) {
-        this.cartas = cartas;
-    }
-
-    public List<Carta> getCartas() {
-        return cartas;
+    public PilaDescartes() {
+        //pila vacía
+        this.cartas = new ArrayList<>();
     }
 
     /**
-     * Metodo para obtener la ultima carta de la pida de descarte
-     * @return La carta que Este Arriba de la Pila de Descarte
+     * Obtiene la carta que está en la cima de la pila (la que todos ven en la mesa)
      */
-    public Carta obtenerCartaSuperior(){
-        if(!cartas.isEmpty()){
+    public Carta obtenerCartaSuperior() {
+        if (!cartas.isEmpty()) {
             return cartas.getLast();
         }
         return null;
     }
     
     /**
-     * Metodo para Agregar la carta a la pida de descarte p
-     * @param carta
+     * Agrega una carta jugada a la cima de la pila de descarte.
+     * En una Lista, el final(add) representa la cima de la pila.
      */
-    public void agregarCarta(String carta){
-        /*Aqui seria pensar en que esste va a hacer el metodo para agregarlo directo
-        lo que tentriamos que ver aqui es como se van a agregar las cartas el primero para que sea el ultimo
-        o el ultimo sea la carta mas reciente jugada
-        by Edgar Acevedo
-        */
+    public void agregarCarta(Carta carta) {
+        if (carta != null) {
+            cartas.add(carta);
+        }
     }
 
-    
+    /**
+     * Cuando el Mazo se queda sin cartas, 
+     * necesitamos vaciar la pila para reciclarla.
+     * @return Lista de cartas listas para ser barajadas y devueltas al Mazo.
+     */
+    public List<Carta> vaciarParaReciclar() {
+        if (cartas.size() <= 1) {
+            return new ArrayList<>(); // No hay suficientes cartas para reciclar
+        }
+
+        //Guarda la carta que está hasta arriba
+        Carta cartaSuperior = obtenerCartaSuperior();
+        
+        //Extrae todas las demás cartas
+        List<Carta> cartasParaMazo = new ArrayList<>(cartas.subList(0, cartas.size() - 1));
+        
+        //Vacia la pila y le regresa la carta superior
+        cartas.clear();
+        cartas.add(cartaSuperior);
+        
+        return cartasParaMazo;
+    }
+
+    public List<Carta> getCartas() {
+        // DDD: Devolvemos una copia para proteger el estado interno
+        return new ArrayList<>(cartas);
+    }
 }

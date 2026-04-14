@@ -4,7 +4,9 @@
  */
 package modelo;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -14,42 +16,60 @@ public class Mano {
 
     private final List<Carta> cartas;
     
-    public Mano(List<Carta> cartas){
-        this.cartas = cartas;
+    public Mano() {
+        //lista vacía
+        this.cartas = new ArrayList<>();
+    }
+
+    /**
+     * Permite recibir una carta del mazo o de una penalización.
+     * @param carta El objeto Carta a añadir.
+     */
+    public void agregarCarta(Carta carta) {
+        if (carta != null) {
+            this.cartas.add(carta);
+        }
+    }
+
+    /**
+     * Elimina una carta de la mano cuando el jugador la juega.
+     * @param idCarta El identificador único de la carta.
+     * @return La carta eliminada si se encontró, o null si no estaba en la mano.
+     */
+    public Carta eliminarCarta(String idCarta) {
+        Optional<Carta> cartaEncontrada = cartas.stream()
+                .filter(c -> c.getIdCarta().equals(idCarta))
+                .findFirst();
+
+        if (cartaEncontrada.isPresent()) {
+            Carta c = cartaEncontrada.get();
+            cartas.remove(c);
+            return c;
+        }
+        return null;
+    }
+
+    /**
+     * Útil para que el controlador valide si la jugada es posible 
+     * antes de intentar eliminarla.
+     */
+    public Carta obtenerCartaPorId(String idCarta) {
+        return cartas.stream()
+                .filter(c -> c.getIdCarta().equals(idCarta))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public int contarCartas() {
+        return cartas.size();
     }
 
     public List<Carta> getCartas() {
-        return cartas;
+        return new ArrayList<>(cartas);
     }
-    
 
-    /**
-     * Metodo para Agregar una carta a tu mano
-     * @param Carta Carta a Agregar a la mano
-     */
-    public void agregarCarta(String Carta){
-        /*Aqui seria pensar en qu8e se va a agregar, si la carta completa o
-        el strihg de la carta. Sies el string Seria buscarlo por idCarta por otro metodo
-        Y este va a hacer directo, en el control podemos hacer que sea el que este validado
-        by Edgar Acevedo
-        */
-        
+    @Override
+    public String toString() {
+        return "Mano{cantidad=" + cartas.size() + "}";
     }
-    
-    
-    public void eliminarCarta(String Carta){
-        /*Lo mismo para agreagar
-        by Edgar Acevedo
-        */
-    }
-    
-    public int contarCartaS(){
-        /*
-        En el control validar si esta vacio
-        by Edgar Acevedo
-        */
-        return cartas.size();
-    }
-    
-    
 }
