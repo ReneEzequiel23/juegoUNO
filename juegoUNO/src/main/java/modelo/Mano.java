@@ -33,7 +33,9 @@ public class Mano {
         Y este va a hacer directo, en el control podemos hacer que sea el que este validado
         by Edgar Acevedo
         */
+        
     }
+    
     
     public void eliminarCarta(String Carta){
         /*Lo mismo para agreagar

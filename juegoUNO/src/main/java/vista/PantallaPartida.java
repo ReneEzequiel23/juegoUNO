@@ -12,6 +12,8 @@ public class PantallaPartida extends javax.swing.JFrame {
 
     /**
      * Creates new form PantallaPartida
+     * Tendriamos que ver si la vamos a hacer tipo la imagen de wha o mezclamos 
+     * el del storyboard con el de Wha
      */
     public PantallaPartida() {
         initComponents();
@@ -26,59 +28,163 @@ public class PantallaPartida extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlMenu = new javax.swing.JPanel();
+        pnlJugadorActual = new javax.swing.JPanel();
+        pnlJugadorActual1 = new javax.swing.JPanel();
+        pnlTiempo = new javax.swing.JPanel();
+        pnlSentido1 = new javax.swing.JPanel();
+        pnlPilaDescartes = new javax.swing.JPanel();
+        pnlBaraja = new javax.swing.JPanel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(51, 51, 51));
+
+        pnlMenu.setBackground(new java.awt.Color(33, 33, 33));
+
+        javax.swing.GroupLayout pnlMenuLayout = new javax.swing.GroupLayout(pnlMenu);
+        pnlMenu.setLayout(pnlMenuLayout);
+        pnlMenuLayout.setHorizontalGroup(
+            pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        pnlMenuLayout.setVerticalGroup(
+            pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 54, Short.MAX_VALUE)
+        );
+
+        pnlJugadorActual.setBackground(new java.awt.Color(89, 89, 89));
+        pnlJugadorActual.setForeground(new java.awt.Color(114, 114, 114));
+
+        javax.swing.GroupLayout pnlJugadorActualLayout = new javax.swing.GroupLayout(pnlJugadorActual);
+        pnlJugadorActual.setLayout(pnlJugadorActualLayout);
+        pnlJugadorActualLayout.setHorizontalGroup(
+            pnlJugadorActualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 170, Short.MAX_VALUE)
+        );
+        pnlJugadorActualLayout.setVerticalGroup(
+            pnlJugadorActualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 67, Short.MAX_VALUE)
+        );
+
+        pnlJugadorActual1.setBackground(new java.awt.Color(89, 89, 89));
+        pnlJugadorActual1.setPreferredSize(new java.awt.Dimension(170, 67));
+
+        javax.swing.GroupLayout pnlJugadorActual1Layout = new javax.swing.GroupLayout(pnlJugadorActual1);
+        pnlJugadorActual1.setLayout(pnlJugadorActual1Layout);
+        pnlJugadorActual1Layout.setHorizontalGroup(
+            pnlJugadorActual1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 170, Short.MAX_VALUE)
+        );
+        pnlJugadorActual1Layout.setVerticalGroup(
+            pnlJugadorActual1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 67, Short.MAX_VALUE)
+        );
+
+        pnlTiempo.setBackground(new java.awt.Color(89, 89, 89));
+        pnlTiempo.setPreferredSize(new java.awt.Dimension(170, 67));
+
+        javax.swing.GroupLayout pnlTiempoLayout = new javax.swing.GroupLayout(pnlTiempo);
+        pnlTiempo.setLayout(pnlTiempoLayout);
+        pnlTiempoLayout.setHorizontalGroup(
+            pnlTiempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 170, Short.MAX_VALUE)
+        );
+        pnlTiempoLayout.setVerticalGroup(
+            pnlTiempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 67, Short.MAX_VALUE)
+        );
+
+        pnlSentido1.setBackground(new java.awt.Color(89, 89, 89));
+        pnlSentido1.setPreferredSize(new java.awt.Dimension(170, 67));
+
+        javax.swing.GroupLayout pnlSentido1Layout = new javax.swing.GroupLayout(pnlSentido1);
+        pnlSentido1.setLayout(pnlSentido1Layout);
+        pnlSentido1Layout.setHorizontalGroup(
+            pnlSentido1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 170, Short.MAX_VALUE)
+        );
+        pnlSentido1Layout.setVerticalGroup(
+            pnlSentido1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 67, Short.MAX_VALUE)
+        );
+
+        pnlPilaDescartes.setBackground(new java.awt.Color(102, 102, 102));
+
+        javax.swing.GroupLayout pnlPilaDescartesLayout = new javax.swing.GroupLayout(pnlPilaDescartes);
+        pnlPilaDescartes.setLayout(pnlPilaDescartesLayout);
+        pnlPilaDescartesLayout.setHorizontalGroup(
+            pnlPilaDescartesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 348, Short.MAX_VALUE)
+        );
+        pnlPilaDescartesLayout.setVerticalGroup(
+            pnlPilaDescartesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 180, Short.MAX_VALUE)
+        );
+
+        pnlBaraja.setBackground(new java.awt.Color(102, 102, 102));
+
+        javax.swing.GroupLayout pnlBarajaLayout = new javax.swing.GroupLayout(pnlBaraja);
+        pnlBaraja.setLayout(pnlBarajaLayout);
+        pnlBarajaLayout.setHorizontalGroup(
+            pnlBarajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 514, Short.MAX_VALUE)
+        );
+        pnlBarajaLayout.setVerticalGroup(
+            pnlBarajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlPilaDescartes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(249, 249, 249))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(pnlJugadorActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37)
+                .addComponent(pnlJugadorActual1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addComponent(pnlSentido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addComponent(pnlTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(190, 190, 190)
+                .addComponent(pnlBaraja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(pnlMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(pnlJugadorActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlJugadorActual1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlSentido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addComponent(pnlPilaDescartes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addComponent(pnlBaraja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     * Yo quitaria ek main, para que nadamas se inicialioe cuando sea necesario
-     * by Edgar Acevedo
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaPartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaPartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaPartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PantallaPartida.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PantallaPartida().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel pnlBaraja;
+    private javax.swing.JPanel pnlJugadorActual;
+    private javax.swing.JPanel pnlJugadorActual1;
+    private javax.swing.JPanel pnlMenu;
+    private javax.swing.JPanel pnlPilaDescartes;
+    private javax.swing.JPanel pnlSentido1;
+    private javax.swing.JPanel pnlTiempo;
     // End of variables declaration//GEN-END:variables
 }

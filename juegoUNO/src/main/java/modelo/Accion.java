@@ -11,6 +11,8 @@ package modelo;
 public enum Accion {
     TOMA2,
     TOMA4,
-    CAMBIARCOLOR,
-    SALTAR
+    CAMBIOCOLOR,
+    SALTAR,
+    REVERSA,
+    BLOQUEO
 }

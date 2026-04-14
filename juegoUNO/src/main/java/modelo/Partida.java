@@ -16,6 +16,8 @@ public class Partida {
     private final Turno turno;
     private final PilaDescartes pilaDescartes;
     private final Mazo mazo;
+    public Color colorActivo;
+    
 
     public Partida(List<Jugador> jugadores, Turno turno, PilaDescartes pilaDescartes, Mazo mazo) {
         this.jugadores = jugadores;

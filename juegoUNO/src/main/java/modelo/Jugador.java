@@ -38,6 +38,19 @@ public class Jugador {
         this.nombre = nombre;
         this.avatar = avatar;
     }
+    
+    public void actualizarEstadoUNO(){
+        
+    }
+    
+    // No se que tanto entre este metodo 
+    public void marcarUNO(){
+        
+    }
+    
+    public void penalizar(){
+        
+    }
 
     public String getNombre() {
         return nombre;
@@ -81,4 +94,5 @@ public class Jugador {
         return "Jugador{" + "mano=" + mano + ", nombre=" + nombre + ", avatar=" + avatar + ", puntaje=" + puntaje + ", estadoUNO=" + estadoUNO + '}';
     }
     
+
 }

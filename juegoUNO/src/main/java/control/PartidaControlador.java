@@ -9,15 +9,14 @@ package control;
  * @author renee, edgar
  */
 public class PartidaControlador {
-    /*Dividan los metodos por el tipo de clase que sea, y si se puede por el 
+    /*Dividan los metodos por el tipo de clase que sea, y si se puede por el
     flujo normal
-    Entran Flujos, validaciones basicas, metodos 
+    Entran Flujos, validaciones basicas, metodos
     supongan que en las clases estan el metodo directo y aqui el que va a hacer una validacion 
     basica.
-    
     By Edgar Acevedo
-    */
-    
+     */
+  
     /*
     --------------- Lista de Control ------------------
     27 -- Flujo NOrmal

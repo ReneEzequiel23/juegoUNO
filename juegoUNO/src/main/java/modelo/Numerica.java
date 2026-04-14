@@ -8,26 +8,21 @@ package modelo;
  *
  * @author renee, edgar
  */
-public class Numerica {
+public class Numerica extends Carta {
 
-    public String numero;
+    private final int numero;
 
-
-    public Numerica() {
-    }
-
-    public Numerica(String numero) {
+    public Numerica(String idCarta, Color color, int numero) {
+        super(idCarta, color);
         this.numero = numero;
     }
 
-    public String getNumero() {
+    public int obtenerValor() {
         return numero;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    @Override
+    public String obtenerTipo() {
+        return "NUMERICA";
     }
-    
-    
-
 }

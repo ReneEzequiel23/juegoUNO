@@ -32,6 +32,22 @@ public class Turno {
         this.tiempoLimite = tiempoLimite;
         this.tiempoRestante = tiempoRestante;
     }
+    
+    public void cambiarJugadorActual(String jugador){
+        
+    }
+    
+    public void cambiarSentido(){
+        if(sentido ==true){
+            sentido=false;
+        }else{
+            sentido=true;
+        }
+    }
+    
+    public void saltarJugador(){
+        //Este es mas de partida que de turno
+    }
 
     public boolean isSentido() {
         return sentido;
