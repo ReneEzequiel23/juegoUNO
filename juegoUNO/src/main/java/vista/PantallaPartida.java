@@ -58,33 +58,33 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
     public void alHacerClicEnCarta(String idCarta) {
         // 1. Obtenemos tu jugador real
         modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-        
+
         if (yo != null) {
             // 2. Buscamos qué carta exactamente acabas de clickear
             modelo.Carta cartaClickeada = yo.getMano().obtenerCartaPorId(idCarta);
-            
+
             if (cartaClickeada != null) {
                 modelo.Color colorElegido = null;
-                
+
                 // 3. Verificamos si es una carta negra (Comodín)
                 if (cartaClickeada.getColor() == modelo.Color.NEGRO) {
                     // Pausamos y mostramos el popup pidiendo el color
                     colorElegido = mostrarDialogoColor();
-                    
+
                     // Si el usuario cerró la ventana sin elegir, abortamos la jugada
                     if (colorElegido == null) {
-                        return; 
+                        return;
                     }
                 }
-                
+
                 // 4. Ahora sí, le pasamos la jugada al controlador con el color correcto
                 boolean jugadaValida = controlador.jugarCarta(yo, idCarta, colorElegido);
-                
+
                 // 5. Opcional: Feedback visual si te equivocas de carta
                 if (!jugadaValida) {
-                    javax.swing.JOptionPane.showMessageDialog(this, 
-                            "Jugada inválida. Esa carta no coincide con el color ni el número de la mesa.", 
-                            "Movimiento no permitido", 
+                    javax.swing.JOptionPane.showMessageDialog(this,
+                            "Jugada inválida. Esa carta no coincide con el color ni el número de la mesa.",
+                            "Movimiento no permitido",
                             javax.swing.JOptionPane.WARNING_MESSAGE);
                 }
             }
@@ -291,7 +291,7 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_RobarActionPerformed
 
     private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimularOponenteActionPerformed
-       modelo.Jugador enTurno = partida.getTurno().getJugadorActual();
+        modelo.Jugador enTurno = partida.getTurno().getJugadorActual();
         if (!enTurno.getNombre().equals(idJugadorLocal)) {
             controlador.robarCartaEnTurno(enTurno);
         }
@@ -299,19 +299,19 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
 
     private void UNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UNOActionPerformed
         modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-        
+
         if (yo != null) {
             boolean exito = controlador.gritarUNO(yo);
-            
+
             if (exito) {
-                javax.swing.JOptionPane.showMessageDialog(this, 
-                        "¡Te has protegido gritando UNO!", 
-                        "Protección Activa", 
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "¡Te has protegido gritando UNO!",
+                        "Protección Activa",
                         javax.swing.JOptionPane.INFORMATION_MESSAGE);
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, 
-                        "Aún tienes demasiadas cartas. No puedes gritar UNO.", 
-                        "Aviso", 
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Aún tienes demasiadas cartas. No puedes gritar UNO.",
+                        "Aviso",
                         javax.swing.JOptionPane.WARNING_MESSAGE);
             }
         }
@@ -319,7 +319,9 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
 
     private void DenuncarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DenuncarBtnActionPerformed
         modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-        if (yo == null) return;
+        if (yo == null) {
+            return;
+        }
 
         modelo.Jugador culpable = null;
 
@@ -339,18 +341,18 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         // 2. Si encontramos al culpable, lo denunciamos
         if (culpable != null) {
             boolean castigado = controlador.denunciarFaltaUNO(yo, culpable);
-            
+
             if (castigado) {
-                javax.swing.JOptionPane.showMessageDialog(this, 
-                        "¡Atrapaste a " + culpable.getNombre() + " sin decir UNO!\nSe comerá 2 cartas.", 
-                        "¡Denuncia Exitosa!", 
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "¡Atrapaste a " + culpable.getNombre() + " sin decir UNO!\nSe comerá 2 cartas.",
+                        "¡Denuncia Exitosa!",
                         javax.swing.JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
             // 3. Si todos están en regla o nadie tiene 1 carta
-            javax.swing.JOptionPane.showMessageDialog(this, 
-                    "Nadie ha olvidado decir UNO... o te equivocaste de momento.", 
-                    "Falsa Alarma", 
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Nadie ha olvidado decir UNO... o te equivocaste de momento.",
+                    "Falsa Alarma",
                     javax.swing.JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_DenuncarBtnActionPerformed
@@ -370,7 +372,24 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
 
     @Override
     public void actualizar() {
-        
+        for (modelo.Jugador j : partida.getJugadores()) {
+            if (j.getMano().contarCartas() == 0) {
+                // 1.1 Mostramos un mensaje rápido
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "¡" + j.getNombre() + " se ha quedado sin cartas!",
+                        "¡FIN DE LA PARTIDA!",
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+                // 1.2 Abrimos la pantalla del Podio
+                new PodioView(partida).setVisible(true);
+
+                // 1.3 Cerramos esta pantalla de juego (PantallaPartida)
+                this.dispose();
+
+                // 1.4 Detenemos el método para que no intente dibujar cartas que ya no importan
+                return;
+            }
+        }
         // Este método se ejecutará SOLO, de forma automática, cada vez que 
         // el controlador llame a partida.notificarObservadores()
         // 1. Sabemos quién tiene el turno actualmente
@@ -389,13 +408,13 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
             boolean esTurnoOp1 = oponentes.get(0).equals(jugadorEnTurno);
             jugadorUI1.pintarOponente(oponentes.get(0), esTurnoOp1);
         }
-        
+
         // 4. Pintamos el panel del segundo oponente (Ej. El Profe)
         if (oponentes.size() > 1) {
             boolean esTurnoOp2 = oponentes.get(1).equals(jugadorEnTurno);
             jugadorUI2.pintarOponente(oponentes.get(1), esTurnoOp2);
         }
-        
+
         System.out.println("La vista detectó un cambio en el Modelo. Redibujando...");
 
         modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
