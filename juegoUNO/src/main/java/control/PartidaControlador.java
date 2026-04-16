@@ -65,30 +65,21 @@ public class PartidaControlador {
             jugador.getMano().eliminarCarta(idCarta);
             partida.getPilaDescartes().agregarCarta(cartaAJugar);
             
-            // 1. Manejo del Color
-            if (cartaAJugar.getColor() == Color.NEGRO) {
-                partida.actualizarColorActivo(colorElegido);
-            } else {
-                partida.actualizarColorActivo(cartaAJugar.getColor());
-            }
+            // ... (código de color y efectos especiales) ...
 
-            // 2. Ejecutar efectos especiales
-            aplicarEfectoCarta(cartaAJugar);
-
-            // --- 3. NUEVA VALIDACIÓN DE VICTORIA ---
+            // Validación de victoria
             if (verificarVictoria(jugador)) {
                 calcularPuntajeVictoria(jugador);
                 
-                // Aquí el juego termina. Ya no avanzamos el turno.
-                // En tu arquitectura, aquí emitirías un evento por el Event Bus 
-                // o enviarías un mensaje por Socket indicando: "FIN_PARTIDA"
-                // para que la interfaz cambie a la pantalla 'PodioView'.
-                
+                // ¡NOTIFICAMOS EL CAMBIO ANTES DE TERMINAR!
+                partida.notificarObservadores();
                 return true; 
             }
 
-            // 4. Si nadie ha ganado, pasamos el turno al siguiente
             partida.avanzarTurno(); 
+            
+            // ¡NOTIFICAMOS EL CAMBIO PORQUE LA JUGADA FUE UN ÉXITO!
+            partida.notificarObservadores();
             return true;
         }
         return false;
@@ -149,7 +140,6 @@ public class PartidaControlador {
      * Acción que se dispara cuando un jugador decide robar una carta del mazo en su turno.
      */
     public boolean robarCartaEnTurno(Jugador jugador) {
-        // Validamos que sea su turno
         if (!partida.getTurno().getJugadorActual().equals(jugador)) {
             return false;
         }
@@ -158,15 +148,13 @@ public class PartidaControlador {
         
         if (cartaRobada != null) {
             jugador.getMano().agregarCarta(cartaRobada);
-            jugador.quitarUNO();
-            
-            // En el UNO clásico, si la carta que robaste te sirve, la puedes jugar inmediatamente.
-            // Para mantenerlo simple por ahora (o si juegas con reglas estrictas), 
-            // simplemente le pasamos el turno al siguiente.
+            jugador.quitarUNO(); 
             partida.avanzarTurno();
+            
+            // ¡NOTIFICAMOS QUE ALGUIEN ROBÓ Y CAMBIÓ EL TURNO!
+            partida.notificarObservadores();
             return true;
         }
-        
         return false;
     }
     
@@ -192,11 +180,8 @@ public class PartidaControlador {
      * Alguien presiona el botón para denunciar que un jugador no dijo "UNO".
      */
     public boolean denunciarFaltaUNO(Jugador denunciante, Jugador acusado) {
-        // Validamos la regla: ¿Tiene exactamente 1 carta y NO está protegido?
         if (acusado.getMano().contarCartas() == 1 && !acusado.isEstadoUNO()) {
-            System.out.println("¡" + denunciante.getNombre() + " atrapó a " + acusado.getNombre() + "!");
             
-            // Castigo clásico: Roba 2 cartas
             for (int i = 0; i < 2; i++) {
                 Carta castigo = partida.robarCartaSeguro();
                 if (castigo != null) {
@@ -204,14 +189,10 @@ public class PartidaControlador {
                 }
             }
             
-            // Ya fue castigado, por lo que vuelve a tener 3 cartas.
-            // Su estado UNO sigue siendo false, lo cual es correcto.
+            // ¡NOTIFICAMOS EL CASTIGO!
+            partida.notificarObservadores();
             return true;
         }
-        
-        // Si el denunciante se equivocó (el acusado tenía más de 1 carta o sí estaba protegido)
-        // en algunas reglas caseras se castiga al denunciante, pero en las oficiales no pasa nada.
-        System.out.println("Denuncia inválida.");
         return false;
     }
     

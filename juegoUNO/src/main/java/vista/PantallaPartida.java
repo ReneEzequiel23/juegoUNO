@@ -56,12 +56,38 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
      * de su mano.
      */
     public void alHacerClicEnCarta(String idCarta) {
-        // 1. Obtenemos el objeto Jugador real
-        modelo.Jugador jugadorReal = controlador.obtenerJugador(idJugadorLocal);
-
-        if (jugadorReal != null) {
-            // 2. Ahora sí, le pasamos el objeto al controlador
-            controlador.jugarCarta(jugadorReal, idCarta, null);
+        // 1. Obtenemos tu jugador real
+        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
+        
+        if (yo != null) {
+            // 2. Buscamos qué carta exactamente acabas de clickear
+            modelo.Carta cartaClickeada = yo.getMano().obtenerCartaPorId(idCarta);
+            
+            if (cartaClickeada != null) {
+                modelo.Color colorElegido = null;
+                
+                // 3. Verificamos si es una carta negra (Comodín)
+                if (cartaClickeada.getColor() == modelo.Color.NEGRO) {
+                    // Pausamos y mostramos el popup pidiendo el color
+                    colorElegido = mostrarDialogoColor();
+                    
+                    // Si el usuario cerró la ventana sin elegir, abortamos la jugada
+                    if (colorElegido == null) {
+                        return; 
+                    }
+                }
+                
+                // 4. Ahora sí, le pasamos la jugada al controlador con el color correcto
+                boolean jugadaValida = controlador.jugarCarta(yo, idCarta, colorElegido);
+                
+                // 5. Opcional: Feedback visual si te equivocas de carta
+                if (!jugadaValida) {
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                            "Jugada inválida. Esa carta no coincide con el color ni el número de la mesa.", 
+                            "Movimiento no permitido", 
+                            javax.swing.JOptionPane.WARNING_MESSAGE);
+                }
+            }
         }
     }
 
@@ -241,5 +267,40 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
 
         modelo.Carta cartaEnMesa = controlador.obtenerCartaEnMesa();
         pilaDescartesUI1.pintarCartaSuperior(cartaEnMesa);
+    }
+
+    /**
+     * Muestra una ventana emergente para que el jugador elija un color.
+     *
+     * @return El color elegido, o null si el usuario cerró la ventana.
+     */
+    private modelo.Color mostrarDialogoColor() {
+        // Las opciones que aparecerán en los botones de la ventana
+        String[] opciones = {"Rojo", "Azul", "Verde", "Amarillo"};
+
+        int seleccion = javax.swing.JOptionPane.showOptionDialog(
+                this,
+                "¡Has jugado un Comodín! Elige el nuevo color de la mesa:",
+                "Seleccionar Color",
+                javax.swing.JOptionPane.DEFAULT_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0] // El rojo estará seleccionado por defecto
+        );
+
+        // Traducimos el botón que presionó al Enum de nuestro modelo
+        switch (seleccion) {
+            case 0:
+                return modelo.Color.ROJO;
+            case 1:
+                return modelo.Color.AZUL;
+            case 2:
+                return modelo.Color.VERDE;
+            case 3:
+                return modelo.Color.AMARILLO;
+            default:
+                return null; // Si el usuario le dio a la 'X' para cerrar la ventana
+        }
     }
 }

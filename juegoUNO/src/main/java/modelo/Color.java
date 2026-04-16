@@ -9,10 +9,5 @@ package modelo;
  * @author Adrián
  */
 public enum Color {
-
-    AZUL, 
-    AMARILLO,
-    VERDE,
-    ROJO,
-    NEGRO
+    ROJO, AZUL, AMARILLO, VERDE, NEGRO
 }

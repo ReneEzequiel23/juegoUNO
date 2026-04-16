@@ -25,7 +25,6 @@ public class MainApp {
         List<Jugador> listaJugadores = new ArrayList<>();
         listaJugadores.add(jugadorLocal);
         listaJugadores.add(oponente1);
-        listaJugadores.add(oponente2);
 
         // Creamos el Agregado Raíz y el Controlador
         Partida partida = new Partida(listaJugadores);
@@ -43,11 +42,16 @@ public class MainApp {
             // Creamos la pantalla, pasándole el controlador y tu ID para que sepa quién eres
             // Usamos el nombre del jugador como ID temporal
             PantallaPartida pantalla = new PantallaPartida(controlador,partida, jugadorLocal.getNombre());
+            PantallaPartida pantalla1 = new PantallaPartida(controlador,partida, oponente1.getNombre());
             
             // Configuraciones básicas de la ventana
             pantalla.setTitle("Juego UNO - Partida Local");
             pantalla.setLocationRelativeTo(null); // Para que aparezca centrada en tu monitor
             pantalla.setVisible(true);            // ¡Que se haga la luz!
+            
+            pantalla1.setTitle("Juego UNO - Partida Local");
+            pantalla1.setLocationRelativeTo(null); // Para que aparezca centrada en tu monitor
+            pantalla1.setVisible(true);            // ¡Que se haga la luz!
             
         });
     }
