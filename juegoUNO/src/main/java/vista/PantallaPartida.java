@@ -112,6 +112,14 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
             controlador.robarCartaEnTurno(jugadorReal);
         }
     }
+    
+    // Método temporal para probar si pusiste un botón extra en la vista
+    private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {
+        modelo.Jugador enTurno = partida.getTurno().getJugadorActual();
+        if (!enTurno.getNombre().equals(idJugadorLocal)) {
+            controlador.robarCartaEnTurno(enTurno);
+        }
+    }
 
     // =========================================================================
     // 2. ACTUALIZACIÓN VISUAL (De los Eventos a la Vista)
@@ -199,6 +207,8 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         pnlMenu = new javax.swing.JPanel();
         manoUI1 = new vista.ManoUI();
         pilaDescartesUI1 = new vista.PilaDescartesUI();
+        jugadorUI1 = new vista.JugadorUI();
+        jugadorUI2 = new vista.JugadorUI();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
@@ -209,7 +219,7 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         pnlMenu.setLayout(pnlMenuLayout);
         pnlMenuLayout.setHorizontalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 858, Short.MAX_VALUE)
+            .addGap(0, 732, Short.MAX_VALUE)
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -222,7 +232,9 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(126, 126, 126)
+                .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -230,14 +242,23 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
                         .addComponent(pilaDescartesUI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(73, 73, 73)
-                        .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jugadorUI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(141, 141, 141)
+                                .addComponent(jugadorUI2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pnlMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 174, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jugadorUI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jugadorUI2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                 .addComponent(pilaDescartesUI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(161, 161, 161)
                 .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -249,6 +270,8 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private vista.JugadorUI jugadorUI1;
+    private vista.JugadorUI jugadorUI2;
     private vista.ManoUI manoUI1;
     private vista.PilaDescartesUI pilaDescartesUI1;
     private javax.swing.JPanel pnlMenu;
@@ -256,15 +279,32 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
 
     @Override
     public void actualizar() {
-        // --- CHISMOSO DE DIAGNÓSTICO ---
-        String turnoActual = partida.getTurno().getJugadorActual().getNombre();
-        System.out.println("=====================================");
-        System.out.println("ESTADO REAL DEL JUEGO:");
-        System.out.println("Turno de: " + turnoActual);
-        System.out.println("Color activo a seguir: " + partida.getColorActivo());
-        System.out.println("=====================================");
+        
         // Este método se ejecutará SOLO, de forma automática, cada vez que 
         // el controlador llame a partida.notificarObservadores()
+        // 1. Sabemos quién tiene el turno actualmente
+        modelo.Jugador jugadorEnTurno = partida.getTurno().getJugadorActual();
+
+        // 2. Filtramos la lista para separar a los oponentes de ti
+        java.util.List<modelo.Jugador> oponentes = new java.util.ArrayList<>();
+        for (modelo.Jugador j : partida.getJugadores()) {
+            if (!j.getNombre().equals(idJugadorLocal)) {
+                oponentes.add(j);
+            }
+        }
+
+        // 3. Pintamos el panel del primer oponente (Ej. Edgar)
+        if (oponentes.size() > 0) {
+            boolean esTurnoOp1 = oponentes.get(0).equals(jugadorEnTurno);
+            jugadorUI1.pintarOponente(oponentes.get(0), esTurnoOp1);
+        }
+        
+        // 4. Pintamos el panel del segundo oponente (Ej. El Profe)
+        if (oponentes.size() > 1) {
+            boolean esTurnoOp2 = oponentes.get(1).equals(jugadorEnTurno);
+            jugadorUI2.pintarOponente(oponentes.get(1), esTurnoOp2);
+        }
+        
         System.out.println("La vista detectó un cambio en el Modelo. Redibujando...");
 
         modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);

@@ -26,7 +26,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="pnlMenu" alignment="0" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="126" max="-2" attributes="0"/>
+              <Component id="pnlMenu" max="32767" attributes="0"/>
+          </Group>
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
@@ -35,7 +38,14 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
-                      <Component id="manoUI1" min="-2" pref="741" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="jugadorUI1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="141" max="-2" attributes="0"/>
+                              <Component id="jugadorUI2" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="manoUI1" min="-2" pref="741" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -46,7 +56,12 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Component id="pnlMenu" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="174" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="jugadorUI1" min="-2" max="-2" attributes="0"/>
+                  <Component id="jugadorUI2" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="88" max="32767" attributes="0"/>
               <Component id="pilaDescartesUI1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="161" max="-2" attributes="0"/>
               <Component id="manoUI1" min="-2" pref="46" max="-2" attributes="0"/>
@@ -66,7 +81,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="858" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="732" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -89,6 +104,10 @@
       </Layout>
     </Container>
     <Component class="vista.PilaDescartesUI" name="pilaDescartesUI1">
+    </Component>
+    <Component class="vista.JugadorUI" name="jugadorUI1">
+    </Component>
+    <Component class="vista.JugadorUI" name="jugadorUI2">
     </Component>
   </SubComponents>
 </Form>

@@ -18,13 +18,14 @@ public class MainApp {
         System.out.println("1. Inicializando el modelo de la partida...");
         
         // Creamos los jugadores
-        Jugador jugadorLocal = new Jugador("René", "avatar_rene.png"); // Tú
-//        Jugador oponente1 = new Jugador("Edgar", "avatar_edgar.png");
-//        Jugador oponente2 = new Jugador("El Profe", "avatar_profe.png");
+        Jugador jugadorLocal = new Jugador("René", "avatar_rene.png");
+        Jugador oponente1 = new Jugador("Edgar", "avatar_edgar.png");
+        Jugador oponente2 = new Jugador("El Profe", "avatar_profe.png");
 
         List<Jugador> listaJugadores = new ArrayList<>();
         listaJugadores.add(jugadorLocal);
-//        listaJugadores.add(oponente1);
+        listaJugadores.add(oponente1);
+        listaJugadores.add(oponente2);
 
         // Creamos el Agregado Raíz y el Controlador
         Partida partida = new Partida(listaJugadores);
