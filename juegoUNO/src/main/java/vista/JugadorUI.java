@@ -59,24 +59,15 @@ public class JugadorUI extends JPanel {
     public void pintarOponente(Jugador oponente, boolean esSuTurno) {
         if (oponente != null) {
             this.setVisible(true);
-            
-            // Cargar el avatar del jugador (puedes añadir el avatar al modelo Jugador)
-            // if (oponente.getAvatar() != null) {
-            //     Image img = oponente.getAvatar().getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-            //     lblAvatar.setIcon(new ImageIcon(img));
-            // } else {
-            //     // Cargar avatar genérico por defecto
-            // }
-
-            lblNombre.setText(oponente.getNombre());
             lblCartas.setText("Cartas: " + oponente.getMano().contarCartas());
 
-            // Pintamos el panel de verde si es su turno para que resalte
+            // Pintamos un borde verde brillante y añadimos una flecha si es su turno
             if (esSuTurno) {
-                // ... aplicar un borde o fondo tenue verde ...
-                // this.setBorder(new LineBorder(new Color(20, 200, 20), 2, true)); 
+                this.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(50, 205, 50), 3, true)); 
+                lblNombre.setText("▶ " + oponente.getNombre()); // Flechita indicadora
             } else {
-                this.setBorder(new EmptyBorder(10, 10, 10, 10)); // Margen normal
+                this.setBorder(new javax.swing.border.EmptyBorder(10, 10, 10, 10)); // Margen normal sin borde
+                lblNombre.setText(oponente.getNombre());
             }
 
         } else {

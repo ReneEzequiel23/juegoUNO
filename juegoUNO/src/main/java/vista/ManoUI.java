@@ -41,7 +41,7 @@ public class ManoUI extends JPanel {
         panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
         panelInfo.setOpaque(false);
         panelInfo.setAlignmentY(java.awt.Component.BOTTOM_ALIGNMENT);
-
+        this.setPreferredSize(new Dimension(800, 180));
         // JLabel para la imagen del avatar
         lblAvatar = new JLabel();
         lblAvatar.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
@@ -61,7 +61,6 @@ public class ManoUI extends JPanel {
         // --- PANEL DE CARTAS ---
         JPanel panelCartas = new JPanel(new FlowLayout(FlowLayout.LEFT, -15, 0)); // FlowLayout con solapamiento negativo
         panelCartas.setOpaque(false);
-        // ... (Aquí añadiremos las cartas) ...
         this.add(panelCartas, BorderLayout.CENTER); // Al centro
     }
 
@@ -101,6 +100,7 @@ public class ManoUI extends JPanel {
             lblCarta.setPreferredSize(new Dimension(80, 120)); // Tamaño de carta
             lblCarta.setOpaque(true);
             lblCarta.setBackground(Color.WHITE); // Temporal
+            lblCarta.setForeground(Color.BLACK);
             lblCarta.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true)); // Esquinas redondeadas (Swing lo hace tosco, mejor imagen)
             lblCarta.setText(obtenerTextoVisual(carta)); // Temporal
             lblCarta.setHorizontalAlignment(SwingConstants.CENTER);
@@ -114,13 +114,6 @@ public class ManoUI extends JPanel {
                     }
                 }
             });
-
-            // 4. Lógica para la etiqueta "JUGABLE" (Opcional pero recomendado)
-            // if (controlador.esJugable(carta)) {
-            //     JLabel lblJugable = new JLabel("JUGABLE");
-            //     // ... añadir etiqueta encima o debajo ...
-            // }
-
             panelCartas.add(lblCarta);
         }
 
@@ -131,9 +124,9 @@ public class ManoUI extends JPanel {
     // Método temporal para ponerle texto a las cartas antes de que pongas imágenes
     private String obtenerTextoVisual(Carta carta) {
         if (carta instanceof Numerica) {
-            return ((Numerica) carta).obtenerValor() + "\n" + carta.getColor();
+            return ((Numerica) carta).obtenerValor() + " " + carta.getColor();
         } else if (carta instanceof Comodin) {
-            return ((Comodin) carta).obtenerAccion() + "\n" + carta.getColor();
+            return ((Comodin) carta).obtenerAccion() + " " + carta.getColor();
         }
         return "Carta";
     }

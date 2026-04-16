@@ -36,11 +36,6 @@ public class MainApp {
         // 2. PREPARAMOS LA VISTA (El Frontend)
         System.out.println("2. Lanzando la interfaz gráfica...");
         
-        // --- TRAMPA DE PRUEBA ---
-        while(jugadorLocal.getMano().contarCartas() > 1) {
-            jugadorLocal.getMano().eliminarCarta( jugadorLocal.getMano().getCartas().get(0).getIdCarta() );
-        }
-        
         // SwingUtilities.invokeLater asegura que la ventana se dibuje de forma segura
         SwingUtilities.invokeLater(() -> {
             

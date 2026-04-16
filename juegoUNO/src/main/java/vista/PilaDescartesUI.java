@@ -32,7 +32,7 @@ public class PilaDescartesUI extends JPanel {
         this.setLayout(new BorderLayout());
         this.setOpaque(false);
         this.setBorder(new EmptyBorder(10, 0, 10, 0));
-
+        
         // --- CARTA CENTRAL GRANDE ---
         lblCartaSuperior = new JLabel();
         lblCartaSuperior.setHorizontalAlignment(SwingConstants.CENTER);
@@ -43,7 +43,7 @@ public class PilaDescartesUI extends JPanel {
         JPanel panelSur = new JPanel();
         panelSur.setLayout(new BoxLayout(panelSur, BoxLayout.Y_AXIS));
         panelSur.setOpaque(false);
-
+        this.setPreferredSize(new Dimension(300, 400));
         // Etiqueta de estado de la mesa ("Rojo 7 Activo")
         lblEstadoMesa = new JLabel("Mesa Vacía");
         lblEstadoMesa.setForeground(Color.WHITE); // Texto blanco
