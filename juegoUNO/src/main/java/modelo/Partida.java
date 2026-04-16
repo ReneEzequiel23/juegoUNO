@@ -4,6 +4,7 @@
  */
 package modelo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,14 +20,27 @@ public class Partida {
     private Color colorActivo;
 
     private static final int CARTAS_POR_JUGADOR = 7;
+    private final List<IObserver> observadores;
 
     public Partida(List<Jugador> jugadores) {
         this.jugadores = jugadores;
         this.mazo = new Mazo(); // El constructor de Mazo ya inicializa y baraja
         this.pilaDescartes = new PilaDescartes();
+        this.observadores = new ArrayList<>();
 
         // Inicializamos el primer turno con el primer jugador de la lista
         this.turno = new Turno(jugadores.get(0), true, 30, 30);
+    }
+    
+    public void agregarObservador(IObserver observador) {
+        this.observadores.add(observador);
+    }
+
+    // 3. Método para "gritar" que hubo un cambio
+    public void notificarObservadores() {
+        for (IObserver obs : observadores) {
+            obs.actualizar();
+        }
     }
 
     /**

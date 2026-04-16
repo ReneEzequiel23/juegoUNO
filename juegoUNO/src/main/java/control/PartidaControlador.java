@@ -250,4 +250,21 @@ public class PartidaControlador {
         ganador.setPuntaje(ganador.getPuntaje() + puntosTotales);
         System.out.println("¡" + ganador.getNombre() + " gana la ronda y suma " + puntosTotales + " puntos!");
     }
+    
+    /**
+     * Busca y devuelve el objeto Jugador basándose en su ID o nombre.
+     */
+    public Jugador obtenerJugador(String idJugador) {
+        for (Jugador j : partida.getJugadores()) {
+            // Asumiendo que por ahora usas el nombre como ID (como hicimos en el Main)
+            if (j.getNombre().equals(idJugador)) { 
+                return j;
+            }
+        }
+        return null; // Si no lo encuentra
+    }
+    
+    public Carta obtenerCartaEnMesa() {
+        return partida.getPilaDescartes().obtenerCartaSuperior();
+    }
 }

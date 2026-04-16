@@ -4,19 +4,161 @@
  */
 package vista;
 
+import control.PartidaControlador;
+import java.util.List;
+import modelo.Carta;
+import modelo.Partida;
+import modelo.IObserver;
+
 /**
  *
  * @author renee
  */
-public class PantallaPartida extends javax.swing.JFrame {
+public class PantallaPartida extends javax.swing.JFrame implements IObserver {
+
+    // El controlador que validará las acciones
+    private PartidaControlador controlador;
+    private Partida partida;
+
+    // Identificador del jugador local (quien está viendo esta pantalla)
+    private String idJugadorLocal;
+
+    // Componentes visuales internos (según tu diagrama)
+    // En NetBeans, estos podrían ser JPanels personalizados
+    /*
+    private ManoUI manoUI;
+    private PilaDescarteUI pilaDescartesUI;
+    private MazoUI mazoUI;
+    private JugadorUI oponentesUI;
+     */
+    /**
+     * Constructor de la pantalla.
+     */
+    public PantallaPartida(PartidaControlador controlador, Partida partida, String idJugadorLocal) {
+        this.controlador = controlador;
+        this.partida = partida;
+        this.idJugadorLocal = idJugadorLocal;
+
+        // Método generado automáticamente por NetBeans para inicializar botones y paneles
+        initComponents();
+        manoUI1.setPantallaPadre(this);
+
+        this.partida.agregarObservador(this);
+        // Configuraciones personalizadas y suscripción a eventos
+        actualizar();
+    }
+
+    // =========================================================================
+    // 1. RECEPCIÓN DE ACCIONES DEL USUARIO (De la Vista al Controlador)
+    // =========================================================================
+    /**
+     * Ejemplo de método que se llama cuando el usuario hace clic en una carta
+     * de su mano.
+     */
+    public void alHacerClicEnCarta(String idCarta) {
+        // 1. Obtenemos el objeto Jugador real
+        modelo.Jugador jugadorReal = controlador.obtenerJugador(idJugadorLocal);
+
+        if (jugadorReal != null) {
+            // 2. Ahora sí, le pasamos el objeto al controlador
+            controlador.jugarCarta(jugadorReal, idCarta, null);
+        }
+    }
 
     /**
-     * Creates new form PantallaPartida
-     * Tendriamos que ver si la vamos a hacer tipo la imagen de wha o mezclamos 
-     * el del storyboard con el de Wha
+     * Acción del botón "¡UNO!" generado por NetBeans.
      */
-    public PantallaPartida() {
-        initComponents();
+    private void btnGritarUNOActionPerformed(java.awt.event.ActionEvent evt) {
+        modelo.Jugador jugadorReal = controlador.obtenerJugador(idJugadorLocal);
+
+        if (jugadorReal != null) {
+            controlador.gritarUNO(jugadorReal);
+        }
+    }
+
+    /**
+     * Acción de hacer clic en el mazo para robar.
+     */
+    private void btnRobarCartaActionPerformed(java.awt.event.ActionEvent evt) {
+        modelo.Jugador jugadorReal = controlador.obtenerJugador(idJugadorLocal);
+
+        if (jugadorReal != null) {
+            controlador.robarCartaEnTurno(jugadorReal);
+        }
+    }
+
+    // =========================================================================
+    // 2. ACTUALIZACIÓN VISUAL (De los Eventos a la Vista)
+    // =========================================================================
+    /**
+     * Aquí suscribimos la pantalla al Bus de Eventos.
+     */
+    private void configurarEventos() {
+        /*
+        EventBus.suscribir("CARTA_JUGADA", evento -> {
+            actualizarPilaDescartes(evento.getCarta());
+            actualizarManoLocal();
+        });
+
+        EventBus.suscribir("TURNO_CAMBIADO", evento -> {
+            actualizarIndicadorTurno(evento.getIdJugadorActual());
+        });
+        
+        EventBus.suscribir("FIN_PARTIDA", evento -> {
+            mostrarPantallaPodio();
+        });
+         */
+    }
+
+    /**
+     * Método comodín para recargar toda la interfaz (útil al iniciar la
+     * partida).
+     */
+    private void actualizarPantallaCompleta() {
+        // manoUI.pintarCartas( controlador.obtenerMano(idJugadorLocal) );
+        // pilaDescartesUI.pintarCartaSuperior( controlador.obtenerCartaEnMesa() );
+        // mazoUI.actualizarCantidad( controlador.obtenerCartasRestantesMazo() );
+    }
+
+    /**
+     * Método temporal para probar que los paneles dibujan las cartas
+     * correctamente. MOCK = Datos simulados.
+     */
+    private void probarInterfaz() {
+        System.out.println("Cargando cartas de prueba en la interfaz...");
+
+        // 1. Fabricamos una mano de prueba con 4 cartas variadas
+        List<Carta> cartasDePrueba = new java.util.ArrayList<>();
+        cartasDePrueba.add(new modelo.Numerica("id-1", modelo.Color.ROJO, 5));
+        cartasDePrueba.add(new modelo.Numerica("id-2", modelo.Color.AZUL, 9));
+        cartasDePrueba.add(new modelo.Comodin("id-3", modelo.Color.AMARILLO, modelo.Accion.TOMA2));
+        cartasDePrueba.add(new modelo.Comodin("id-4", modelo.Color.NEGRO, modelo.Accion.TOMA4));
+
+        // 2. Fabricamos la carta que estará en el centro de la mesa
+        Carta cartaEnMesa = new modelo.Numerica("id-5", modelo.Color.VERDE, 3);
+
+        // 3. Le pasamos estos datos falsos a nuestros componentes visuales
+        // Nota: Cambia 'manoUI1' y 'pilaDescarteUI1' por los nombres que NetBeans 
+        // le haya puesto a tus paneles en el código auto-generado (puedes verlo en el Navegador de componentes).
+        manoUI1.pintarCartas(cartasDePrueba);
+        pilaDescartesUI1.pintarCartaSuperior(cartaEnMesa);
+    }
+
+    /**
+     * Lee el estado actual del modelo y lo dibuja en la pantalla.
+     */
+    private void cargarDatosReales() {
+        // 1. Buscamos tu jugador usando el ID
+        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
+
+        // 2. Pintamos tus cartas (¡deberían ser 7 al inicio!)
+        if (yo != null) {
+            manoUI1.pintarCartas(yo.getMano().getCartas());
+        }
+
+        // 3. Pintamos la carta con la que inició el juego
+        modelo.Carta cartaEnMesa = controlador.obtenerCartaEnMesa();
+        pilaDescartesUI1.pintarCartaSuperior(cartaEnMesa);
     }
 
     /**
@@ -29,12 +171,8 @@ public class PantallaPartida extends javax.swing.JFrame {
     private void initComponents() {
 
         pnlMenu = new javax.swing.JPanel();
-        pnlJugadorActual = new javax.swing.JPanel();
-        pnlJugadorActual1 = new javax.swing.JPanel();
-        pnlTiempo = new javax.swing.JPanel();
-        pnlSentido1 = new javax.swing.JPanel();
-        pnlPilaDescartes = new javax.swing.JPanel();
-        pnlBaraja = new javax.swing.JPanel();
+        manoUI1 = new vista.ManoUI();
+        pilaDescartesUI1 = new vista.PilaDescartesUI();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
@@ -45,133 +183,39 @@ public class PantallaPartida extends javax.swing.JFrame {
         pnlMenu.setLayout(pnlMenuLayout);
         pnlMenuLayout.setHorizontalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 858, Short.MAX_VALUE)
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 54, Short.MAX_VALUE)
         );
 
-        pnlJugadorActual.setBackground(new java.awt.Color(89, 89, 89));
-        pnlJugadorActual.setForeground(new java.awt.Color(114, 114, 114));
-
-        javax.swing.GroupLayout pnlJugadorActualLayout = new javax.swing.GroupLayout(pnlJugadorActual);
-        pnlJugadorActual.setLayout(pnlJugadorActualLayout);
-        pnlJugadorActualLayout.setHorizontalGroup(
-            pnlJugadorActualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-        );
-        pnlJugadorActualLayout.setVerticalGroup(
-            pnlJugadorActualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 67, Short.MAX_VALUE)
-        );
-
-        pnlJugadorActual1.setBackground(new java.awt.Color(89, 89, 89));
-        pnlJugadorActual1.setPreferredSize(new java.awt.Dimension(170, 67));
-
-        javax.swing.GroupLayout pnlJugadorActual1Layout = new javax.swing.GroupLayout(pnlJugadorActual1);
-        pnlJugadorActual1.setLayout(pnlJugadorActual1Layout);
-        pnlJugadorActual1Layout.setHorizontalGroup(
-            pnlJugadorActual1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-        );
-        pnlJugadorActual1Layout.setVerticalGroup(
-            pnlJugadorActual1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 67, Short.MAX_VALUE)
-        );
-
-        pnlTiempo.setBackground(new java.awt.Color(89, 89, 89));
-        pnlTiempo.setPreferredSize(new java.awt.Dimension(170, 67));
-
-        javax.swing.GroupLayout pnlTiempoLayout = new javax.swing.GroupLayout(pnlTiempo);
-        pnlTiempo.setLayout(pnlTiempoLayout);
-        pnlTiempoLayout.setHorizontalGroup(
-            pnlTiempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-        );
-        pnlTiempoLayout.setVerticalGroup(
-            pnlTiempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 67, Short.MAX_VALUE)
-        );
-
-        pnlSentido1.setBackground(new java.awt.Color(89, 89, 89));
-        pnlSentido1.setPreferredSize(new java.awt.Dimension(170, 67));
-
-        javax.swing.GroupLayout pnlSentido1Layout = new javax.swing.GroupLayout(pnlSentido1);
-        pnlSentido1.setLayout(pnlSentido1Layout);
-        pnlSentido1Layout.setHorizontalGroup(
-            pnlSentido1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-        );
-        pnlSentido1Layout.setVerticalGroup(
-            pnlSentido1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 67, Short.MAX_VALUE)
-        );
-
-        pnlPilaDescartes.setBackground(new java.awt.Color(102, 102, 102));
-
-        javax.swing.GroupLayout pnlPilaDescartesLayout = new javax.swing.GroupLayout(pnlPilaDescartes);
-        pnlPilaDescartes.setLayout(pnlPilaDescartesLayout);
-        pnlPilaDescartesLayout.setHorizontalGroup(
-            pnlPilaDescartesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 348, Short.MAX_VALUE)
-        );
-        pnlPilaDescartesLayout.setVerticalGroup(
-            pnlPilaDescartesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 180, Short.MAX_VALUE)
-        );
-
-        pnlBaraja.setBackground(new java.awt.Color(102, 102, 102));
-
-        javax.swing.GroupLayout pnlBarajaLayout = new javax.swing.GroupLayout(pnlBaraja);
-        pnlBaraja.setLayout(pnlBarajaLayout);
-        pnlBarajaLayout.setHorizontalGroup(
-            pnlBarajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 514, Short.MAX_VALUE)
-        );
-        pnlBarajaLayout.setVerticalGroup(
-            pnlBarajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
-        );
+        manoUI1.setPreferredSize(new java.awt.Dimension(400, 100));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pnlPilaDescartes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(249, 249, 249))
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(pnlJugadorActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
-                .addComponent(pnlJugadorActual1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                .addComponent(pnlSentido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(pnlTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(190, 190, 190)
-                .addComponent(pnlBaraja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(351, 351, 351)
+                        .addComponent(pilaDescartesUI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(73, 73, 73)
+                        .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pnlMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pnlJugadorActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlJugadorActual1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlSentido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
-                .addComponent(pnlPilaDescartes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
-                .addComponent(pnlBaraja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 174, Short.MAX_VALUE)
+                .addComponent(pilaDescartesUI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(161, 161, 161)
+                .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(59, 59, 59))
         );
 
         pack();
@@ -179,12 +223,23 @@ public class PantallaPartida extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlBaraja;
-    private javax.swing.JPanel pnlJugadorActual;
-    private javax.swing.JPanel pnlJugadorActual1;
+    private vista.ManoUI manoUI1;
+    private vista.PilaDescartesUI pilaDescartesUI1;
     private javax.swing.JPanel pnlMenu;
-    private javax.swing.JPanel pnlPilaDescartes;
-    private javax.swing.JPanel pnlSentido1;
-    private javax.swing.JPanel pnlTiempo;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void actualizar() {
+        // Este método se ejecutará SOLO, de forma automática, cada vez que 
+        // el controlador llame a partida.notificarObservadores()
+        System.out.println("La vista detectó un cambio en el Modelo. Redibujando...");
+
+        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
+        if (yo != null) {
+            manoUI1.pintarCartas(yo.getMano().getCartas());
+        }
+
+        modelo.Carta cartaEnMesa = controlador.obtenerCartaEnMesa();
+        pilaDescartesUI1.pintarCartaSuperior(cartaEnMesa);
+    }
 }
