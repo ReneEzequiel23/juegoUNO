@@ -2,34 +2,55 @@ package vista;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import javax.swing.BorderFactory;
+import java.awt.Font;
+import java.awt.Image;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 import modelo.Jugador;
 
 public class JugadorUI extends JPanel {
 
+    private final JLabel lblAvatar;
     private final JLabel lblNombre;
     private final JLabel lblCartas;
-    private final JLabel lblEstado; // Para mostrar si gritó UNO o si es su turno
 
     public JugadorUI() {
-        // Usamos BoxLayout vertical para que los textos salgan uno debajo de otro
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        this.setPreferredSize(new Dimension(120, 80)); // Tamaño sugerido
-        this.setBackground(Color.LIGHT_GRAY);
+        // Layout horizontal principal para separar avatar de info
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        this.setOpaque(false); // Fondo transparente
+        this.setBorder(new EmptyBorder(10, 10, 10, 10)); // Márgenes
 
-        // Inicializamos las etiquetas
+        // JLabel para la imagen del avatar (pequeño)
+        lblAvatar = new JLabel();
+        lblAvatar.setPreferredSize(new Dimension(50, 50));
+        // ... (Cargar un avatar por defecto después) ...
+
+        // Panel vertical para nombre y cartas
+        JPanel panelInfo = new JPanel();
+        panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
+        panelInfo.setOpaque(false);
+
         lblNombre = new JLabel("Oponente");
-        lblCartas = new JLabel("Cartas: 0");
-        lblEstado = new JLabel("");
+        lblNombre.setForeground(Color.WHITE); // Texto blanco
+        lblNombre.setFont(new Font("Arial", Font.BOLD, 14));
+        lblNombre.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
 
-        // Añadimos las etiquetas al panel
-        this.add(lblNombre);
-        this.add(lblCartas);
-        this.add(lblEstado);
+        lblCartas = new JLabel("Cartas: 0");
+        lblCartas.setForeground(new Color(200, 200, 200)); // Gris claro
+        lblCartas.setFont(new Font("Arial", Font.PLAIN, 12));
+        lblCartas.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+
+        panelInfo.add(lblNombre);
+        panelInfo.add(Box.createRigidArea(new Dimension(0, 5))); // Espacio
+        panelInfo.add(lblCartas);
+
+        this.add(lblAvatar);
+        this.add(Box.createRigidArea(new Dimension(10, 0))); // Espacio
+        this.add(panelInfo);
     }
 
     /**
@@ -38,29 +59,27 @@ public class JugadorUI extends JPanel {
     public void pintarOponente(Jugador oponente, boolean esSuTurno) {
         if (oponente != null) {
             this.setVisible(true);
-            lblNombre.setText("👤 " + oponente.getNombre());
             
-            // Verificamos cuántas cartas tiene
+            // Cargar el avatar del jugador (puedes añadir el avatar al modelo Jugador)
+            // if (oponente.getAvatar() != null) {
+            //     Image img = oponente.getAvatar().getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            //     lblAvatar.setIcon(new ImageIcon(img));
+            // } else {
+            //     // Cargar avatar genérico por defecto
+            // }
+
+            lblNombre.setText(oponente.getNombre());
             lblCartas.setText("Cartas: " + oponente.getMano().contarCartas());
 
-            String estado = "";
-            
             // Pintamos el panel de verde si es su turno para que resalte
             if (esSuTurno) {
-                estado += "▶ ¡Su turno! ";
-                this.setBackground(new Color(200, 255, 200)); 
+                // ... aplicar un borde o fondo tenue verde ...
+                // this.setBorder(new LineBorder(new Color(20, 200, 20), 2, true)); 
             } else {
-                this.setBackground(Color.LIGHT_GRAY);
+                this.setBorder(new EmptyBorder(10, 10, 10, 10)); // Margen normal
             }
 
-            // Si el oponente está protegido con UNO, lo mostramos
-            if (oponente.isEstadoUNO()) {
-                estado += "[¡UNO!]";
-            }
-
-            lblEstado.setText(estado);
         } else {
-            // Si le pasamos un nulo, ocultamos el panel (útil para partidas de menos jugadores)
             this.setVisible(false);
         }
     }

@@ -5,6 +5,7 @@
 package vista;
 
 import control.PartidaControlador;
+import java.awt.Color;
 import java.util.List;
 import modelo.Carta;
 import modelo.Partida;
@@ -23,17 +24,6 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
     // Identificador del jugador local (quien está viendo esta pantalla)
     private String idJugadorLocal;
 
-    // Componentes visuales internos (según tu diagrama)
-    // En NetBeans, estos podrían ser JPanels personalizados
-    /*
-    private ManoUI manoUI;
-    private PilaDescarteUI pilaDescartesUI;
-    private MazoUI mazoUI;
-    private JugadorUI oponentesUI;
-     */
-    /**
-     * Constructor de la pantalla.
-     */
     public PantallaPartida(PartidaControlador controlador, Partida partida, String idJugadorLocal) {
         this.controlador = controlador;
         this.partida = partida;
@@ -43,9 +33,17 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         initComponents();
         manoUI1.setPantallaPadre(this);
 
+        // --- NUEVO: Cargar Avatar y Nombre de "Tú" ---
+        // Supongamos que traes el avatar en tu objeto Jugador
+        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
+        if (yo != null) {
+            // ImageIcon avatar = yo.getAvatar(); // Añadir avatar al modelo Jugador
+            // manoUI1.cargarDatosJugador(yo.getNombre(), avatar);
+        }
+
         this.partida.agregarObservador(this);
-        // Configuraciones personalizadas y suscripción a eventos
         actualizar();
+        this.getContentPane().setBackground(new Color(10, 15, 30));
     }
 
     // =========================================================================
