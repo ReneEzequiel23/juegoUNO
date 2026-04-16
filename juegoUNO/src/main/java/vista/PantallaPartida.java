@@ -256,6 +256,13 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
 
     @Override
     public void actualizar() {
+        // --- CHISMOSO DE DIAGNÓSTICO ---
+        String turnoActual = partida.getTurno().getJugadorActual().getNombre();
+        System.out.println("=====================================");
+        System.out.println("ESTADO REAL DEL JUEGO:");
+        System.out.println("Turno de: " + turnoActual);
+        System.out.println("Color activo a seguir: " + partida.getColorActivo());
+        System.out.println("=====================================");
         // Este método se ejecutará SOLO, de forma automática, cada vez que 
         // el controlador llame a partida.notificarObservadores()
         System.out.println("La vista detectó un cambio en el Modelo. Redibujando...");

@@ -56,30 +56,44 @@ public class PartidaControlador {
     }
 
     public boolean jugarCarta(Jugador jugador, String idCarta, Color colorElegido) {
+        // 1. Validamos que sea su turno y tenga la carta
         if (!partida.getTurno().getJugadorActual().equals(jugador)) return false;
 
         Carta cartaAJugar = jugador.getMano().obtenerCartaPorId(idCarta);
         if (cartaAJugar == null) return false;
 
+        // 2. Validamos las reglas (Aquí el controlador checa el número y el Color Activo)
         if (validarJugada(cartaAJugar)) {
+            
+            // 3. Movemos la carta de la mano a la mesa
             jugador.getMano().eliminarCarta(idCarta);
             partida.getPilaDescartes().agregarCarta(cartaAJugar);
             
-            // ... (código de color y efectos especiales) ...
+            // =========================================================
+            // EL FIX: AQUÍ ACTUALIZAMOS EL CEREBRO DEL JUEGO
+            // =========================================================
+            if (cartaAJugar.getColor() == Color.NEGRO) {
+                // Si es un +4 o Cambio de Color, toma el color del JOptionPane
+                partida.actualizarColorActivo(colorElegido); 
+            } else {
+                // Si es una carta normal, el color activo cambia al color de esta carta
+                partida.actualizarColorActivo(cartaAJugar.getColor()); 
+            }
+            // =========================================================
 
-            // Validación de victoria
+            // 4. Efectos (Saltos, Robar cartas)
+            aplicarEfectoCarta(cartaAJugar);
+
+            // 5. Verificamos si ganó
             if (verificarVictoria(jugador)) {
                 calcularPuntajeVictoria(jugador);
-                
-                // ¡NOTIFICAMOS EL CAMBIO ANTES DE TERMINAR!
-                partida.notificarObservadores();
+                partida.notificarObservadores(); // Avisamos a la pantalla
                 return true; 
             }
 
+            // 6. Pasamos el turno y avisamos a la pantalla
             partida.avanzarTurno(); 
-            
-            // ¡NOTIFICAMOS EL CAMBIO PORQUE LA JUGADA FUE UN ÉXITO!
-            partida.notificarObservadores();
+            partida.notificarObservadores(); 
             return true;
         }
         return false;

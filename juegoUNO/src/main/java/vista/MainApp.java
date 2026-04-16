@@ -19,12 +19,12 @@ public class MainApp {
         
         // Creamos los jugadores
         Jugador jugadorLocal = new Jugador("René", "avatar_rene.png"); // Tú
-        Jugador oponente1 = new Jugador("Edgar", "avatar_edgar.png");
-        Jugador oponente2 = new Jugador("El Profe", "avatar_profe.png");
+//        Jugador oponente1 = new Jugador("Edgar", "avatar_edgar.png");
+//        Jugador oponente2 = new Jugador("El Profe", "avatar_profe.png");
 
         List<Jugador> listaJugadores = new ArrayList<>();
         listaJugadores.add(jugadorLocal);
-        listaJugadores.add(oponente1);
+//        listaJugadores.add(oponente1);
 
         // Creamos el Agregado Raíz y el Controlador
         Partida partida = new Partida(listaJugadores);
@@ -42,16 +42,16 @@ public class MainApp {
             // Creamos la pantalla, pasándole el controlador y tu ID para que sepa quién eres
             // Usamos el nombre del jugador como ID temporal
             PantallaPartida pantalla = new PantallaPartida(controlador,partida, jugadorLocal.getNombre());
-            PantallaPartida pantalla1 = new PantallaPartida(controlador,partida, oponente1.getNombre());
+//            PantallaPartida pantalla1 = new PantallaPartida(controlador,partida, oponente1.getNombre());
             
             // Configuraciones básicas de la ventana
             pantalla.setTitle("Juego UNO - Partida Local");
             pantalla.setLocationRelativeTo(null); // Para que aparezca centrada en tu monitor
             pantalla.setVisible(true);            // ¡Que se haga la luz!
             
-            pantalla1.setTitle("Juego UNO - Partida Local");
-            pantalla1.setLocationRelativeTo(null); // Para que aparezca centrada en tu monitor
-            pantalla1.setVisible(true);            // ¡Que se haga la luz!
+//            pantalla1.setTitle("Juego UNO - Partida Local");
+//            pantalla1.setLocationRelativeTo(null); // Para que aparezca centrada en tu monitor
+//            pantalla1.setVisible(true);            // ¡Que se haga la luz!
             
         });
     }
