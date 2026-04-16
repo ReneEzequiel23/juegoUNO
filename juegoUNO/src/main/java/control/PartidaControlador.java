@@ -183,6 +183,9 @@ public class PartidaControlador {
         if (cantidadCartas <= 2) {
             jugador.marcarUNO();
             System.out.println(jugador.getNombre() + " ha gritado ¡UNO!");
+            
+            // ¡NUEVO! Avisamos a la interfaz que el estado cambió
+            partida.notificarObservadores(); 
             return true;
         }
         

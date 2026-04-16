@@ -192,6 +192,8 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         Robar = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jugadorUI3 = new vista.JugadorUI();
+        DenuncarBtn = new javax.swing.JButton();
+        UNO = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
@@ -212,6 +214,20 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
             }
         });
 
+        DenuncarBtn.setText("Denunciar");
+        DenuncarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DenuncarBtnActionPerformed(evt);
+            }
+        });
+
+        UNO.setText("UNO");
+        UNO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UNOActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -228,7 +244,11 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(Robar)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton1))
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(UNO)
+                                .addGap(18, 18, 18)
+                                .addComponent(DenuncarBtn))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jugadorUI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -253,7 +273,9 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Robar)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(DenuncarBtn)
+                    .addComponent(UNO))
                 .addGap(20, 20, 20))
         );
 
@@ -275,9 +297,69 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         }
     }//GEN-LAST:event_btnSimularOponenteActionPerformed
 
+    private void UNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UNOActionPerformed
+        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
+        
+        if (yo != null) {
+            boolean exito = controlador.gritarUNO(yo);
+            
+            if (exito) {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                        "¡Te has protegido gritando UNO!", 
+                        "Protección Activa", 
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                        "Aún tienes demasiadas cartas. No puedes gritar UNO.", 
+                        "Aviso", 
+                        javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_UNOActionPerformed
+
+    private void DenuncarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DenuncarBtnActionPerformed
+        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
+        if (yo == null) return;
+
+        modelo.Jugador culpable = null;
+
+        // 1. Buscamos en toda la mesa si hay un tramposo
+        // Usamos la variable 'partida' que guardamos en la pantalla
+        for (modelo.Jugador oponente : partida.getJugadores()) {
+            // Ignoramos nuestra propia mano
+            if (!oponente.getNombre().equals(yo.getNombre())) {
+                // ¿Tiene 1 carta y NO está protegido?
+                if (oponente.getMano().contarCartas() == 1 && !oponente.isEstadoUNO()) {
+                    culpable = oponente;
+                    break;
+                }
+            }
+        }
+
+        // 2. Si encontramos al culpable, lo denunciamos
+        if (culpable != null) {
+            boolean castigado = controlador.denunciarFaltaUNO(yo, culpable);
+            
+            if (castigado) {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                        "¡Atrapaste a " + culpable.getNombre() + " sin decir UNO!\nSe comerá 2 cartas.", 
+                        "¡Denuncia Exitosa!", 
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            // 3. Si todos están en regla o nadie tiene 1 carta
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                    "Nadie ha olvidado decir UNO... o te equivocaste de momento.", 
+                    "Falsa Alarma", 
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_DenuncarBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton DenuncarBtn;
     private javax.swing.JButton Robar;
+    private javax.swing.JButton UNO;
     private javax.swing.JButton jButton1;
     private vista.JugadorUI jugadorUI1;
     private vista.JugadorUI jugadorUI2;
