@@ -102,25 +102,6 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         }
     }
 
-    /**
-     * Acción de hacer clic en el mazo para robar.
-     */
-    private void btnRobarCartaActionPerformed(java.awt.event.ActionEvent evt) {
-        modelo.Jugador jugadorReal = controlador.obtenerJugador(idJugadorLocal);
-
-        if (jugadorReal != null) {
-            controlador.robarCartaEnTurno(jugadorReal);
-        }
-    }
-    
-    // Método temporal para probar si pusiste un botón extra en la vista
-    private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {
-        modelo.Jugador enTurno = partida.getTurno().getJugadorActual();
-        if (!enTurno.getNombre().equals(idJugadorLocal)) {
-            controlador.robarCartaEnTurno(enTurno);
-        }
-    }
-
     // =========================================================================
     // 2. ACTUALIZACIÓN VISUAL (De los Eventos a la Vista)
     // =========================================================================
@@ -209,6 +190,8 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         pilaDescartesUI1 = new vista.PilaDescartesUI();
         jugadorUI1 = new vista.JugadorUI();
         jugadorUI2 = new vista.JugadorUI();
+        Robar = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
@@ -227,6 +210,20 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
         );
 
         manoUI1.setPreferredSize(new java.awt.Dimension(400, 100));
+
+        Robar.setText("Robar");
+        Robar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RobarActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("simularTurno");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimularOponenteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -247,7 +244,11 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
                                 .addComponent(jugadorUI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(141, 141, 141)
                                 .addComponent(jugadorUI2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Robar)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -262,14 +263,35 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
                 .addComponent(pilaDescartesUI1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(161, 161, 161)
                 .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Robar)
+                    .addComponent(jButton1))
+                .addGap(20, 20, 20))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void RobarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RobarActionPerformed
+        modelo.Jugador jugadorReal = controlador.obtenerJugador(idJugadorLocal);
+
+        if (jugadorReal != null) {
+            controlador.robarCartaEnTurno(jugadorReal);
+        }
+    }//GEN-LAST:event_RobarActionPerformed
+
+    private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimularOponenteActionPerformed
+       modelo.Jugador enTurno = partida.getTurno().getJugadorActual();
+        if (!enTurno.getNombre().equals(idJugadorLocal)) {
+            controlador.robarCartaEnTurno(enTurno);
+        }
+    }//GEN-LAST:event_btnSimularOponenteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Robar;
+    private javax.swing.JButton jButton1;
     private vista.JugadorUI jugadorUI1;
     private vista.JugadorUI jugadorUI2;
     private vista.ManoUI manoUI1;
