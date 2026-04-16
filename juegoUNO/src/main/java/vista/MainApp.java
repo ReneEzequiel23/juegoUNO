@@ -25,7 +25,6 @@ public class MainApp {
         List<Jugador> listaJugadores = new ArrayList<>();
         listaJugadores.add(jugadorLocal);
         listaJugadores.add(oponente1);
-        listaJugadores.add(oponente2);
 
         // Creamos el Agregado Raíz y el Controlador
         Partida partida = new Partida(listaJugadores);
