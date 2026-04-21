@@ -5,7 +5,7 @@ import modelo.Accion;
 
 public class ComandoJugadorDTO implements Serializable {
     private String idJugador;
-    private Accion accion; // Enum: JUGAR_CARTA, ROBAR, GRITAR_UNO, DENUNCIAR
+    private TipoAccion TipoAccion; // Enum: JUGAR_CARTA, ROBAR, GRITAR_UNO, DENUNCIAR
     
     // Atributos opcionales (dependen de la acción)
     private String idCartaJugada; 
@@ -13,13 +13,15 @@ public class ComandoJugadorDTO implements Serializable {
     private String idJugadorDenunciado; // Solo si la acción es DENUNCIAR
 
     // Constructor completo
-    public ComandoJugadorDTO(String idJugador, Accion accion, String idCartaJugada, String colorElegido, String idJugadorDenunciado) {
+
+    public ComandoJugadorDTO(String idJugador, TipoAccion TipoAccion, String idCartaJugada, String colorElegido, String idJugadorDenunciado) {
         this.idJugador = idJugador;
-        this.accion = accion;
+        this.TipoAccion = TipoAccion;
         this.idCartaJugada = idCartaJugada;
         this.colorElegido = colorElegido;
         this.idJugadorDenunciado = idJugadorDenunciado;
     }
+    
 
     public String getIdJugador() {
         return idJugador;
@@ -29,12 +31,12 @@ public class ComandoJugadorDTO implements Serializable {
         this.idJugador = idJugador;
     }
 
-    public Accion getAccion() {
-        return accion;
+    public TipoAccion getTipoAccion() {
+        return TipoAccion;
     }
 
-    public void setAccion(Accion accion) {
-        this.accion = accion;
+    public void setTipoAccion(TipoAccion TipoAccion) {
+        this.TipoAccion = TipoAccion;
     }
 
     public String getIdCartaJugada() {

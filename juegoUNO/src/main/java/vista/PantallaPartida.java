@@ -20,29 +20,29 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
     // El controlador que validará las acciones
     private PartidaControlador controlador;
     private Partida partida;
+    private red.cliente.ClienteUNO cliente;
 
     // Identificador del jugador local (quien está viendo esta pantalla)
     private String idJugadorLocal;
 
-    public PantallaPartida(PartidaControlador controlador, Partida partida, String idJugadorLocal) {
-        this.controlador = controlador;
-        this.partida = partida;
+    public PantallaPartida(red.cliente.ClienteUNO cliente, String idJugadorLocal) {
+        this.cliente = cliente;
         this.idJugadorLocal = idJugadorLocal;
 
         // Método generado automáticamente por NetBeans para inicializar botones y paneles
         initComponents();
         manoUI1.setPantallaPadre(this);
 
-        // --- NUEVO: Cargar Avatar y Nombre de "Tú" ---
-        // Supongamos que traes el avatar en tu objeto Jugador
-        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-        if (yo != null) {
-            // ImageIcon avatar = yo.getAvatar(); // Añadir avatar al modelo Jugador
-            // manoUI1.cargarDatosJugador(yo.getNombre(), avatar);
-        }
-
-        this.partida.agregarObservador(this);
-        actualizar();
+//        // --- NUEVO: Cargar Avatar y Nombre de "Tú" ---
+//        // Supongamos que traes el avatar en tu objeto Jugador
+//        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
+//        if (yo != null) {
+//            // ImageIcon avatar = yo.getAvatar(); // Añadir avatar al modelo Jugador
+//            // manoUI1.cargarDatosJugador(yo.getNombre(), avatar);
+//        }
+//
+//        this.partida.agregarObservador(this);
+//        actualizar();
         this.getContentPane().setBackground(new Color(10, 15, 30));
     }
 
@@ -54,84 +54,36 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
      * de su mano.
      */
     public void alHacerClicEnCarta(String idCarta) {
-        // 1. Obtenemos tu jugador real
-        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-
-        if (yo != null) {
-            // 2. Buscamos qué carta exactamente acabas de clickear
-            modelo.Carta cartaClickeada = yo.getMano().obtenerCartaPorId(idCarta);
-
-            if (cartaClickeada != null) {
-                modelo.Color colorElegido = null;
-
-                // 3. Verificamos si es una carta negra (Comodín)
-                if (cartaClickeada.getColor() == modelo.Color.NEGRO) {
-                    // Pausamos y mostramos el popup pidiendo el color
-                    colorElegido = mostrarDialogoColor();
-
-                    // Si el usuario cerró la ventana sin elegir, abortamos la jugada
-                    if (colorElegido == null) {
-                        return;
-                    }
-                }
-
-                // 4. Ahora sí, le pasamos la jugada al controlador con el color correcto
-                boolean jugadaValida = controlador.jugarCarta(yo, idCarta, colorElegido);
-
-                // 5. Opcional: Feedback visual si te equivocas de carta
-                if (!jugadaValida) {
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                            "Jugada inválida. Esa carta no coincide con el color ni el número de la mesa.",
-                            "Movimiento no permitido",
-                            javax.swing.JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        }
-    }
-
-    /**
-     * Acción del botón "¡UNO!" generado por NetBeans.
-     */
-    private void btnGritarUNOActionPerformed(java.awt.event.ActionEvent evt) {
-        modelo.Jugador jugadorReal = controlador.obtenerJugador(idJugadorLocal);
-
-        if (jugadorReal != null) {
-            controlador.gritarUNO(jugadorReal);
-        }
-    }
-
-    // =========================================================================
-    // 2. ACTUALIZACIÓN VISUAL (De los Eventos a la Vista)
-    // =========================================================================
-    /**
-     * Aquí suscribimos la pantalla al Bus de Eventos.
-     */
-    private void configurarEventos() {
-        /*
-        EventBus.suscribir("CARTA_JUGADA", evento -> {
-            actualizarPilaDescartes(evento.getCarta());
-            actualizarManoLocal();
-        });
-
-        EventBus.suscribir("TURNO_CAMBIADO", evento -> {
-            actualizarIndicadorTurno(evento.getIdJugadorActual());
-        });
+        String colorElegidoString = null;
         
-        EventBus.suscribir("FIN_PARTIDA", evento -> {
-            mostrarPantallaPodio();
-        });
-         */
+        // 1. Verificamos visualmente si la carta clicada es negra (Comodín)
+        // NOTA: Como ya no tenemos el modelo completo, puedes deducir si es negra
+        // si el idCarta contiene "TOMA4" o "CAMBIO_COLOR" (dependiendo de cómo los nombres).
+        if (idCarta.contains("NEGRO") || idCarta.contains("TOMA4") || idCarta.contains("CAMBIO")) {
+            modelo.Color colorElegido = mostrarDialogoColor();
+            if (colorElegido == null) {
+                return; // Canceló la selección
+            }
+            colorElegidoString = colorElegido.name();
+        }
+
+        // 2. Armamos el paquete DTO con la intención de jugar
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+                idJugadorLocal, 
+                dtos.TipoAccion.JUGAR_CARTA, 
+                idCarta, 
+                colorElegidoString, 
+                null
+        );
+
+        // 3. ¡Lo enviamos por el Socket al Servidor!
+        cliente.enviarComando(comando);
+        
+        // Fíjate que AQUÍ NO ACTUALIZAMOS LA PANTALLA.
+        // La carta no desaparece de la mano todavía. 
+        // Esperaremos a que el servidor valide la jugada y nos mande el nuevo EstadoMesaDTO.
     }
 
-    /**
-     * Método comodín para recargar toda la interfaz (útil al iniciar la
-     * partida).
-     */
-    private void actualizarPantallaCompleta() {
-        // manoUI.pintarCartas( controlador.obtenerMano(idJugadorLocal) );
-        // pilaDescartesUI.pintarCartaSuperior( controlador.obtenerCartaEnMesa() );
-        // mazoUI.actualizarCantidad( controlador.obtenerCartasRestantesMazo() );
-    }
 
     /**
      * Método temporal para probar que los paneles dibujan las cartas
@@ -297,11 +249,10 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
     }// </editor-fold>//GEN-END:initComponents
 
     private void RobarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RobarActionPerformed
-        modelo.Jugador jugadorReal = controlador.obtenerJugador(idJugadorLocal);
-
-        if (jugadorReal != null) {
-            controlador.robarCartaEnTurno(jugadorReal);
-        }
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+                idJugadorLocal, dtos.TipoAccion.ROBAR, null, null, null
+        );
+        cliente.enviarComando(comando);
     }//GEN-LAST:event_RobarActionPerformed
 
     private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimularOponenteActionPerformed
@@ -312,63 +263,17 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_btnSimularOponenteActionPerformed
 
     private void UNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UNOActionPerformed
-        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-
-        if (yo != null) {
-            boolean exito = controlador.gritarUNO(yo);
-
-            if (exito) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "¡Te has protegido gritando UNO!",
-                        "Protección Activa",
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "Aún tienes demasiadas cartas. No puedes gritar UNO.",
-                        "Aviso",
-                        javax.swing.JOptionPane.WARNING_MESSAGE);
-            }
-        }
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+                idJugadorLocal, dtos.TipoAccion.GRITAR_UNO, null, null, null
+        );
+        cliente.enviarComando(comando);
     }//GEN-LAST:event_UNOActionPerformed
 
     private void DenuncarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DenuncarBtnActionPerformed
-        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-        if (yo == null) {
-            return;
-        }
-
-        modelo.Jugador culpable = null;
-
-        // 1. Buscamos en toda la mesa si hay un tramposo
-        // Usamos la variable 'partida' que guardamos en la pantalla
-        for (modelo.Jugador oponente : partida.getJugadores()) {
-            // Ignoramos nuestra propia mano
-            if (!oponente.getNombre().equals(yo.getNombre())) {
-                // ¿Tiene 1 carta y NO está protegido?
-                if (oponente.getMano().contarCartas() == 1 && !oponente.isEstadoUNO()) {
-                    culpable = oponente;
-                    break;
-                }
-            }
-        }
-
-        // 2. Si encontramos al culpable, lo denunciamos
-        if (culpable != null) {
-            boolean castigado = controlador.denunciarFaltaUNO(yo, culpable);
-
-            if (castigado) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "¡Atrapaste a " + culpable.getNombre() + " sin decir UNO!\nSe comerá 2 cartas.",
-                        "¡Denuncia Exitosa!",
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-            }
-        } else {
-            // 3. Si todos están en regla o nadie tiene 1 carta
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Nadie ha olvidado decir UNO... o te equivocaste de momento.",
-                    "Falsa Alarma",
-                    javax.swing.JOptionPane.WARNING_MESSAGE);
-        }
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+                idJugadorLocal, dtos.TipoAccion.DENUNCIAR, null, null, null
+        );
+        cliente.enviarComando(comando);
     }//GEN-LAST:event_DenuncarBtnActionPerformed
 
 

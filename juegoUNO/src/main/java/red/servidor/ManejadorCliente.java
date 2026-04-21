@@ -48,7 +48,7 @@ public class ManejadorCliente implements Runnable, IEventoListener {
 
                 if (mensaje instanceof ComandoJugadorDTO) {
                     ComandoJugadorDTO comando = (ComandoJugadorDTO) mensaje;
-                    System.out.println("Comando recibido del jugador: " + comando.getIdJugador() + " Acción: " + comando.getAccion());
+                    System.out.println("Comando recibido del jugador: " + comando.getIdJugador() + " Acción: " + comando.getTipoAccion());
                     
                     // Aquí podrías envolver este DTO en un Evento (ej. EventoComandoRecibido) 
                     // y lanzarlo al EventBus para que tu PartidaControlador lo procese.
