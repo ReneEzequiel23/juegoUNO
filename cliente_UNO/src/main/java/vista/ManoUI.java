@@ -17,9 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import modelo.Carta;
-import modelo.Comodin;
-import modelo.Numerica;
 // Importa la clase de utilidad que crearemos después
 // import utilidades.ImageUtils; 
 
@@ -77,59 +74,6 @@ public class ManoUI extends JPanel {
             lblAvatar.setIcon(new ImageIcon(img));
         }
     }
-
-    public void pintarCartas(List<Carta> cartasEnMano) {
-        // Obtenemos el panel de cartas
-        JPanel panelCartas = (JPanel) ((BorderLayout) this.getLayout()).getLayoutComponent(BorderLayout.CENTER);
-        panelCartas.removeAll(); // Limpiamos cartas anteriores
-
-        // --- ETIQUETA "Tu Mano" ---
-        JLabel lblTitulo = new JLabel("👤 Tu Mano");
-        lblTitulo.setForeground(new Color(180, 180, 180)); // Gris claro
-        lblTitulo.setFont(new Font("Arial", Font.PLAIN, 14));
-        // ... añadir a la vista (quizás arriba) ...
-
-        // 2. Creamos un elemento visual por cada carta
-        for (Carta carta : cartasEnMano) {
-            // TIP: Cargar la imagen real de la carta
-            // ImageIcon icono = ImageUtils.getCardImage(carta); 
-            // lblCarta.setIcon(icono);
-
-            // Temporalmente, usaremos un JLabel con un borde y color para simular
-            JLabel lblCarta = new JLabel();
-            lblCarta.setPreferredSize(new Dimension(80, 120)); // Tamaño de carta
-            lblCarta.setOpaque(true);
-            lblCarta.setBackground(Color.WHITE); // Temporal
-            lblCarta.setForeground(Color.BLACK);
-            lblCarta.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true)); // Esquinas redondeadas (Swing lo hace tosco, mejor imagen)
-            lblCarta.setText(obtenerTextoVisual(carta)); // Temporal
-            lblCarta.setHorizontalAlignment(SwingConstants.CENTER);
-            
-            // 3. Le agregamos el evento de clic (usando MouseListener en vez de ActionListener)
-            lblCarta.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (pantallaPadre != null) {
-                        pantallaPadre.alHacerClicEnCarta(carta.getIdCarta());
-                    }
-                }
-            });
-            panelCartas.add(lblCarta);
-        }
-
-        this.revalidate();
-        this.repaint();
-    }
-    
-    // Método temporal para ponerle texto a las cartas antes de que pongas imágenes
-    private String obtenerTextoVisual(Carta carta) {
-        if (carta instanceof Numerica) {
-            return ((Numerica) carta).obtenerValor() + " " + carta.getColor();
-        } else if (carta instanceof Comodin) {
-            return ((Comodin) carta).obtenerAccion() + " " + carta.getColor();
-        }
-        return "Carta";
-    }
     
     // Nuevo método adaptado para la Red
     public void pintarCartasDTO(java.util.List<dtos.CartaDTO> cartasDTO) {
@@ -138,7 +82,7 @@ public class ManoUI extends JPanel {
 
         for (dtos.CartaDTO carta : cartasDTO) {
             JLabel lblCarta = new JLabel();
-            lblCarta.setPreferredSize(new Dimension(80, 160));
+            lblCarta.setPreferredSize(new Dimension(100, 120));
             lblCarta.setOpaque(true);
             lblCarta.setBackground(Color.WHITE);
             lblCarta.setForeground(Color.BLACK);

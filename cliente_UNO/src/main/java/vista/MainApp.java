@@ -1,14 +1,5 @@
 package vista;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.SwingUtilities;
-
-// Importamos lo que construimos en la rama codigo_Rene
-import modelo.Jugador;
-import modelo.Partida;
-import control.PartidaControlador;
-import vista.PantallaPartida;
 
 // Ejemplo conceptual para tu MainApp.java (lado del jugador)
 public class MainApp {

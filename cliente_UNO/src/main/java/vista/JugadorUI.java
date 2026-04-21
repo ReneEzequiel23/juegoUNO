@@ -12,7 +12,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import modelo.Jugador;
 
 public class JugadorUI extends JPanel {
 
@@ -53,28 +52,6 @@ public class JugadorUI extends JPanel {
         this.add(lblAvatar);
         this.add(Box.createRigidArea(new Dimension(10, 0))); // Espacio
         this.add(panelInfo);
-    }
-
-    /**
-     * Actualiza la información visual del oponente.
-     */
-    public void pintarOponente(Jugador oponente, boolean esSuTurno) {
-        if (oponente != null) {
-            this.setVisible(true);
-            lblCartas.setText("Cartas: " + oponente.getMano().contarCartas());
-
-            // Pintamos un borde verde brillante y añadimos una flecha si es su turno
-            if (esSuTurno) {
-                this.setBorder(javax.swing.BorderFactory.createLineBorder(new Color(50, 205, 50), 3, true)); 
-                lblNombre.setText("▶ " + oponente.getNombre()); // Flechita indicadora
-            } else {
-                this.setBorder(new javax.swing.border.EmptyBorder(10, 10, 10, 10)); // Margen normal sin borde
-                lblNombre.setText(oponente.getNombre());
-            }
-
-        } else {
-            this.setVisible(false);
-        }
     }
     
     /**

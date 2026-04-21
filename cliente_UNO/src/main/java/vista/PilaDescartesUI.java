@@ -17,9 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import modelo.Carta;
-import modelo.Comodin;
-import modelo.Numerica;
 // Importa la clase de utilidad que crearemos después
 // import utilidades.ImageUtils; 
 
@@ -84,42 +81,7 @@ public class PilaDescartesUI extends JPanel {
         this.add(panelSur, BorderLayout.SOUTH);
     }
 
-    /**
-     * Actualiza la imagen/texto de la carta central y la etiqueta de estado.
-     */
-    public void pintarCartaSuperior(Carta carta) {
-        if (carta != null) {
-            // TIP: Cargar la imagen real de la carta y escalarla
-            // ImageIcon icono = ImageUtils.getCardImage(carta);
-            // Image img = icono.getImage().getScaledInstance(120, 180, Image.SCALE_SMOOTH);
-            // lblCartaSuperior.setIcon(new ImageIcon(img));
-            
-            // Temporal: simular con color y texto grande
-            lblCartaSuperior.setPreferredSize(new Dimension(120, 180));
-            lblCartaSuperior.setOpaque(true);
-            lblCartaSuperior.setBackground(Color.WHITE);
-            lblCartaSuperior.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
-            lblCartaSuperior.setFont(new Font("Arial", Font.BOLD, 24));
-            lblCartaSuperior.setText(obtenerTextoVisual(carta));
-            
-            // Actualizar etiqueta de estado
-            String textoEstado = "";
-            if (carta instanceof Numerica) {
-                Numerica num = (Numerica) carta;
-                textoEstado = num.getColor() + " " + num.obtenerValor() + " Activo";
-            } else if (carta instanceof Comodin) {
-                Comodin com = (Comodin) carta;
-                // ... lógica para para color elegido si es NEGRO ...
-                textoEstado = com.getColor() + " " + com.obtenerAccion() + " Activo";
-            }
-            lblEstadoMesa.setText(textoEstado);
-            
-        } else {
-            lblCartaSuperior.setText("Mesa Vacía");
-            lblEstadoMesa.setText("Mesa Vacía");
-        }
-    }
-    
+   
     /**
      * Actualiza la carta central y el estado de la mesa usando datos de la red.
      */
@@ -146,14 +108,5 @@ public class PilaDescartesUI extends JPanel {
         
         this.revalidate();
         this.repaint();
-    }
-    
-    private String obtenerTextoVisual(Carta carta) {
-        if (carta instanceof Numerica) {
-            return ((Numerica) carta).obtenerValor() + "\n" + carta.getColor();
-        } else if (carta instanceof Comodin) {
-            return ((Comodin) carta).obtenerAccion() + "\n" + carta.getColor();
-        }
-        return "Carta";
     }
 }

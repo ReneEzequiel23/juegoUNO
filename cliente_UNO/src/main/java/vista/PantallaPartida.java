@@ -4,14 +4,9 @@
  */
 package vista;
 
-import control.PartidaControlador;
 import eventos.IEvento;
 import java.awt.Color;
 import java.util.List;
-import modelo.Carta;
-import modelo.Partida;
-import modelo.IObserver;
-
 /**
  *
  * @author renee
@@ -49,11 +44,13 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
         // NOTA: Como ya no tenemos el modelo completo, puedes deducir si es negra
         // si el idCarta contiene "TOMA4" o "CAMBIO_COLOR" (dependiendo de cómo los nombres).
         if (idCarta.contains("NEGRO") || idCarta.contains("TOMA4") || idCarta.contains("CAMBIO")) {
-            modelo.Color colorElegido = mostrarDialogoColor();
-            if (colorElegido == null) {
+            // Ahora el método devuelve directamente el String del color
+            colorElegidoString = mostrarDialogoColor(); 
+            
+            if (colorElegidoString == null) {
                 return; // Canceló la selección
             }
-            colorElegidoString = colorElegido.name();
+            // Ya no necesitas hacer .name() porque ya es un String
         }
 
         // 2. Armamos el paquete DTO con la intención de jugar
@@ -73,6 +70,28 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
         // Esperaremos a que el servidor valide la jugada y nos mande el nuevo EstadoMesaDTO.
     }
 
+    private String mostrarDialogoColor() {
+        // Usamos Strings puros en lugar de los enums del modelo
+        String[] opciones = {"ROJO", "AZUL", "VERDE", "AMARILLO"};
+        
+        int seleccion = javax.swing.JOptionPane.showOptionDialog(
+                this,
+                "Elige el nuevo color de la mesa:",
+                "Carta Comodín jugada",
+                javax.swing.JOptionPane.DEFAULT_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+        );
+
+        // Si el jugador eligió una opción válida, devolvemos el texto de ese color
+        if (seleccion >= 0) {
+            return opciones[seleccion];
+        }
+        
+        return null; // Si cerró la ventana con la 'X'
+    }
 
 
     /**
@@ -99,8 +118,6 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
-
-        manoUI1.setPreferredSize(new java.awt.Dimension(800, 180));
 
         jPanel1.setBackground(new java.awt.Color(10, 15, 30));
         jPanel1.add(jugadorUI2);
@@ -189,7 +206,7 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -239,40 +256,7 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
     // End of variables declaration//GEN-END:variables
 
 
-    /**
-     * Muestra una ventana emergente para que el jugador elija un color.
-     *
-     * @return El color elegido, o null si el usuario cerró la ventana.
-     */
-    private modelo.Color mostrarDialogoColor() {
-        // Las opciones que aparecerán en los botones de la ventana
-        String[] opciones = {"Rojo", "Azul", "Verde", "Amarillo"};
-
-        int seleccion = javax.swing.JOptionPane.showOptionDialog(
-                this,
-                "¡Has jugado un Comodín! Elige el nuevo color de la mesa:",
-                "Seleccionar Color",
-                javax.swing.JOptionPane.DEFAULT_OPTION,
-                javax.swing.JOptionPane.QUESTION_MESSAGE,
-                null,
-                opciones,
-                opciones[0] // El rojo estará seleccionado por defecto
-        );
-
-        // Traducimos el botón que presionó al Enum de nuestro modelo
-        switch (seleccion) {
-            case 0:
-                return modelo.Color.ROJO;
-            case 1:
-                return modelo.Color.AZUL;
-            case 2:
-                return modelo.Color.VERDE;
-            case 3:
-                return modelo.Color.AMARILLO;
-            default:
-                return null; // Si el usuario le dio a la 'X' para cerrar la ventana
-        }
-    }
+    
 
     @Override
     public void onEvent(eventos.IEvento evento) {
