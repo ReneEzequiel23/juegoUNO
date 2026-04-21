@@ -130,4 +130,39 @@ public class ManoUI extends JPanel {
         }
         return "Carta";
     }
+    
+    // Nuevo método adaptado para la Red
+    public void pintarCartasDTO(java.util.List<dtos.CartaDTO> cartasDTO) {
+        JPanel panelCartas = (JPanel) ((BorderLayout) this.getLayout()).getLayoutComponent(BorderLayout.CENTER);
+        panelCartas.removeAll(); 
+
+        for (dtos.CartaDTO carta : cartasDTO) {
+            JLabel lblCarta = new JLabel();
+            lblCarta.setPreferredSize(new Dimension(80, 160));
+            lblCarta.setOpaque(true);
+            lblCarta.setBackground(Color.WHITE);
+            lblCarta.setForeground(Color.BLACK);
+            lblCarta.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+            
+            // Usamos los datos simples del DTO para dibujar
+            String textoHtml = "<html><center><b style='font-size:16px;'>" + carta.getValor() + "</b><br>" + carta.getColor() + "</center></html>";
+            lblCarta.setText(textoHtml);
+            lblCarta.setHorizontalAlignment(SwingConstants.CENTER);
+            
+            lblCarta.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    if (pantallaPadre != null) {
+                        // Devolvemos el ID de la carta clicada
+                        pantallaPadre.alHacerClicEnCarta(carta.getIdCarta());
+                    }
+                }
+            });
+
+            panelCartas.add(lblCarta);
+        }
+
+        this.revalidate();
+        this.repaint();
+    }
 }

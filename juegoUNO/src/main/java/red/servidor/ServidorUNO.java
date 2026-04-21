@@ -1,6 +1,6 @@
 package red.servidor;
 
-import eventos.EventBus;
+import control.PartidaControlador;
 import eventos.EventBus;
 import eventos.IEventBus;
 import java.io.IOException;
@@ -8,42 +8,57 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.IObserver;
+import modelo.Jugador;
+import modelo.Partida;
 
 public class ServidorUNO {
 
-    private static final int PUERTO = 5050; // El puerto por donde entrarán los jugadores
     private IEventBus eventBusCentral;
-    private List<ManejadorCliente> clientesConectados;
-    private boolean ejecutando;
+    private PartidaControlador controladorCentral;
+    private Partida partidaCentral;
 
     public ServidorUNO() {
-        this.eventBusCentral = new EventBus(); // ¡El corazón de tu DDD!
-        this.clientesConectados = new ArrayList<>();
-        this.ejecutando = true;
+        this.eventBusCentral = new EventBus();
+        inicializarJuegoEnServidor();
+    }
+
+    private void inicializarJuegoEnServidor() {
+        // 1. Creamos la partida (Temporalmente con 3 jugadores fijos para la prueba)
+        List<Jugador> jugadores = new ArrayList<>();
+        jugadores.add(new Jugador("Rene", "avatar_rene.png"));
+        jugadores.add(new Jugador("Edgar", "avatar_edgar.png"));
+        jugadores.add(new Jugador("El Profe", "avatar_profe.png"));
+
+        partidaCentral = new Partida(jugadores);
+        controladorCentral = new PartidaControlador(partidaCentral);
+
+        // 2. EL PUENTE CLAVE: El Modelo (Partida) avisa al EventBus cuando cambia
+        partidaCentral.agregarObservador(new IObserver() {
+            @Override
+            public void actualizar() {
+                // Cuando alguien tira una carta, gritamos "¡LA MESA CAMBIÓ!" al EventBus
+                // Nota: Usamos un evento temporal simple que crearemos enseguida
+                eventBusCentral.publicar(new eventos.tipos.EventoNotificacion("ACTUALIZAR_MESAS"));
+            }
+        });
+
+        // Repartimos las cartas e iniciamos (esto disparará el primer 'actualizar')
+        partidaCentral.iniciarJuego();
     }
 
     public void iniciarServidor() {
-        try (ServerSocket serverSocket = new ServerSocket(PUERTO)) {
-            System.out.println("=== SERVIDOR UNO INICIADO EN EL PUERTO " + PUERTO + " ===");
-            System.out.println("Esperando a que los jugadores se conecten...");
-
-            // Bucle infinito esperando clientes
-            while (ejecutando) {
+        try (ServerSocket serverSocket = new ServerSocket(5050)) {
+            System.out.println("=== SERVIDOR INICIADO - JUEGO EN CURSO ===");
+            while (true) {
                 Socket socketCliente = serverSocket.accept();
-                System.out.println("¡Nuevo jugador conectado desde: " + socketCliente.getInetAddress() + "!");
 
-                // Creamos un "Avatar" (Hilo) para este jugador dentro del servidor
-                ManejadorCliente manejador = new ManejadorCliente(socketCliente, eventBusCentral);
-                clientesConectados.add(manejador);
-                
-                // Lanzamos al manejador en su propio hilo para que no bloquee al servidor
+                // ¡Ya no pasamos "Rene"! El manejador lo leerá de la red.
+                ManejadorCliente manejador = new ManejadorCliente(socketCliente, eventBusCentral, controladorCentral, partidaCentral);
                 new Thread(manejador).start();
-                
-                // (Opcional) Aquí podrías lanzar una lógica que diga: 
-                // Si clientesConectados.size() == 3, ¡Inicia la Partida!
             }
         } catch (IOException e) {
-            System.err.println("Error fatal en el servidor: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

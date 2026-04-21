@@ -1,14 +1,16 @@
 package red.servidor;
 
+import control.PartidaControlador;
 import dtos.ComandoJugadorDTO;
 import eventos.IEventBus;
 import eventos.IEvento;
 import eventos.IEventoListener;
-import eventos.tipos.EventoEstadoMesa; // El evento que creamos antes
+import eventos.tipos.EventoEstadoMesa; 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import modelo.Partida;
 
 public class ManejadorCliente implements Runnable, IEventoListener {
 
@@ -18,70 +20,87 @@ public class ManejadorCliente implements Runnable, IEventoListener {
     private ObjectInputStream in;
     private boolean conectado;
 
-    public ManejadorCliente(Socket socket, IEventBus eventBus) {
+    private PartidaControlador controladorCentral;
+    private Partida partidaCentral;
+    
+    // ¡NUEVO! Guardamos quién es el dueño de este socket
+    private String nombreJugador; 
+
+    // ¡CORREGIDO! Ahora pedimos el nombre del jugador en el constructor
+    // 1. Quitamos "String nombreJugador" de los parámetros
+    public ManejadorCliente(Socket socket, IEventBus eventBus, PartidaControlador controladorCentral, Partida partidaCentral) {
         this.socket = socket;
         this.eventBus = eventBus;
+        this.controladorCentral = controladorCentral;
+        this.partidaCentral = partidaCentral;
         this.conectado = true;
 
         try {
-            // Es vital crear primero el OutputStream y hacer flush en Java Sockets
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.out.flush();
             this.in = new ObjectInputStream(socket.getInputStream());
-            
-            // ¡Nos suscribimos al EventBus para escuchar cuando la mesa cambie!
-            // Así el profe verá que respetamos la arquitectura limpiamente.
-            this.eventBus.suscribir(EventoEstadoMesa.TIPO, this);
-            
-        } catch (IOException e) {
+
+            // --- ¡NUEVO! EL HANDSHAKE ---
+            // El servidor pausa aquí milisegundos hasta que el cliente diga su nombre
+            this.nombreJugador = (String) in.readObject();
+            System.out.println("[Servidor] ¡El jugador " + this.nombreJugador + " ha entrado a la partida!");
+            // ----------------------------
+
+            // Ahora sí, ya sabemos quién es, nos suscribimos y le mandamos su foto de la mesa
+            this.eventBus.suscribir("ACTUALIZAR_MESAS", this);
+            dtos.EstadoMesaDTO estadoInicial = TraductorDTO.generarEstadoParaJugador(this.partidaCentral, this.nombreJugador);
+            this.out.writeObject(new eventos.tipos.EventoEstadoMesa(estadoInicial));
+            this.out.reset();
+            this.out.flush();
+
+        } catch (IOException | ClassNotFoundException e) { // <-- IMPORTANTE AÑADIR ESTO AL CATCH
             System.err.println("Error conectando con el cliente: " + e.getMessage());
         }
     }
 
+    // (Constructor Zombie eliminado)
+
     @Override
     public void run() {
-        // Bucle infinito escuchando lo que manda el jugador desde su computadora
         while (conectado) {
             try {
-                // Leemos el DTO que viaja por la red
                 Object mensaje = in.readObject();
 
                 if (mensaje instanceof ComandoJugadorDTO) {
                     ComandoJugadorDTO comando = (ComandoJugadorDTO) mensaje;
                     System.out.println("Comando recibido del jugador: " + comando.getIdJugador() + " Acción: " + comando.getTipoAccion());
-                    
-                    // Aquí podrías envolver este DTO en un Evento (ej. EventoComandoRecibido) 
-                    // y lanzarlo al EventBus para que tu PartidaControlador lo procese.
-                    // eventBus.publicar(new EventoComandoRecibido(comando));
+
+                    controladorCentral.procesarComandoRed(comando);
                 }
-                
+
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Jugador desconectado.");
+                System.out.println("Jugador " + nombreJugador + " desconectado.");
                 desconectar();
             }
         }
     }
 
-    /**
-     * Este método se dispara automáticamente porque somos un IEventListener.
-     * Cuando el Controlador de la Partida actualiza la mesa y lo publica en el EventBus,
-     * este método atrapa el evento y lo manda por la red.
-     */
     @Override
     public void onEvent(IEvento evento) {
-        try {
-            // Mandamos el evento (que contiene el EstadoMesaDTO) por el cable
-            out.writeObject(evento);
-            out.reset(); // Importante para evitar caché de objetos en Java
-            out.flush();
-        } catch (IOException e) {
-            System.err.println("No se pudo enviar el evento al cliente.");
+        // Solo por seguridad, verificamos que sea el grito correcto
+        if (evento.getTipoEvento().equals("ACTUALIZAR_MESAS")) {
+            try {
+                // ¡CORREGIDO! Ahora usamos la variable para que traduzca la mesa correcta según el jugador
+                dtos.EstadoMesaDTO miEstado = TraductorDTO.generarEstadoParaJugador(partidaCentral, this.nombreJugador);
+
+                out.writeObject(new eventos.tipos.EventoEstadoMesa(miEstado));
+                out.reset();
+                out.flush();
+            } catch (IOException e) {
+                System.err.println("No se pudo enviar el evento al cliente " + nombreJugador);
+            }
         }
     }
 
     private void desconectar() {
         conectado = false;
-        eventBus.desuscribir(EventoEstadoMesa.TIPO, this); // Limpiamos la basura
+        // ¡CORREGIDO! Limpiamos la basura de la suscripción correcta
+        eventBus.desuscribir("ACTUALIZAR_MESAS", this); 
         try {
             if (in != null) in.close();
             if (out != null) out.close();

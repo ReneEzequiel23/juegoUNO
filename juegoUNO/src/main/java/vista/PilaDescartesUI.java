@@ -1,5 +1,6 @@
 package vista;
 
+import dtos.CartaDTO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -117,6 +118,34 @@ public class PilaDescartesUI extends JPanel {
             lblCartaSuperior.setText("Mesa Vacía");
             lblEstadoMesa.setText("Mesa Vacía");
         }
+    }
+    
+    /**
+     * Actualiza la carta central y el estado de la mesa usando datos de la red.
+     */
+    public void pintarCartaSuperiorDTO(dtos.CartaDTO carta, String colorActivo) {
+        if (carta != null) {
+            // Estilizamos el JLabel para que parezca una carta
+            lblCartaSuperior.setOpaque(true);
+            lblCartaSuperior.setBackground(java.awt.Color.WHITE);
+            lblCartaSuperior.setForeground(java.awt.Color.BLACK);
+            lblCartaSuperior.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.BLACK, 2, true));
+            
+            // Usamos HTML para centrar y dar formato al valor de la carta
+            String textoHtml = "<html><center><b style='font-size:24px;'>" + carta.getValor() + "</b><br>" + carta.getColor() + "</center></html>";
+            lblCartaSuperior.setText(textoHtml);
+            
+            // Actualizamos la etiqueta de estado (Ej: "VERDE 5 Activo")
+            // Si es un Comodín, el colorActivo dirá el color que eligió el jugador
+            lblEstadoMesa.setText(colorActivo + " " + carta.getValor() + " Activo");
+            
+        } else {
+            lblCartaSuperior.setText("Mesa Vacía");
+            lblEstadoMesa.setText("Esperando jugada...");
+        }
+        
+        this.revalidate();
+        this.repaint();
     }
     
     private String obtenerTextoVisual(Carta carta) {

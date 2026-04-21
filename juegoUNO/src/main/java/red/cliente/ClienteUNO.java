@@ -26,23 +26,34 @@ public class ClienteUNO implements Runnable {
     private IEventBus eventBusLocal; 
     private boolean conectado;
 
-    public ClienteUNO(String ipServidor, int puerto, IEventBus eventBusLocal) {
+    // 1. El constructor ahora solo guarda el bus, ¡pero no se conecta todavía!
+    public ClienteUNO(eventos.IEventBus eventBusLocal) {
         this.eventBusLocal = eventBusLocal;
-        
+        this.conectado = false;
+    }
+
+    // 2. Nuevo método para conectarnos cuando estemos listos
+    // Modificamos el método para pedir el nombre
+    public void conectar(String ipServidor, int puerto, String miNombre) {
         try {
             System.out.println("Intentando conectar al servidor en " + ipServidor + ":" + puerto + "...");
             this.socket = new Socket(ipServidor, puerto);
             
-            // Igual que en el servidor, el OutputStream va primero
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.out.flush();
             this.in = new ObjectInputStream(socket.getInputStream());
+            
+            // --- ¡NUEVO! EL HANDSHAKE ---
+            // Enviamos nuestro nombre como el primerísimo paquete de red
+            this.out.writeObject(miNombre);
+            this.out.flush();
+            // ----------------------------
             
             this.conectado = true;
             System.out.println("¡Conectado al servidor de UNO con éxito!");
             
         } catch (IOException e) {
-            System.err.println("No se pudo conectar al servidor. ¿Está encendido? Error: " + e.getMessage());
+            System.err.println("No se pudo conectar al servidor. Error: " + e.getMessage());
             this.conectado = false;
         }
     }

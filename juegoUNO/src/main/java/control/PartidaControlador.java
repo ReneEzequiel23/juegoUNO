@@ -265,4 +265,41 @@ public class PartidaControlador {
     public Carta obtenerCartaEnMesa() {
         return partida.getPilaDescartes().obtenerCartaSuperior();
     }
+    
+    // Este método es el puente entre la Red y tus reglas de negocio (DDD)
+    public void procesarComandoRed(dtos.ComandoJugadorDTO comando) {
+        // Buscamos al jugador real en la memoria del servidor
+        Jugador jugador = obtenerJugador(comando.getIdJugador());
+        if (jugador == null) return;
+
+        System.out.println("[Controlador] Ejecutando acción: " + comando.getTipoAccion() + " para " + jugador.getNombre());
+
+        switch (comando.getTipoAccion()) {
+            case JUGAR_CARTA:
+                modelo.Color colorNuevo = null;
+                if (comando.getColorElegido() != null) {
+                    colorNuevo = modelo.Color.valueOf(comando.getColorElegido());
+                }
+                jugarCarta(jugador, comando.getIdCartaJugada(), colorNuevo);
+                break;
+                
+            case ROBAR:
+                robarCartaEnTurno(jugador);
+                break;
+                
+            case GRITAR_UNO:
+                gritarUNO(jugador);
+                break;
+                
+            case DENUNCIAR:
+                // Para simplificar, buscamos si alguien tiene 1 carta y lo castigamos
+                for (Jugador oponente : partida.getJugadores()) {
+                    if (!oponente.equals(jugador) && oponente.getMano().contarCartas() == 1 && !oponente.isEstadoUNO()) {
+                        denunciarFaltaUNO(jugador, oponente);
+                        break;
+                    }
+                }
+                break;
+        }
+    }
 }

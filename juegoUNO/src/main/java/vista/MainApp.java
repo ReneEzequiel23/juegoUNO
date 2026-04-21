@@ -14,21 +14,38 @@ import vista.PantallaPartida;
 public class MainApp {
     public static void main(String[] args) {
         
-        // 1. Creamos un mini EventBus solo para conectar la red con la pantalla
-        eventos.IEventBus busLocal = new eventos.EventBus();
-        
-        // 2. Iniciamos la conexión al servidor (suponiendo que corre en tu misma PC por ahora)
-        red.cliente.ClienteUNO cliente = new red.cliente.ClienteUNO("127.0.0.1", 5050, busLocal);
-        
-        // 3. Lanzamos al cliente en un hilo separado para que no congele la ventana de Java Swing
-        new Thread(cliente).start();
+        // 1. Preguntamos el nombre con un popup elegante de Swing
+        String nombreElegido = javax.swing.JOptionPane.showInputDialog(
+                null, 
+                "Ingresa tu nombre para conectarte a la partida:", 
+                "UNO - Conexión Multijugador", 
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
 
-        // 4. Lanzamos tu interfaz (Swing)
+        // Si el usuario cancela o no escribe nada, cerramos el programa
+        if (nombreElegido == null || nombreElegido.trim().isEmpty()) {
+            System.exit(0);
+        }
+        
+        // Limpiamos espacios en blanco extra
+        final String miNombre = nombreElegido.trim(); 
+
+        eventos.IEventBus busLocal = new eventos.EventBus();
+        red.cliente.ClienteUNO cliente = new red.cliente.ClienteUNO(busLocal);
+
         javax.swing.SwingUtilities.invokeLater(() -> {
-            // Nota: Aquí tendrías que modificar ligeramente tu PantallaPartida para que 
-            // en lugar de recibir el "PartidaControlador" local, reciba el "cliente" y el "busLocal".
-            // PantallaPartida pantalla = new PantallaPartida(cliente, busLocal, "Rene");
-            // pantalla.setVisible(true);
+            
+            // Le pasamos el nombre real a la pantalla
+            vista.PantallaPartida pantalla = new vista.PantallaPartida(cliente, busLocal, miNombre);
+            pantalla.setTitle("UNO - Jugando como: " + miNombre); // Le ponemos el nombre arriba en la ventana
+            pantalla.setVisible(true);
+
+            new Thread(() -> {
+                // Le pasamos el nombre real a la red
+                cliente.conectar("127.0.0.1", 5050, miNombre);
+                new Thread(cliente).start(); 
+            }).start();
+            
         });
     }
 }

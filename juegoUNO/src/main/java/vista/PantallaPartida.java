@@ -5,6 +5,7 @@
 package vista;
 
 import control.PartidaControlador;
+import eventos.IEvento;
 import java.awt.Color;
 import java.util.List;
 import modelo.Carta;
@@ -15,40 +16,28 @@ import modelo.IObserver;
  *
  * @author renee
  */
-public class PantallaPartida extends javax.swing.JFrame implements IObserver {
+public class PantallaPartida extends javax.swing.JFrame implements eventos.IEventoListener {
 
     // El controlador que validará las acciones
-    private PartidaControlador controlador;
-    private Partida partida;
     private red.cliente.ClienteUNO cliente;
+    private eventos.IEventBus busLocal; // Agregamos esta variable
 
     // Identificador del jugador local (quien está viendo esta pantalla)
     private String idJugadorLocal;
 
-    public PantallaPartida(red.cliente.ClienteUNO cliente, String idJugadorLocal) {
+    public PantallaPartida(red.cliente.ClienteUNO cliente, eventos.IEventBus busLocal, String idJugadorLocal) {
         this.cliente = cliente;
+        this.busLocal = busLocal;
         this.idJugadorLocal = idJugadorLocal;
-
-        // Método generado automáticamente por NetBeans para inicializar botones y paneles
-        initComponents();
+        
+        initComponents(); 
         manoUI1.setPantallaPadre(this);
-
-//        // --- NUEVO: Cargar Avatar y Nombre de "Tú" ---
-//        // Supongamos que traes el avatar en tu objeto Jugador
-//        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-//        if (yo != null) {
-//            // ImageIcon avatar = yo.getAvatar(); // Añadir avatar al modelo Jugador
-//            // manoUI1.cargarDatosJugador(yo.getNombre(), avatar);
-//        }
-//
-//        this.partida.agregarObservador(this);
-//        actualizar();
-        this.getContentPane().setBackground(new Color(10, 15, 30));
+        this.getContentPane().setBackground(new java.awt.Color(10, 15, 30)); 
+        
+        // ¡LA CONEXIÓN MÁGICA! La pantalla se suscribe para escuchar al servidor
+        this.busLocal.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
     }
 
-    // =========================================================================
-    // 1. RECEPCIÓN DE ACCIONES DEL USUARIO (De la Vista al Controlador)
-    // =========================================================================
     /**
      * Ejemplo de método que se llama cuando el usuario hace clic en una carta
      * de su mano.
@@ -85,46 +74,6 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
     }
 
 
-    /**
-     * Método temporal para probar que los paneles dibujan las cartas
-     * correctamente. MOCK = Datos simulados.
-     */
-    private void probarInterfaz() {
-        System.out.println("Cargando cartas de prueba en la interfaz...");
-
-        // 1. Fabricamos una mano de prueba con 4 cartas variadas
-        List<Carta> cartasDePrueba = new java.util.ArrayList<>();
-        cartasDePrueba.add(new modelo.Numerica("id-1", modelo.Color.ROJO, 5));
-        cartasDePrueba.add(new modelo.Numerica("id-2", modelo.Color.AZUL, 9));
-        cartasDePrueba.add(new modelo.Comodin("id-3", modelo.Color.AMARILLO, modelo.Accion.TOMA2));
-        cartasDePrueba.add(new modelo.Comodin("id-4", modelo.Color.NEGRO, modelo.Accion.TOMA4));
-
-        // 2. Fabricamos la carta que estará en el centro de la mesa
-        Carta cartaEnMesa = new modelo.Numerica("id-5", modelo.Color.VERDE, 3);
-
-        // 3. Le pasamos estos datos falsos a nuestros componentes visuales
-        // Nota: Cambia 'manoUI1' y 'pilaDescarteUI1' por los nombres que NetBeans 
-        // le haya puesto a tus paneles en el código auto-generado (puedes verlo en el Navegador de componentes).
-        manoUI1.pintarCartas(cartasDePrueba);
-        pilaDescartesUI1.pintarCartaSuperior(cartaEnMesa);
-    }
-
-    /**
-     * Lee el estado actual del modelo y lo dibuja en la pantalla.
-     */
-    private void cargarDatosReales() {
-        // 1. Buscamos tu jugador usando el ID
-        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-
-        // 2. Pintamos tus cartas (¡deberían ser 7 al inicio!)
-        if (yo != null) {
-            manoUI1.pintarCartas(yo.getMano().getCartas());
-        }
-
-        // 3. Pintamos la carta con la que inició el juego
-        modelo.Carta cartaEnMesa = controlador.obtenerCartaEnMesa();
-        pilaDescartesUI1.pintarCartaSuperior(cartaEnMesa);
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -256,10 +205,7 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_RobarActionPerformed
 
     private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimularOponenteActionPerformed
-        modelo.Jugador enTurno = partida.getTurno().getJugadorActual();
-        if (!enTurno.getNombre().equals(idJugadorLocal)) {
-            controlador.robarCartaEnTurno(enTurno);
-        }
+
     }//GEN-LAST:event_btnSimularOponenteActionPerformed
 
     private void UNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UNOActionPerformed
@@ -292,61 +238,6 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
     private vista.PilaDescartesUI pilaDescartesUI1;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void actualizar() {
-        for (modelo.Jugador j : partida.getJugadores()) {
-            if (j.getMano().contarCartas() == 0) {
-                // 1.1 Mostramos un mensaje rápido
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "¡" + j.getNombre() + " se ha quedado sin cartas!",
-                        "¡FIN DE LA PARTIDA!",
-                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
-
-                // 1.2 Abrimos la pantalla del Podio
-                new PodioView(partida).setVisible(true);
-
-                // 1.3 Cerramos esta pantalla de juego (PantallaPartida)
-                this.dispose();
-
-                // 1.4 Detenemos el método para que no intente dibujar cartas que ya no importan
-                return;
-            }
-        }
-        // Este método se ejecutará SOLO, de forma automática, cada vez que 
-        // el controlador llame a partida.notificarObservadores()
-        // 1. Sabemos quién tiene el turno actualmente
-        modelo.Jugador jugadorEnTurno = partida.getTurno().getJugadorActual();
-
-        // 2. Filtramos la lista para separar a los oponentes de ti
-        java.util.List<modelo.Jugador> oponentes = new java.util.ArrayList<>();
-        for (modelo.Jugador j : partida.getJugadores()) {
-            if (!j.getNombre().equals(idJugadorLocal)) {
-                oponentes.add(j);
-            }
-        }
-
-        // 3. Pintamos el panel del primer oponente (Ej. Edgar)
-        if (oponentes.size() > 0) {
-            boolean esTurnoOp1 = oponentes.get(0).equals(jugadorEnTurno);
-            jugadorUI1.pintarOponente(oponentes.get(0), esTurnoOp1);
-        }
-
-        // 4. Pintamos el panel del segundo oponente (Ej. El Profe)
-        if (oponentes.size() > 1) {
-            boolean esTurnoOp2 = oponentes.get(1).equals(jugadorEnTurno);
-            jugadorUI2.pintarOponente(oponentes.get(1), esTurnoOp2);
-        }
-
-        System.out.println("La vista detectó un cambio en el Modelo. Redibujando...");
-
-        modelo.Jugador yo = controlador.obtenerJugador(idJugadorLocal);
-        if (yo != null) {
-            manoUI1.pintarCartas(yo.getMano().getCartas());
-        }
-
-        modelo.Carta cartaEnMesa = controlador.obtenerCartaEnMesa();
-        pilaDescartesUI1.pintarCartaSuperior(cartaEnMesa);
-    }
 
     /**
      * Muestra una ventana emergente para que el jugador elija un color.
@@ -380,6 +271,49 @@ public class PantallaPartida extends javax.swing.JFrame implements IObserver {
                 return modelo.Color.AMARILLO;
             default:
                 return null; // Si el usuario le dio a la 'X' para cerrar la ventana
+        }
+    }
+
+    @Override
+    public void onEvent(eventos.IEvento evento) {
+        // Solo nos interesa si es una actualización de la mesa
+        if (evento instanceof eventos.tipos.EventoEstadoMesa) {
+            
+            // 1. Extraemos el DTO que viene desde el Servidor
+            dtos.EstadoMesaDTO estado = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
+            
+            // Como Java Swing es caprichoso con los hilos de red, 
+            // forzamos a que el dibujo se haga en el hilo de la interfaz gráfica
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                actualizarInterfazConDTO(estado);
+            });
+        }
+    }
+    
+    // Este es el nuevo método que reemplaza a tu antiguo actualizar()
+    private void actualizarInterfazConDTO(dtos.EstadoMesaDTO estado) {
+        // 1. Verificamos si alguien ya ganó
+        if (estado.getIdGanador() != null && !estado.getIdGanador().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "¡El juego ha terminado! Ganador: " + estado.getIdGanador());
+            // Aquí podrías abrir tu PodioView y cerrar esta pantalla
+            // new PodioView(estado).setVisible(true);
+            this.dispose();
+            return;
+        }
+
+        // 2. Pintamos tu mano de cartas (usando los DTOs)
+        manoUI1.pintarCartasDTO(estado.getMiMano());
+
+        // 3. Pintamos el centro de la mesa
+        pilaDescartesUI1.pintarCartaSuperiorDTO(estado.getCartaEnMesa(), estado.getColorActivo());
+
+        // 4. Pintamos a los oponentes
+        java.util.List<dtos.OponenteDTO> oponentes = estado.getOponentes();
+        if (oponentes.size() > 0) {
+            jugadorUI1.pintarOponenteDTO(oponentes.get(0));
+        }
+        if (oponentes.size() > 1) {
+            jugadorUI2.pintarOponenteDTO(oponentes.get(1));
         }
     }
 }

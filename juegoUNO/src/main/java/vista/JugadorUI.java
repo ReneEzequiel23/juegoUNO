@@ -1,9 +1,11 @@
 package vista;
 
+import dtos.OponenteDTO;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.util.List;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -73,5 +75,44 @@ public class JugadorUI extends JPanel {
         } else {
             this.setVisible(false);
         }
+    }
+    
+    /**
+     * Actualiza la vista del oponente con la información recibida del servidor.
+     */
+    public void pintarOponenteDTO(dtos.OponenteDTO oponente) {
+        if (oponente != null) {
+            this.setVisible(true);
+            
+            // 1. Gestionar el nombre y el indicador de turno
+            if (oponente.isEsSuTurno()) {
+                lblNombre.setText("▶ " + oponente.getNombre());
+                // Ponemos un borde verde brillante si es su turno
+                this.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(50, 205, 50), 3, true));
+            } else {
+                lblNombre.setText(oponente.getNombre());
+                // Quitamos el borde si no es su turno
+                this.setBorder(new javax.swing.border.EmptyBorder(10, 10, 10, 10));
+            }
+
+            // 2. Actualizar cantidad de cartas y si gritó ¡UNO!
+            String infoCartas = "Cartas: " + oponente.getCantidadCartas();
+            if (oponente.isEstadoUNO()) {
+                infoCartas += " <b style='color:red;'>[¡UNO!]</b>";
+                lblCartas.setText("<html>" + infoCartas + "</html>");
+            } else {
+                lblCartas.setText(infoCartas);
+            }
+            
+            // Aquí podrías asignar el avatar si lo tienes en una carpeta de recursos
+            // lblAvatar.setIcon(utilidades.ImageUtils.loadIcon(oponente.getNombre() + ".png"));
+
+        } else {
+            // Si no hay oponente en este slot, ocultamos el panel
+            this.setVisible(false);
+        }
+        
+        this.revalidate();
+        this.repaint();
     }
 }
