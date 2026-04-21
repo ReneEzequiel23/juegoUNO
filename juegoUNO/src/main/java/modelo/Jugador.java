@@ -9,12 +9,12 @@ package modelo;
  * @author renee, edgar
  */
 public class Jugador {
-    public String id;
+    private String id;
     private Mano mano;
-    public String nombre;
-    public String avatar;
-    public int puntaje;
-    public boolean estadoUNO;
+    private String nombre;
+    private String avatar;
+    private int puntaje;
+    private boolean estadoUNO;
 
     public Jugador(Mano mano, String nombre, String avatar, int puntaje, boolean estadoUNO) {
         this.mano = mano;
@@ -30,26 +30,29 @@ public class Jugador {
      * @param avatar el avattar del usuario
      */
     public Jugador(String nombre, String avatar) {
-        /*
-        Este constructor es para aquel jugador que apenas entro al juego o aun no esta en
-        partida
-        by Edgar
-        */
         this.nombre = nombre;
         this.avatar = avatar;
+        this.mano = new Mano();
+        this.puntaje = 0;
+        this.estadoUNO = false; // Por defecto nadie tiene el UNO
     }
     
-    public void actualizarEstadoUNO(){
-        
+    /**
+     * El jugador gritó UNO exitosamente para protegerse.
+     */
+    public void marcarUNO() {
+        this.estadoUNO = true;
     }
     
-    // No se que tanto entre este metodo 
-    public void marcarUNO(){
-        
+    /**
+     * Se usa cuando el jugador roba cartas y deja de tener solo una.
+     */
+    public void quitarUNO() {
+        this.estadoUNO = false;
     }
-    
-    public void penalizar(){
-        
+
+    public boolean isEstadoUNO() {
+        return estadoUNO;
     }
 
     public String getNombre() {
@@ -74,10 +77,6 @@ public class Jugador {
 
     public void setPuntaje(int puntaje) {
         this.puntaje = puntaje;
-    }
-
-    public boolean isEstadoUNO() {
-        return estadoUNO;
     }
 
     public void setEstadoUNO(boolean estadoUNO) {

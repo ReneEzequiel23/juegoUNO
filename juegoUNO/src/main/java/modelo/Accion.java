@@ -9,10 +9,5 @@ package modelo;
  * @author Adrián
  */
 public enum Accion {
-    TOMA2,
-    TOMA4,
-    CAMBIOCOLOR,
-    SALTAR,
-    REVERSA,
-    BLOQUEO
+    TOMA2, TOMA4, CAMBIOCOLOR, BLOQUEO, REVERSA
 }

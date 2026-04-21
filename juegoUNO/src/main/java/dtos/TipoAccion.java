@@ -2,12 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
  */
-package modelo;
+package dtos;
 
 /**
  *
- * @author Adrián
+ * @author ReneEzequiel23 & EdgarAcevedoAcosta
  */
-public enum Color {
-    ROJO, AZUL, AMARILLO, VERDE, NEGRO
+
+public enum TipoAccion {
+    JUGAR_CARTA,
+    ROBAR,
+    GRITAR_UNO,
+    DENUNCIAR
 }

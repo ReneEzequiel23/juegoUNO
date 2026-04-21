@@ -4,20 +4,76 @@
  */
 package vista;
 
+import control.PartidaControlador;
+import eventos.IEvento;
+import java.awt.Color;
+import java.util.List;
+import modelo.Carta;
+import modelo.Partida;
+import modelo.IObserver;
+
 /**
  *
  * @author renee
  */
-public class PantallaPartida extends javax.swing.JFrame {
+public class PantallaPartida extends javax.swing.JFrame implements eventos.IEventoListener {
+
+    // El controlador que validará las acciones
+    private red.cliente.ClienteUNO cliente;
+    private eventos.IEventBus busLocal; // Agregamos esta variable
+
+    // Identificador del jugador local (quien está viendo esta pantalla)
+    private String idJugadorLocal;
+
+    public PantallaPartida(red.cliente.ClienteUNO cliente, eventos.IEventBus busLocal, String idJugadorLocal) {
+        this.cliente = cliente;
+        this.busLocal = busLocal;
+        this.idJugadorLocal = idJugadorLocal;
+        
+        initComponents(); 
+        manoUI1.setPantallaPadre(this);
+        this.getContentPane().setBackground(new java.awt.Color(10, 15, 30)); 
+        
+        // ¡LA CONEXIÓN MÁGICA! La pantalla se suscribe para escuchar al servidor
+        this.busLocal.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
+    }
 
     /**
-     * Creates new form PantallaPartida
-     * Tendriamos que ver si la vamos a hacer tipo la imagen de wha o mezclamos 
-     * el del storyboard con el de Wha
+     * Ejemplo de método que se llama cuando el usuario hace clic en una carta
+     * de su mano.
      */
-    public PantallaPartida() {
-        initComponents();
+    public void alHacerClicEnCarta(String idCarta) {
+        String colorElegidoString = null;
+        
+        // 1. Verificamos visualmente si la carta clicada es negra (Comodín)
+        // NOTA: Como ya no tenemos el modelo completo, puedes deducir si es negra
+        // si el idCarta contiene "TOMA4" o "CAMBIO_COLOR" (dependiendo de cómo los nombres).
+        if (idCarta.contains("NEGRO") || idCarta.contains("TOMA4") || idCarta.contains("CAMBIO")) {
+            modelo.Color colorElegido = mostrarDialogoColor();
+            if (colorElegido == null) {
+                return; // Canceló la selección
+            }
+            colorElegidoString = colorElegido.name();
+        }
+
+        // 2. Armamos el paquete DTO con la intención de jugar
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+                idJugadorLocal, 
+                dtos.TipoAccion.JUGAR_CARTA, 
+                idCarta, 
+                colorElegidoString, 
+                null
+        );
+
+        // 3. ¡Lo enviamos por el Socket al Servidor!
+        cliente.enviarComando(comando);
+        
+        // Fíjate que AQUÍ NO ACTUALIZAMOS LA PANTALLA.
+        // La carta no desaparece de la mano todavía. 
+        // Esperaremos a que el servidor valide la jugada y nos mande el nuevo EstadoMesaDTO.
     }
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,163 +84,236 @@ public class PantallaPartida extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlMenu = new javax.swing.JPanel();
-        pnlJugadorActual = new javax.swing.JPanel();
-        pnlJugadorActual1 = new javax.swing.JPanel();
-        pnlTiempo = new javax.swing.JPanel();
-        pnlSentido1 = new javax.swing.JPanel();
-        pnlPilaDescartes = new javax.swing.JPanel();
-        pnlBaraja = new javax.swing.JPanel();
+        manoUI1 = new vista.ManoUI();
+        jPanel1 = new javax.swing.JPanel();
+        jugadorUI2 = new vista.JugadorUI();
+        jugadorUI3 = new vista.JugadorUI();
+        jugadorUI1 = new vista.JugadorUI();
+        jPanel2 = new javax.swing.JPanel();
+        pilaDescartesUI1 = new vista.PilaDescartesUI();
+        jPanel3 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        Robar = new javax.swing.JButton();
+        UNO = new javax.swing.JButton();
+        DenuncarBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 51, 51));
 
-        pnlMenu.setBackground(new java.awt.Color(33, 33, 33));
+        manoUI1.setPreferredSize(new java.awt.Dimension(800, 180));
 
-        javax.swing.GroupLayout pnlMenuLayout = new javax.swing.GroupLayout(pnlMenu);
-        pnlMenu.setLayout(pnlMenuLayout);
-        pnlMenuLayout.setHorizontalGroup(
-            pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        pnlMenuLayout.setVerticalGroup(
-            pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 54, Short.MAX_VALUE)
-        );
+        jPanel1.setBackground(new java.awt.Color(10, 15, 30));
+        jPanel1.add(jugadorUI2);
+        jPanel1.add(jugadorUI3);
+        jPanel1.add(jugadorUI1);
 
-        pnlJugadorActual.setBackground(new java.awt.Color(89, 89, 89));
-        pnlJugadorActual.setForeground(new java.awt.Color(114, 114, 114));
+        jPanel2.setBackground(new java.awt.Color(10, 15, 30));
+        jPanel2.add(pilaDescartesUI1);
 
-        javax.swing.GroupLayout pnlJugadorActualLayout = new javax.swing.GroupLayout(pnlJugadorActual);
-        pnlJugadorActual.setLayout(pnlJugadorActualLayout);
-        pnlJugadorActualLayout.setHorizontalGroup(
-            pnlJugadorActualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-        );
-        pnlJugadorActualLayout.setVerticalGroup(
-            pnlJugadorActualLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 67, Short.MAX_VALUE)
-        );
+        jPanel3.setBackground(new java.awt.Color(10, 15, 30));
 
-        pnlJugadorActual1.setBackground(new java.awt.Color(89, 89, 89));
-        pnlJugadorActual1.setPreferredSize(new java.awt.Dimension(170, 67));
+        jButton1.setText("simularTurno");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimularOponenteActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout pnlJugadorActual1Layout = new javax.swing.GroupLayout(pnlJugadorActual1);
-        pnlJugadorActual1.setLayout(pnlJugadorActual1Layout);
-        pnlJugadorActual1Layout.setHorizontalGroup(
-            pnlJugadorActual1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-        );
-        pnlJugadorActual1Layout.setVerticalGroup(
-            pnlJugadorActual1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 67, Short.MAX_VALUE)
-        );
+        Robar.setText("Robar");
+        Robar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RobarActionPerformed(evt);
+            }
+        });
 
-        pnlTiempo.setBackground(new java.awt.Color(89, 89, 89));
-        pnlTiempo.setPreferredSize(new java.awt.Dimension(170, 67));
+        UNO.setText("UNO");
+        UNO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UNOActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout pnlTiempoLayout = new javax.swing.GroupLayout(pnlTiempo);
-        pnlTiempo.setLayout(pnlTiempoLayout);
-        pnlTiempoLayout.setHorizontalGroup(
-            pnlTiempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
-        );
-        pnlTiempoLayout.setVerticalGroup(
-            pnlTiempoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 67, Short.MAX_VALUE)
-        );
+        DenuncarBtn.setText("Denunciar");
+        DenuncarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DenuncarBtnActionPerformed(evt);
+            }
+        });
 
-        pnlSentido1.setBackground(new java.awt.Color(89, 89, 89));
-        pnlSentido1.setPreferredSize(new java.awt.Dimension(170, 67));
-
-        javax.swing.GroupLayout pnlSentido1Layout = new javax.swing.GroupLayout(pnlSentido1);
-        pnlSentido1.setLayout(pnlSentido1Layout);
-        pnlSentido1Layout.setHorizontalGroup(
-            pnlSentido1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 170, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Robar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(DenuncarBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(UNO))
         );
-        pnlSentido1Layout.setVerticalGroup(
-            pnlSentido1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 67, Short.MAX_VALUE)
-        );
-
-        pnlPilaDescartes.setBackground(new java.awt.Color(102, 102, 102));
-
-        javax.swing.GroupLayout pnlPilaDescartesLayout = new javax.swing.GroupLayout(pnlPilaDescartes);
-        pnlPilaDescartes.setLayout(pnlPilaDescartesLayout);
-        pnlPilaDescartesLayout.setHorizontalGroup(
-            pnlPilaDescartesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 348, Short.MAX_VALUE)
-        );
-        pnlPilaDescartesLayout.setVerticalGroup(
-            pnlPilaDescartesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 180, Short.MAX_VALUE)
-        );
-
-        pnlBaraja.setBackground(new java.awt.Color(102, 102, 102));
-
-        javax.swing.GroupLayout pnlBarajaLayout = new javax.swing.GroupLayout(pnlBaraja);
-        pnlBaraja.setLayout(pnlBarajaLayout);
-        pnlBarajaLayout.setHorizontalGroup(
-            pnlBarajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 514, Short.MAX_VALUE)
-        );
-        pnlBarajaLayout.setVerticalGroup(
-            pnlBarajaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(Robar)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(UNO)
+                            .addComponent(DenuncarBtn))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pnlPilaDescartes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(249, 249, 249))
             .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(pnlJugadorActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
-                .addComponent(pnlJugadorActual1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
-                .addComponent(pnlSentido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(pnlTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(190, 190, 190)
-                .addComponent(pnlBaraja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(manoUI1, javax.swing.GroupLayout.DEFAULT_SIZE, 856, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(pnlMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(pnlJugadorActual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlJugadorActual1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlTiempo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlSentido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
-                .addComponent(pnlPilaDescartes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
-                .addComponent(pnlBaraja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void RobarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RobarActionPerformed
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+                idJugadorLocal, dtos.TipoAccion.ROBAR, null, null, null
+        );
+        cliente.enviarComando(comando);
+    }//GEN-LAST:event_RobarActionPerformed
+
+    private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimularOponenteActionPerformed
+
+    }//GEN-LAST:event_btnSimularOponenteActionPerformed
+
+    private void UNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UNOActionPerformed
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+                idJugadorLocal, dtos.TipoAccion.GRITAR_UNO, null, null, null
+        );
+        cliente.enviarComando(comando);
+    }//GEN-LAST:event_UNOActionPerformed
+
+    private void DenuncarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DenuncarBtnActionPerformed
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+                idJugadorLocal, dtos.TipoAccion.DENUNCIAR, null, null, null
+        );
+        cliente.enviarComando(comando);
+    }//GEN-LAST:event_DenuncarBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel pnlBaraja;
-    private javax.swing.JPanel pnlJugadorActual;
-    private javax.swing.JPanel pnlJugadorActual1;
-    private javax.swing.JPanel pnlMenu;
-    private javax.swing.JPanel pnlPilaDescartes;
-    private javax.swing.JPanel pnlSentido1;
-    private javax.swing.JPanel pnlTiempo;
+    private javax.swing.JButton DenuncarBtn;
+    private javax.swing.JButton Robar;
+    private javax.swing.JButton UNO;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private vista.JugadorUI jugadorUI1;
+    private vista.JugadorUI jugadorUI2;
+    private vista.JugadorUI jugadorUI3;
+    private vista.ManoUI manoUI1;
+    private vista.PilaDescartesUI pilaDescartesUI1;
     // End of variables declaration//GEN-END:variables
+
+
+    /**
+     * Muestra una ventana emergente para que el jugador elija un color.
+     *
+     * @return El color elegido, o null si el usuario cerró la ventana.
+     */
+    private modelo.Color mostrarDialogoColor() {
+        // Las opciones que aparecerán en los botones de la ventana
+        String[] opciones = {"Rojo", "Azul", "Verde", "Amarillo"};
+
+        int seleccion = javax.swing.JOptionPane.showOptionDialog(
+                this,
+                "¡Has jugado un Comodín! Elige el nuevo color de la mesa:",
+                "Seleccionar Color",
+                javax.swing.JOptionPane.DEFAULT_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0] // El rojo estará seleccionado por defecto
+        );
+
+        // Traducimos el botón que presionó al Enum de nuestro modelo
+        switch (seleccion) {
+            case 0:
+                return modelo.Color.ROJO;
+            case 1:
+                return modelo.Color.AZUL;
+            case 2:
+                return modelo.Color.VERDE;
+            case 3:
+                return modelo.Color.AMARILLO;
+            default:
+                return null; // Si el usuario le dio a la 'X' para cerrar la ventana
+        }
+    }
+
+    @Override
+    public void onEvent(eventos.IEvento evento) {
+        // Solo nos interesa si es una actualización de la mesa
+        if (evento instanceof eventos.tipos.EventoEstadoMesa) {
+            
+            // 1. Extraemos el DTO que viene desde el Servidor
+            dtos.EstadoMesaDTO estado = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
+            
+            // Como Java Swing es caprichoso con los hilos de red, 
+            // forzamos a que el dibujo se haga en el hilo de la interfaz gráfica
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                actualizarInterfazConDTO(estado);
+            });
+        }
+    }
+    
+    // Este es el nuevo método que reemplaza a tu antiguo actualizar()
+    private void actualizarInterfazConDTO(dtos.EstadoMesaDTO estado) {
+        // 1. Verificamos si alguien ya ganó
+        if (estado.getIdGanador() != null && !estado.getIdGanador().isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(this, "¡El juego ha terminado! Ganador: " + estado.getIdGanador());
+            // Aquí podrías abrir tu PodioView y cerrar esta pantalla
+            // new PodioView(estado).setVisible(true);
+            this.dispose();
+            return;
+        }
+
+        // 2. Pintamos tu mano de cartas (usando los DTOs)
+        manoUI1.pintarCartasDTO(estado.getMiMano());
+
+        // 3. Pintamos el centro de la mesa
+        pilaDescartesUI1.pintarCartaSuperiorDTO(estado.getCartaEnMesa(), estado.getColorActivo());
+
+        // 4. Pintamos a los oponentes
+        java.util.List<dtos.OponenteDTO> oponentes = estado.getOponentes();
+        if (oponentes.size() > 0) {
+            jugadorUI1.pintarOponenteDTO(oponentes.get(0));
+        }
+        if (oponentes.size() > 1) {
+            jugadorUI2.pintarOponenteDTO(oponentes.get(1));
+        }
+    }
 }
