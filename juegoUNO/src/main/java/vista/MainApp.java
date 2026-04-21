@@ -10,49 +10,25 @@ import modelo.Partida;
 import control.PartidaControlador;
 import vista.PantallaPartida;
 
+// Ejemplo conceptual para tu MainApp.java (lado del jugador)
 public class MainApp {
-
     public static void main(String[] args) {
         
-        // 1. PREPARAMOS EL MODELO (El Backend)
-        System.out.println("1. Inicializando el modelo de la partida...");
+        // 1. Creamos un mini EventBus solo para conectar la red con la pantalla
+        eventos.IEventBus busLocal = new eventos.EventBus();
         
-        // Creamos los jugadores
-        Jugador jugadorLocal = new Jugador("René", "avatar_rene.png");
-        Jugador oponente1 = new Jugador("Edgar", "avatar_edgar.png");
-        Jugador oponente2 = new Jugador("El Profe", "avatar_profe.png");
-
-        List<Jugador> listaJugadores = new ArrayList<>();
-        listaJugadores.add(jugadorLocal);
-        listaJugadores.add(oponente1);
-
-        // Creamos el Agregado Raíz y el Controlador
-        Partida partida = new Partida(listaJugadores);
-        PartidaControlador controlador = new PartidaControlador(partida);
-
-        // ¡Importante! Iniciamos el juego para que se repartan las 7 cartas y se ponga la primera en la mesa
-        partida.iniciarJuego();
-
-        // 2. PREPARAMOS LA VISTA (El Frontend)
-        System.out.println("2. Lanzando la interfaz gráfica...");
+        // 2. Iniciamos la conexión al servidor (suponiendo que corre en tu misma PC por ahora)
+        red.cliente.ClienteUNO cliente = new red.cliente.ClienteUNO("127.0.0.1", 5050, busLocal);
         
-        // SwingUtilities.invokeLater asegura que la ventana se dibuje de forma segura
-        SwingUtilities.invokeLater(() -> {
-            
-            // Creamos la pantalla, pasándole el controlador y tu ID para que sepa quién eres
-            // Usamos el nombre del jugador como ID temporal
-            PantallaPartida pantalla = new PantallaPartida(controlador,partida, jugadorLocal.getNombre());
-//            PantallaPartida pantalla1 = new PantallaPartida(controlador,partida, oponente1.getNombre());
-            
-            // Configuraciones básicas de la ventana
-            pantalla.setTitle("Juego UNO - Partida Local");
-            pantalla.setLocationRelativeTo(null); // Para que aparezca centrada en tu monitor
-            pantalla.setVisible(true);            // ¡Que se haga la luz!
-            
-//            pantalla1.setTitle("Juego UNO - Partida Local");
-//            pantalla1.setLocationRelativeTo(null); // Para que aparezca centrada en tu monitor
-//            pantalla1.setVisible(true);            // ¡Que se haga la luz!
-            
+        // 3. Lanzamos al cliente en un hilo separado para que no congele la ventana de Java Swing
+        new Thread(cliente).start();
+
+        // 4. Lanzamos tu interfaz (Swing)
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            // Nota: Aquí tendrías que modificar ligeramente tu PantallaPartida para que 
+            // en lugar de recibir el "PartidaControlador" local, reciba el "cliente" y el "busLocal".
+            // PantallaPartida pantalla = new PantallaPartida(cliente, busLocal, "Rene");
+            // pantalla.setVisible(true);
         });
     }
 }
