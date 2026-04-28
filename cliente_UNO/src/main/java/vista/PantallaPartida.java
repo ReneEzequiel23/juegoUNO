@@ -103,13 +103,8 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        manoUI1 = new vista.ManoUI();
         jPanel1 = new javax.swing.JPanel();
-        jugadorUI2 = new vista.JugadorUI();
-        jugadorUI3 = new vista.JugadorUI();
-        jugadorUI1 = new vista.JugadorUI();
         jPanel2 = new javax.swing.JPanel();
-        pilaDescartesUI1 = new vista.PilaDescartesUI();
         jPanel3 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         Robar = new javax.swing.JButton();
@@ -120,12 +115,8 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
         setBackground(new java.awt.Color(51, 51, 51));
 
         jPanel1.setBackground(new java.awt.Color(10, 15, 30));
-        jPanel1.add(jugadorUI2);
-        jPanel1.add(jugadorUI3);
-        jPanel1.add(jugadorUI1);
 
         jPanel2.setBackground(new java.awt.Color(10, 15, 30));
-        jPanel2.add(pilaDescartesUI1);
 
         jPanel3.setBackground(new java.awt.Color(10, 15, 30));
 
@@ -166,7 +157,7 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Robar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 517, Short.MAX_VALUE)
                 .addComponent(DenuncarBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(UNO))
@@ -192,9 +183,6 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(manoUI1, javax.swing.GroupLayout.DEFAULT_SIZE, 856, Short.MAX_VALUE)
-                .addContainerGap())
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -205,9 +193,7 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(132, 132, 132)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -248,11 +234,6 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private vista.JugadorUI jugadorUI1;
-    private vista.JugadorUI jugadorUI2;
-    private vista.JugadorUI jugadorUI3;
-    private vista.ManoUI manoUI1;
-    private vista.PilaDescartesUI pilaDescartesUI1;
     // End of variables declaration//GEN-END:variables
 
 
