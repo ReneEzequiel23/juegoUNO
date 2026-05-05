@@ -13,12 +13,12 @@ public interface IEventBus {
      * Registra a un listener para que escuche un tipo específico de evento.
      */
     void suscribir(String tipoEvento, IEventoListener listener);
-    
+
     /**
      * Quita a un listener de la lista para que deje de escuchar.
      */
     void desuscribir(String tipoEvento, IEventoListener listener);
-    
+
     /**
      * Recibe un evento y se lo envía a todos los listeners que estén suscritos a ese tipo.
      */
