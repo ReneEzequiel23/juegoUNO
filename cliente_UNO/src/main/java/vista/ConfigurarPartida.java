@@ -68,6 +68,11 @@ public class ConfigurarPartida extends javax.swing.JFrame {
         cancelarBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         cancelarBtn.setForeground(new java.awt.Color(0, 0, 0));
         cancelarBtn.setText("Cancelar");
+        cancelarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelarBtnActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setText("Cambiar tiempo de turno (segundos):");
@@ -176,6 +181,10 @@ public class ConfigurarPartida extends javax.swing.JFrame {
     private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox3ActionPerformed
+
+    private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
+        dispose();
+    }//GEN-LAST:event_cancelarBtnActionPerformed
 
     /**
      * @param args the command line arguments
