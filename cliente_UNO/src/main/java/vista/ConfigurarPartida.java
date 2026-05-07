@@ -78,10 +78,10 @@ public class ConfigurarPartida extends javax.swing.JFrame {
         jLabel3.setText("Cambiar tiempo de turno (segundos):");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel4.setText("Cambiar número de cartas en el mazo:");
+        jLabel4.setText("Cambiar número de cartas máximo en la mano:");
 
         jComboBox2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "64", "108", "112" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "5", "15", "25" }));
         jComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox2ActionPerformed(evt);
