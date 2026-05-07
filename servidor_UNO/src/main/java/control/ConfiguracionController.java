@@ -24,21 +24,13 @@ public class ConfiguracionController {
     }
 
     public void cambiarTemporizador(int tiempoLimite) {
-        if(tiempoLimite==partida.getTurno().tiempoLimite){
-            System.out.println("El tiempo limite es igual");
-        }else{
-            int tiempoPasado = partida.getTurno().getTiempoLimite();
-            partida.getTurno().setTiempoLimite(tiempoLimite);
-            System.out.println("El tiempo se ha actualizado exitosamente");
-            System.out.println("Tiempo anterior: "+tiempoPasado+" Tiempo actual: "+tiempoLimite);
-        }
+        int tiempoActual = tiempoLimite;
+        
     }
 
     public void cambiarNumeroCartas(int numCartas) {
         int cartasActuales = numCartas;
-        //int cartasPartida = partida.getJugadores().get
-        // obtienes jugadores, y a cada
+
     }
 
-    
 }
