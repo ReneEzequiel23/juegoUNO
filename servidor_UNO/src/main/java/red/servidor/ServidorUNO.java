@@ -28,7 +28,6 @@ public class ServidorUNO {
         List<Jugador> jugadores = new ArrayList<>();
         jugadores.add(new Jugador("Rene", "avatar_rene.png"));
         jugadores.add(new Jugador("Edgar", "avatar_edgar.png"));
-        jugadores.add(new Jugador("El Profe", "avatar_profe.png"));
 
         partidaCentral = new Partida(jugadores);
         controladorCentral = new PartidaControlador(partidaCentral);

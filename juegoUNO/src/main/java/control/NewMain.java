@@ -13,12 +13,10 @@ public class NewMain {
         // 1. Crear Jugadores 
         Jugador j1 = new Jugador("René", "avatar_rene.png");
         Jugador j2 = new Jugador("Edgar", "avatar_edgar.png");
-        Jugador j3 = new Jugador("El Profe", "avatar_profe.png");
 
         List<Jugador> listaJugadores = new ArrayList<>();
         listaJugadores.add(j1);
         listaJugadores.add(j2);
-        listaJugadores.add(j3);
 
         // 2. Crear Partida y Controlador
         Partida partida = new Partida(listaJugadores);

@@ -221,10 +221,6 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
         cliente.enviarComando(comando);
     }//GEN-LAST:event_RobarActionPerformed
 
-    private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimularOponenteActionPerformed
-
-    }//GEN-LAST:event_btnSimularOponenteActionPerformed
-
     private void UNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UNOActionPerformed
         dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
                 idJugadorLocal, dtos.TipoAccion.GRITAR_UNO, null, null, null
@@ -238,6 +234,10 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
         );
         cliente.enviarComando(comando);
     }//GEN-LAST:event_DenuncarBtnActionPerformed
+
+    private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimularOponenteActionPerformed
+
+    }//GEN-LAST:event_btnSimularOponenteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
