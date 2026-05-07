@@ -4,21 +4,44 @@
  */
 package control;
 
+import modelo.*;
+
 /**
  *
  * @author Adrián
  */
 public class ConfiguracionController {
+
+    private final Partida partida;
     
-    public void cambiarNumeroJugadores(int jugadoresTotales){
+    public ConfiguracionController(Partida partida){
+        this.partida=partida;
+    }
+
+    public void cambiarNumeroJugadores(int jugadoresTotales) {
+        int jugadoresActuales = jugadoresTotales;
+        int jugadoresLista = partida.getJugadores().size();
+    }
+
+    public void cambiarTemporizador(int tiempoLimite) {
+        int tiempoActual = tiempoLimite;
         
     }
-    
-    public void cambiarTemporizador(int tiempoLimite){
+
+    public void cambiarNumeroCartas(int numCartas) {
+        int cartasActuales = numCartas;
+
+    }
+
+    public void configurarComodines() {
+
+    }
+
+    public void cambiarNombrePartida(String nombre){
+        String nombreActual = nombre;
+        
+        
         
     }
-    
-    
-           
     
 }
