@@ -19,7 +19,7 @@ public class Partida {
     private final Mazo mazo;
     private Color colorActivo;
 
-    private static final int CARTAS_POR_JUGADOR = 7;
+    private static int CARTAS_POR_JUGADOR = 7;
     private final List<IObserver> observadores;
 
     public Partida(List<Jugador> jugadores) {

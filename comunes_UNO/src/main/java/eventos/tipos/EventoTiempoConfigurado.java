@@ -14,9 +14,14 @@ public class EventoTiempoConfigurado implements IEvento{
 
     public static final String TIPO = "TIEMPO_CONFIGURADO";
 
+    public EventoTiempoConfigurado() {
+    }
+
+    
+    
     @Override
     public String getTipoEvento() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return TIPO;
     }
 
 }

@@ -10,13 +10,18 @@ import eventos.IEvento;
  *
  * @author Adrián
  */
-public class EventoListaJugadores implements IEvento{
+public class EventoListaJugadores implements IEvento {
 
     public static final String TIPO = "LISTA_DE_JUGADORES_ACTUALIZADA";
 
+    public EventoListaJugadores() {
+    }
+
+    
+    
     @Override
     public String getTipoEvento() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return TIPO;
     }
 
 }
