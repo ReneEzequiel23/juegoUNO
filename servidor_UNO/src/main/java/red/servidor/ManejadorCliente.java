@@ -1,5 +1,6 @@
 package red.servidor;
 
+import control.DespachadorComandos;
 import control.PartidaControlador;
 import dtos.ComandoJugadorDTO;
 import eventos.IEventBus;
@@ -20,7 +21,7 @@ public class ManejadorCliente implements Runnable, IEventoListener {
     private ObjectInputStream in;
     private boolean conectado;
 
-    private PartidaControlador controladorCentral;
+    private DespachadorComandos despachador;
     private Partida partidaCentral;
 
     // ¡NUEVO! Guardamos quién es el dueño de este socket
@@ -28,10 +29,10 @@ public class ManejadorCliente implements Runnable, IEventoListener {
 
     // ¡CORREGIDO! Ahora pedimos el nombre del jugador en el constructor
     // 1. Quitamos "String nombreJugador" de los parámetros
-    public ManejadorCliente(Socket socket, IEventBus eventBus, PartidaControlador controladorCentral, Partida partidaCentral) {
+    public ManejadorCliente(Socket socket, IEventBus eventBus, DespachadorComandos despachador, Partida partidaCentral) {
         this.socket = socket;
         this.eventBus = eventBus;
-        this.controladorCentral = controladorCentral;
+        this.despachador = despachador;
         this.partidaCentral = partidaCentral;
         this.conectado = true;
         try {
@@ -53,7 +54,7 @@ public class ManejadorCliente implements Runnable, IEventoListener {
             this.eventBus.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
 
             // ¡CORREGIDO! Usamos ENTRAR_LOBBY para que no se marquen con palomita automáticamente
-            this.controladorCentral.procesarComandoRed(new dtos.ComandoJugadorDTO(
+            despachador.procesar(new dtos.ComandoJugadorDTO(
                 this.nombreJugador, dtos.TipoAccion.ENTRAR_LOBBY, null, null, null
             ));
         } catch (IOException | ClassNotFoundException e) { // <-- IMPORTANTE AÑADIR ESTO AL CATCH
@@ -72,7 +73,7 @@ public class ManejadorCliente implements Runnable, IEventoListener {
                     ComandoJugadorDTO comando = (ComandoJugadorDTO) mensaje;
                     System.out.println("Comando recibido del jugador: " + comando.getIdJugador() + " Acción: " + comando.getTipoAccion());
 
-                    controladorCentral.procesarComandoRed(comando);
+                    despachador.procesar(comando);
                 }
 
             } catch (IOException | ClassNotFoundException e) {

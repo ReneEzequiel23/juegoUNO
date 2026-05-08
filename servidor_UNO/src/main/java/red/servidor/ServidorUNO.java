@@ -1,5 +1,7 @@
 package red.servidor;
 
+import control.DespachadorComandos;
+import control.LobbyControlador;
 import control.PartidaControlador;
 import eventos.EventBus;
 import java.io.IOException;
@@ -16,12 +18,12 @@ public class ServidorUNO {
         
         // 1. Inicializamos el cerebro del servidor (Solo 1 para todos)
         EventBus busGlobal = EventBus.getInstance();
-        Partida partidaCentral = new Partida(new ArrayList<>()); // Inicia sin jugadores
-        PartidaControlador controlador = new PartidaControlador(partidaCentral);
-
-        System.out.println("======================================");
-        System.out.println("   SERVIDOR UNO INICIADO EN PUERTO " + puerto);
-        System.out.println("======================================");
+        Partida partidaCentral = new Partida(new ArrayList<>());
+        
+        // Ensamblamos la arquitectura limpia
+        PartidaControlador juegoCtrl = new PartidaControlador(partidaCentral);
+        LobbyControlador lobbyCtrl = new LobbyControlador(partidaCentral);
+        DespachadorComandos despachador = new DespachadorComandos(partidaCentral, lobbyCtrl, juegoCtrl);
 
         try (ServerSocket serverSocket = new ServerSocket(puerto)) {
             
@@ -35,8 +37,9 @@ public class ServidorUNO {
                 System.out.println("¡Cliente detectado! IP: " + socketCliente.getInetAddress());
 
                 // 3. Contratamos a un "Trabajador" para este cliente y lo lanzamos en su propio hilo
-                ManejadorCliente trabajador = new ManejadorCliente(socketCliente, busGlobal, controlador, partidaCentral);
+                ManejadorCliente trabajador = new ManejadorCliente(socketCliente, busGlobal, despachador, partidaCentral);
                 new Thread(trabajador).start();
+                
             }
             
         } catch (IOException e) {
