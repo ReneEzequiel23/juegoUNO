@@ -6,6 +6,7 @@ package vista;
 
 import eventos.IEvento;
 import java.util.List;
+import red.cliente.ClienteUNO;
 
 /**
  *
@@ -14,13 +15,20 @@ import java.util.List;
 public class PantallaLobby extends javax.swing.JFrame implements eventos.IEventoListener{
 
     String miNombre;
+    private red.cliente.ClienteUNO cliente;
+    private eventos.IEventBus busLocal; // Agregamos esta variable
     /**
      * Creates new form PantallaLobby
      */
-    public PantallaLobby() {
+
+    public PantallaLobby(red.cliente.ClienteUNO cliente, eventos.IEventBus busLocal, String idJugadorLocal) {
+        this.cliente = cliente;
+        this.busLocal = busLocal;
+        this.miNombre = idJugadorLocal;
+        
         initComponents();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -94,10 +102,11 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblIcono)
-                    .addComponent(lblNombre)
-                    .addComponent(jCheckBoxListo))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBoxListo, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblIcono)
+                        .addComponent(lblNombre)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -131,10 +140,11 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblIcono1)
-                    .addComponent(lblNombre1)
-                    .addComponent(jCheckBoxListo1))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBoxListo1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblIcono1)
+                        .addComponent(lblNombre1)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
@@ -168,10 +178,11 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblIcono2)
-                    .addComponent(lblNombre2)
-                    .addComponent(jCheckBoxListo2))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBoxListo2, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblIcono2)
+                        .addComponent(lblNombre2)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
@@ -205,10 +216,11 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblIcono3)
-                    .addComponent(lblNombre3)
-                    .addComponent(jCheckBoxListo3))
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBoxListo3, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblIcono3)
+                        .addComponent(lblNombre3)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
@@ -302,20 +314,14 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIniciarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarPartidaActionPerformed
-        // 1. Instanciamos el DTO usando tu constructor completo.
-        // Asumiendo que tienes una variable de clase con el nombre del jugador local
-        // por ejemplo: private String miNombre = "Rene"; 
-        
         dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-            this.miNombre, 
-            dtos.TipoAccion.SOLICITAR_INICIO, 
-            null, 
-            null, 
-            null
-        );
-        
-        eventos.IEvento eventoSalida = new eventos.tipos.EventoComando(comando);
-        eventos.EventBus.getInstance().publicar(eventoSalida);
+        this.miNombre, 
+        dtos.TipoAccion.SOLICITAR_INICIO, // o MARCAR_LISTO
+        null, null, null
+    );
+    
+    // En lugar del EventBus, llamamos directo al cliente (igual que en PantallaPartida)
+    this.cliente.enviarComando(comando);
     }//GEN-LAST:event_btnIniciarPartidaActionPerformed
 
     private void jCheckBoxListoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListoActionPerformed
@@ -327,16 +333,13 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
         
         // 2. Armamos el comando
         dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-            this.miNombre, 
-            accionActual, 
-            null, 
-            null, 
-            null
-        );
-        
-        // 3. Lo publicamos en el bus
-        eventos.IEvento eventoSalida = new eventos.tipos.EventoComando(comando);
-        eventos.EventBus.getInstance().publicar(eventoSalida);
+        this.miNombre, 
+        dtos.TipoAccion.SOLICITAR_INICIO, // o MARCAR_LISTO
+        null, null, null
+    );
+    
+    // En lugar del EventBus, llamamos directo al cliente (igual que en PantallaPartida)
+    this.cliente.enviarComando(comando);
     }//GEN-LAST:event_jCheckBoxListoActionPerformed
 
     private void jCheckBoxListo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo1ActionPerformed
@@ -356,40 +359,6 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
         
     }//GEN-LAST:event_btnAceptarInvitaciónActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PantallaLobby.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PantallaLobby.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PantallaLobby.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PantallaLobby.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PantallaLobby().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAceptarInvitación;
@@ -430,8 +399,12 @@ public void onEvent(eventos.IEvento evento) {
     else if (evento instanceof eventos.tipos.EventoEstadoMesa) {
         dtos.EstadoMesaDTO mesaInicial = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
         
-        // Transición a la pantalla de partida
-        PantallaPartida partidaUI = new PantallaPartida(mesaInicial);
+        // ¡LA SOLUCIÓN! Le pasamos los 4 parámetros:
+        // 1. Tu variable de ClienteUNO (asegúrate de tenerla en el Lobby)
+        // 2. La instancia del EventBus
+        // 3. Tu nombre de jugador
+        // 4. El estado inicial que acabamos de recibir
+        PantallaPartida partidaUI = new PantallaPartida(this.cliente, eventos.EventBus.getInstance(), this.miNombre, mesaInicial);
         partidaUI.setVisible(true);
         
         // Limpieza: nos desuscribimos y cerramos el lobby

@@ -45,14 +45,19 @@ public class ManejadorCliente implements Runnable, IEventoListener {
             this.nombreJugador = (String) in.readObject();
             System.out.println("[Servidor] ¡El jugador " + this.nombreJugador + " ha entrado a la partida!");
             // ----------------------------
+            // ¡NUEVO! Registramos a este jugador en la partida real (como Jugador de dominio)
+            modelo.Jugador nuevoJugador = new modelo.Jugador(this.nombreJugador);
+            this.partidaCentral.getJugadores().add(nuevoJugador);
 
-            // Ahora sí, ya sabemos quién es, nos suscribimos y le mandamos su foto de la mesa
-            this.eventBus.suscribir("ACTUALIZAR_MESAS", this);
-            dtos.EstadoMesaDTO estadoInicial = TraductorDTO.generarEstadoParaJugador(this.partidaCentral, this.nombreJugador);
-            this.out.writeObject(new eventos.tipos.EventoEstadoMesa(estadoInicial));
-            this.out.reset();
-            this.out.flush();
+            // ¡NUEVO! Nos suscribimos para escuchar tanto el Lobby como la Mesa
+            this.eventBus.suscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
+            this.eventBus.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
 
+            // ¡NUEVO! Le decimos al controlador que actualice el Lobby para todos
+            this.controladorCentral.procesarComandoRed(new dtos.ComandoJugadorDTO(
+                this.nombreJugador, dtos.TipoAccion.MARCAR_LISTO, null, null, null 
+                // Usamos MARCAR_LISTO o algún comando de "ENTRAR_LOBBY" para forzar el broadcast
+            ));
         } catch (IOException | ClassNotFoundException e) { // <-- IMPORTANTE AÑADIR ESTO AL CATCH
             System.err.println("Error conectando con el cliente: " + e.getMessage());
         }
@@ -85,12 +90,18 @@ public class ManejadorCliente implements Runnable, IEventoListener {
         // Solo por seguridad, verificamos que sea el grito correcto
         if (evento.getTipoEvento().equals("ACTUALIZAR_MESAS")) {
             try {
-                // ¡CORREGIDO! Ahora usamos la variable para que traduzca la mesa correcta según el jugador
+                if (evento instanceof eventos.tipos.EventoEstadoLobby) {
+                out.writeObject(evento);
+                out.reset();
+                out.flush();
+            } 
+            else if (evento instanceof eventos.tipos.EventoEstadoMesa) {
+                // Aquí aplicamos tu traductor para asegurar la Niebla de Guerra
                 dtos.EstadoMesaDTO miEstado = TraductorDTO.generarEstadoParaJugador(partidaCentral, this.nombreJugador);
-
                 out.writeObject(new eventos.tipos.EventoEstadoMesa(miEstado));
                 out.reset();
                 out.flush();
+            }
             } catch (IOException e) {
                 System.err.println("No se pudo enviar el evento al cliente " + nombreJugador);
             }

@@ -37,6 +37,12 @@ public class Jugador {
         this.puntaje = 0;
         this.estadoUNO = false; // Por defecto nadie tiene el UNO
     }
+
+    public Jugador(String nombre) {
+        this.nombre = nombre;
+    }
+    
+    
     
     /**
      * El jugador gritó UNO exitosamente para protegerse.

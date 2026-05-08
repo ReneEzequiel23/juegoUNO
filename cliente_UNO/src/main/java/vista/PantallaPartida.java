@@ -20,17 +20,22 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
     // Identificador del jugador local (quien está viendo esta pantalla)
     private String idJugadorLocal;
 
-    public PantallaPartida(red.cliente.ClienteUNO cliente, eventos.IEventBus busLocal, String idJugadorLocal) {
+    public PantallaPartida(red.cliente.ClienteUNO cliente, eventos.IEventBus busLocal, String idJugadorLocal, dtos.EstadoMesaDTO estadoInicial) {
         this.cliente = cliente;
         this.busLocal = busLocal;
         this.idJugadorLocal = idJugadorLocal;
         
         initComponents(); 
+        
+        // Si tu ManoUI necesita conocer a su padre para los clics
         manoUI1.setPantallaPadre(this);
         this.getContentPane().setBackground(new java.awt.Color(10, 15, 30)); 
         
-        // ¡LA CONEXIÓN MÁGICA! La pantalla se suscribe para escuchar al servidor
+        // 1. Nos suscribimos para escuchar los futuros turnos
         this.busLocal.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
+        
+        // 2. ¡Pintamos la mesa inicial usando el DTO que nos llegó del Lobby!
+        actualizarInterfazConDTO(estadoInicial);
     }
 
     /**
@@ -202,8 +207,8 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(manoUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
