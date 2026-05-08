@@ -22,9 +22,16 @@ public class LobbyControlador {
     }
 
     public void procesarComando(ComandoJugadorDTO comando, Jugador jugador) {
-        // Si el jugador no existe y no está intentando entrar, ignoramos
-        if (jugador == null && comando.getTipoAccion() != dtos.TipoAccion.SOLICITAR_INICIO) return;
-
+        // 1. Si el jugador NO existe pero está pidiendo ENTRAR, lo creamos y lo unimos a la mesa
+        if (jugador == null && comando.getTipoAccion() == dtos.TipoAccion.ENTRAR_LOBBY) {
+            jugador = new Jugador(comando.getIdJugador());
+            partida.getJugadores().add(jugador);
+        }
+        // 2. Si sigue sin existir y NO es el Host forzando el inicio, entonces sí lo ignoramos
+        else if (jugador == null && comando.getTipoAccion() != dtos.TipoAccion.SOLICITAR_INICIO) {
+            return;
+        }
+        
         switch (comando.getTipoAccion()) {
             case ENTRAR_LOBBY:
                 System.out.println("[Lobby] " + jugador.getNombre() + " solicita ver el lobby.");

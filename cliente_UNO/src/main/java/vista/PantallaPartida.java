@@ -4,37 +4,29 @@
  */
 package vista;
 
-import eventos.IEvento;
-import java.awt.Color;
+import control.PartidaVistaControlador;
+import dtos.EstadoMesaDTO;
 import java.util.List;
-import red.cliente.IClienteRed;
 
 /**
  *
  * @author renee
  */
-public class PantallaPartida extends javax.swing.JFrame implements eventos.IEventoListener {
+public class PantallaPartida extends javax.swing.JFrame{
 
-    // El controlador que validará las acciones
-    private IClienteRed cliente;
-    private eventos.IEventBus busLocal; // Agregamos esta variable
+    private PartidaVistaControlador controlador;
+    private String miNombre;
 
-    // Identificador del jugador local (quien está viendo esta pantalla)
-    private String idJugadorLocal;
+    public PantallaPartida(PartidaVistaControlador controlador, String idJugadorLocal, dtos.EstadoMesaDTO estadoInicial) {
+        this.controlador = controlador;
+        this.miNombre = idJugadorLocal;
 
-    public PantallaPartida(IClienteRed cliente, eventos.IEventBus busLocal, String idJugadorLocal, dtos.EstadoMesaDTO estadoInicial) {
-        this.cliente = cliente;
-        this.busLocal = busLocal;
-        this.idJugadorLocal = idJugadorLocal;
-
+        this.controlador.setVista(this);
         initComponents();
 
         // Si tu ManoUI necesita conocer a su padre para los clics
         manoUI1.setPantallaPadre(this);
         this.getContentPane().setBackground(new java.awt.Color(10, 15, 30));
-
-        // 1. Nos suscribimos para escuchar los futuros turnos
-        this.busLocal.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
 
         // 2. ¡Pintamos la mesa inicial usando el DTO que nos llegó del Lobby!
         actualizarInterfazConDTO(estadoInicial);
@@ -43,25 +35,11 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
     // Actualizamos los parámetros del método
     public void alHacerClicEnCarta(String idCarta, String colorCarta) {
         String colorElegidoString = null;
-
-        // Evaluamos el color real que nos mandó ManoUI
         if (colorCarta != null && colorCarta.equalsIgnoreCase("NEGRO")) {
-            colorElegidoString = mostrarDialogoColor();
-
-            if (colorElegidoString == null) {
-                return; // Si canceló la ventana, abortamos la jugada
-            }
+            colorElegidoString = mostrarDialogoColor(); 
+            if (colorElegidoString == null) return; 
         }
-
-        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-                idJugadorLocal,
-                dtos.TipoAccion.JUGAR_CARTA,
-                idCarta,
-                colorElegidoString,
-                null
-        );
-
-        cliente.enviarComando(comando);
+        controlador.jugarCarta(idCarta, colorElegidoString);
     }
 
     private String mostrarDialogoColor() {
@@ -208,24 +186,15 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
     }// </editor-fold>//GEN-END:initComponents
 
     private void RobarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RobarActionPerformed
-        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-                idJugadorLocal, dtos.TipoAccion.ROBAR, null, null, null
-        );
-        cliente.enviarComando(comando);
+        controlador.robarCarta();
     }//GEN-LAST:event_RobarActionPerformed
 
     private void UNOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UNOActionPerformed
-        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-                idJugadorLocal, dtos.TipoAccion.GRITAR_UNO, null, null, null
-        );
-        cliente.enviarComando(comando);
+        controlador.gritarUno();
     }//GEN-LAST:event_UNOActionPerformed
 
     private void DenuncarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DenuncarBtnActionPerformed
-        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-                idJugadorLocal, dtos.TipoAccion.DENUNCIAR, null, null, null
-        );
-        cliente.enviarComando(comando);
+        controlador.denunciar();
     }//GEN-LAST:event_DenuncarBtnActionPerformed
 
     private void btnSimularOponenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimularOponenteActionPerformed
@@ -248,24 +217,9 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
     private vista.PilaDescartesUI pilaDescartesUI1;
     // End of variables declaration//GEN-END:variables
 
-    @Override
-    public void onEvent(eventos.IEvento evento) {
-        // Solo nos interesa si es una actualización de la mesa
-        if (evento instanceof eventos.tipos.EventoEstadoMesa) {
-
-            // 1. Extraemos el DTO que viene desde el Servidor
-            dtos.EstadoMesaDTO estado = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
-
-            // Como Java Swing es caprichoso con los hilos de red, 
-            // forzamos a que el dibujo se haga en el hilo de la interfaz gráfica
-            javax.swing.SwingUtilities.invokeLater(() -> {
-                actualizarInterfazConDTO(estado);
-            });
-        }
-    }
 
     // Este es el nuevo método que reemplaza a tu antiguo actualizar()
-    private void actualizarInterfazConDTO(dtos.EstadoMesaDTO estado) {
+    public void actualizarInterfazConDTO(EstadoMesaDTO estado) {
         // 1. Verificamos si alguien ya ganó
         if (estado.getIdGanador() != null && !estado.getIdGanador().isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this, "¡El juego ha terminado! Ganador: " + estado.getIdGanador());
@@ -281,19 +235,6 @@ public class PantallaPartida extends javax.swing.JFrame implements eventos.IEven
         // 3. Pintamos el centro de la mesa
         pilaDescartesUI1.pintarCartaSuperiorDTO(estado.getCartaEnMesa(), estado.getColorActivo());
 
-//        // 4. Pintamos a los oponentes
-//        java.util.List<dtos.OponenteDTO> oponentes = estado.getOponentes();
-//        if (oponentes.size() > 0) {
-//            jugadorUI3.pintarOponenteDTO(oponentes.get(0));
-//        }
-//        if (oponentes.size() > 1) {
-//            jugadorUI.pintarOponenteDTO(oponentes.get(1));
-//        }
-//        if (oponentes.size() > 1) {
-//            jugadorUI.pintarOponenteDTO(oponentes.get(1));
-//        }
-
-        // Asegúrate de que los 3 paneles de la vista estén en el arreglo
         JugadorUI[] panelesOponentes = {jugadorUI, jugadorUI2, jugadorUI3};
 
         List<dtos.OponenteDTO> listaOponentes = estado.getOponentes();

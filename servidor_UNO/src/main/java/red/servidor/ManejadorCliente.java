@@ -6,78 +6,57 @@ import dtos.ComandoJugadorDTO;
 import eventos.IEventBus;
 import eventos.IEvento;
 import eventos.IEventoListener;
-import eventos.tipos.EventoEstadoMesa;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import modelo.Partida;
+import red.ConexionSocket;
 
 public class ManejadorCliente implements Runnable, IEventoListener {
 
-    private Socket socket;
-    private IEventBus eventBus;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
-    private boolean conectado;
-
-    private DespachadorComandos despachador;
-    private Partida partidaCentral;
-
-    // ¡NUEVO! Guardamos quién es el dueño de este socket
+    private final ConexionSocket conexion;
+    private final IEventBus eventBus;
+    private final DespachadorComandos despachador;
+    private final Partida partidaCentral;
+    
     private String nombreJugador;
+    private boolean conectado = true;
 
-    // ¡CORREGIDO! Ahora pedimos el nombre del jugador en el constructor
-    // 1. Quitamos "String nombreJugador" de los parámetros
-    public ManejadorCliente(Socket socket, IEventBus eventBus, DespachadorComandos despachador, Partida partidaCentral) {
-        this.socket = socket;
+    public ManejadorCliente(java.net.Socket socket, IEventBus eventBus, DespachadorComandos despachador, Partida partidaCentral) {
         this.eventBus = eventBus;
         this.despachador = despachador;
         this.partidaCentral = partidaCentral;
-        this.conectado = true;
+        this.conexion = new ConexionSocket();
+
         try {
-            this.out = new ObjectOutputStream(socket.getOutputStream());
-            this.out.flush();
-            this.in = new ObjectInputStream(socket.getInputStream());
-
-            // --- ¡NUEVO! EL HANDSHAKE ---
-            // El servidor pausa aquí milisegundos hasta que el cliente diga su nombre
-            this.nombreJugador = (String) in.readObject();
-            System.out.println("[Servidor] ¡El jugador " + this.nombreJugador + " ha entrado a la partida!");
-            // ----------------------------
-            // ¡NUEVO! Registramos a este jugador en la partida real (como Jugador de dominio)
-            modelo.Jugador nuevoJugador = new modelo.Jugador(this.nombreJugador);
-            this.partidaCentral.getJugadores().add(nuevoJugador);
-
-            // ¡NUEVO! Nos suscribimos para escuchar tanto el Lobby como la Mesa
-            this.eventBus.suscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
-            this.eventBus.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
-
-            // ¡CORREGIDO! Usamos ENTRAR_LOBBY para que no se marquen con palomita automáticamente
-            despachador.procesar(new dtos.ComandoJugadorDTO(
-                this.nombreJugador, dtos.TipoAccion.ENTRAR_LOBBY, null, null, null
-            ));
-        } catch (IOException | ClassNotFoundException e) { // <-- IMPORTANTE AÑADIR ESTO AL CATCH
-            System.err.println("Error conectando con el cliente: " + e.getMessage());
+            // Vinculamos el socket aceptado usando la lógica de Comunes
+            this.conexion.vincularSocketExistente(socket);
+        } catch (java.io.IOException e) {
+            System.err.println("Error al vincular conexión: " + e.getMessage());
+            this.conectado = false;
         }
     }
 
-    // (Constructor Zombie eliminado)
     @Override
     public void run() {
         while (conectado) {
             try {
-                Object mensaje = in.readObject();
+                // Leemos el DTO de forma limpia
+                Object mensaje = conexion.recibirObjeto();
 
                 if (mensaje instanceof ComandoJugadorDTO) {
                     ComandoJugadorDTO comando = (ComandoJugadorDTO) mensaje;
-                    System.out.println("Comando recibido del jugador: " + comando.getIdJugador() + " Acción: " + comando.getTipoAccion());
+                    
+                    // Registro inicial del jugador
+                    if (this.nombreJugador == null && comando.getTipoAccion() == dtos.TipoAccion.ENTRAR_LOBBY) {
+                        this.nombreJugador = comando.getIdJugador();
+                        System.out.println("[Servidor] Jugador registrado: " + this.nombreJugador);
+                        
+                        this.eventBus.suscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
+                        this.eventBus.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
+                    }
 
                     despachador.procesar(comando);
                 }
-
-            } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Jugador " + nombreJugador + " desconectado.");
+            } catch (Exception e) {
+                System.out.println("Finalizando conexión con " + (nombreJugador != null ? nombreJugador : "desconocido"));
                 desconectar();
             }
         }
@@ -86,40 +65,22 @@ public class ManejadorCliente implements Runnable, IEventoListener {
     @Override
     public void onEvent(IEvento evento) {
         try {
-            // Si el evento es del LOBBY, lo mandamos directo al cliente
             if (evento.getTipoEvento().equals(eventos.tipos.EventoEstadoLobby.TIPO)) {
-                out.writeObject(evento);
-                out.reset();
-                out.flush();
+                conexion.enviarObjeto(evento);
             } 
-            // Si el evento es de la MESA, lo traducimos con la Niebla de Guerra
             else if (evento.getTipoEvento().equals(eventos.tipos.EventoEstadoMesa.TIPO)) {
                 dtos.EstadoMesaDTO miEstado = red.servidor.TraductorDTO.generarEstadoParaJugador(partidaCentral, this.nombreJugador);
-                out.writeObject(new eventos.tipos.EventoEstadoMesa(miEstado));
-                out.reset();
-                out.flush();
+                conexion.enviarObjeto(new eventos.tipos.EventoEstadoMesa(miEstado));
             }
-        } catch (IOException e) {
-            System.err.println("No se pudo enviar el evento al cliente " + nombreJugador);
+        } catch (java.io.IOException e) {
+            System.err.println("Error de red al notificar a " + nombreJugador);
         }
     }
 
     private void desconectar() {
         conectado = false;
-        // ¡CORREGIDO! Limpiamos la basura de la suscripción correcta
-        eventBus.desuscribir("ACTUALIZAR_MESAS", this);
-        try {
-            if (in != null) {
-                in.close();
-            }
-            if (out != null) {
-                out.close();
-            }
-            if (socket != null) {
-                socket.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        eventBus.desuscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
+        eventBus.desuscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
+        conexion.desconectar();
     }
 }
