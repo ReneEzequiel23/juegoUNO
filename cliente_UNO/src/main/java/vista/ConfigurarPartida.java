@@ -4,19 +4,24 @@
  */
 package vista;
 
+import red.cliente.ClienteUNO;
+
 /**
  *
  * @author Adrián
  */
 public class ConfigurarPartida extends javax.swing.JFrame {
 
+    private eventos.IEventBus busLocal;
+    private red.cliente.ClienteUNO cliente;
+    
     /**
      * Creates new form ConfigurarPartida
      */
     public ConfigurarPartida() {
         initComponents();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -171,19 +176,19 @@ public class ConfigurarPartida extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void aceptarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aceptarBtnActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_aceptarBtnActionPerformed
 
     private void manoBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manoBoxActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_manoBoxActionPerformed
 
     private void tiempoBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tiempoBoxActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_tiempoBoxActionPerformed
 
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
-        dispose();
+        
     }//GEN-LAST:event_cancelarBtnActionPerformed
 
     /**
