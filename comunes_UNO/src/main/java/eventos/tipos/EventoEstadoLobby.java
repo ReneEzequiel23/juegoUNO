@@ -1,6 +1,7 @@
-package eventos;
+package eventos.tipos;
 
 import dtos.EstadoLobbyDTO;
+import eventos.IEvento;
 import eventos.IEvento;
 
 public class EventoEstadoLobby implements IEvento {

@@ -7,6 +7,8 @@ package control;
 import dtos.EstadoMesaDTO;
 import eventos.EventBus;
 import eventos.Protocolo;
+import java.util.ArrayList;
+import java.util.List;
 import modelo.*;
 import red.servidor.TraductorDTO;
 
@@ -252,27 +254,25 @@ public class PartidaControlador implements IObserver{
         return partida.getPilaDescartes().obtenerCartaSuperior();
     }
     
-    // =======================================================
-    // 1. LA ENTRADA DE LA RED CORREGIDA (Error del Enum resuelto)
-    // =======================================================
     public void procesarComandoRed(dtos.ComandoJugadorDTO comando) {
         
         Jugador jugador = obtenerJugador(comando.getIdJugador());
         
-        // Corregido: Usamos el .name() del Enum si quieres compararlo con el Protocolo, 
-        // o mejor aún, comparamos directo con tu Enum TipoAccion
+        // Para acciones de Lobby, el jugador debe existir en la lista de la partida
         if (jugador == null && comando.getTipoAccion() != dtos.TipoAccion.SOLICITAR_INICIO) return;
 
-        System.out.println("[Controlador] Ejecutando acción: " + comando.getTipoAccion() + " para " + comando.getIdJugador());
-
-        // Corregido: El switch ahora usa los valores de tu Enum TipoAccion
         switch (comando.getTipoAccion()) {
-            case SOLICITAR_INICIO:
-                 if (partida.getJugadores().size() >= 2) {
-                     partida.iniciarJuego();
-                     partida.notificarObservadores(); 
-                 }
-                 break;
+            case MARCAR_LISTO:
+                jugador.setEstaListo(true);
+                System.out.println("[Lobby] " + jugador.getNombre() + " está listo.");
+                verificarCondicionesDeInicio(); // Checamos si ya se inicia solo
+                notificarCambioEnLobby();      // Avisamos a todos para que vean la palomita
+                break;
+
+            case DESMARCAR_LISTO:
+                jugador.setEstaListo(false);
+                notificarCambioEnLobby();
+                break;
                  
             case JUGAR_CARTA:
                 modelo.Color colorNuevo = null;
@@ -323,5 +323,55 @@ public class PartidaControlador implements IObserver{
             
             EventBus.getInstance().publicar(eventoSalida); 
         }
+    }
+    
+    /**
+     * Regla de negocio: Si todos están listos (2-4 jugadores), el juego inicia solo.
+     */
+    private void verificarCondicionesDeInicio() {
+        List<Jugador> lista = partida.getJugadores();
+        int cantidad = lista.size();
+
+        if (cantidad >= 2 && cantidad <= 4) {
+            boolean todosListos = true;
+            for (Jugador j : lista) {
+                if (!j.isEstaListo()) {
+                    todosListos = false;
+                    break;
+                }
+            }
+
+            if (todosListos) {
+                System.out.println("[Lobby] ¡Todos listos! Iniciando automáticamente...");
+                iniciarYNotificar();
+            }
+        }
+    }
+
+    private void iniciarYNotificar() {
+        partida.iniciarJuego();
+        partida.notificarObservadores(); // Esto dispara el envío de la mesa (EventoEstadoMesa)
+    }
+    
+    private void notificarCambioEnLobby() {
+        // 1. Creamos la lista de DTOs para el Lobby
+        List<dtos.JugadorLobbyDTO> listaLobby = new ArrayList<>();
+        
+        for (int i = 0; i < partida.getJugadores().size(); i++) {
+            Jugador j = partida.getJugadores().get(i);
+            // El primero de la lista suele ser el Host
+            boolean esHost = (i == 0); 
+            
+            listaLobby.add(new dtos.JugadorLobbyDTO(j.getNombre(), esHost, j.isEstaListo()));
+        }
+
+        // 2. Armamos el paquete (puedes usar un código de sala fijo por ahora o el de tu lógica)
+        dtos.EstadoLobbyDTO estadoLobby = new dtos.EstadoLobbyDTO("XPLASF", listaLobby);
+        
+        // 3. Lo envolvemos en el evento que creamos antes
+        eventos.IEvento eventoLobby = new eventos.tipos.EventoEstadoLobby(estadoLobby);
+        
+        // 4. ¡Broadcast!
+        eventos.EventBus.getInstance().publicar(eventoLobby);
     }
 }

@@ -28,6 +28,28 @@ public class PantallaLobby extends javax.swing.JFrame {
     private void initComponents() {
 
         btnIniciarPartida = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        lblIcono = new javax.swing.JLabel();
+        lblNombre = new javax.swing.JLabel();
+        jCheckBoxListo = new javax.swing.JCheckBox();
+        jPanel4 = new javax.swing.JPanel();
+        lblIcono1 = new javax.swing.JLabel();
+        lblNombre1 = new javax.swing.JLabel();
+        jCheckBoxListo1 = new javax.swing.JCheckBox();
+        jPanel5 = new javax.swing.JPanel();
+        lblIcono2 = new javax.swing.JLabel();
+        lblNombre2 = new javax.swing.JLabel();
+        jCheckBoxListo2 = new javax.swing.JCheckBox();
+        jPanel6 = new javax.swing.JPanel();
+        lblIcono3 = new javax.swing.JLabel();
+        lblNombre3 = new javax.swing.JLabel();
+        jCheckBoxListo3 = new javax.swing.JCheckBox();
+        jPanel2 = new javax.swing.JPanel();
+        btnRechazarInvitacion = new javax.swing.JButton();
+        btnAceptarInvitación = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        btnConfiguración = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -38,21 +60,222 @@ public class PantallaLobby extends javax.swing.JFrame {
             }
         });
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        jPanel1.setLayout(new java.awt.GridLayout(4, 1));
+
+        lblIcono.setText("Icono");
+
+        lblNombre.setText("Nombre");
+
+        jCheckBoxListo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxListoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblIcono)
+                .addGap(33, 33, 33)
+                .addComponent(lblNombre)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                .addComponent(jCheckBoxListo)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblIcono)
+                    .addComponent(lblNombre)
+                    .addComponent(jCheckBoxListo))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel3);
+
+        lblIcono1.setText("Icono");
+
+        lblNombre1.setText("Nombre");
+
+        jCheckBoxListo1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxListo1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblIcono1)
+                .addGap(33, 33, 33)
+                .addComponent(lblNombre1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                .addComponent(jCheckBoxListo1)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblIcono1)
+                    .addComponent(lblNombre1)
+                    .addComponent(jCheckBoxListo1))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel4);
+
+        lblIcono2.setText("Icono");
+
+        lblNombre2.setText("Nombre");
+
+        jCheckBoxListo2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxListo2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblIcono2)
+                .addGap(33, 33, 33)
+                .addComponent(lblNombre2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                .addComponent(jCheckBoxListo2)
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblIcono2)
+                    .addComponent(lblNombre2)
+                    .addComponent(jCheckBoxListo2))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel5);
+
+        lblIcono3.setText("Icono");
+
+        lblNombre3.setText("Nombre");
+
+        jCheckBoxListo3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxListo3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblIcono3)
+                .addGap(33, 33, 33)
+                .addComponent(lblNombre3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                .addComponent(jCheckBoxListo3)
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblIcono3)
+                    .addComponent(lblNombre3)
+                    .addComponent(jCheckBoxListo3))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel6);
+
+        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 3, true));
+
+        btnRechazarInvitacion.setText("Rechazar");
+
+        btnAceptarInvitación.setText("Aceptar");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnAceptarInvitación)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addComponent(btnRechazarInvitacion)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 92, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRechazarInvitacion)
+                    .addComponent(btnAceptarInvitación)))
+        );
+
+        jLabel1.setText("Codigo de sala: XPLASF");
+
+        btnConfiguración.setText("Configuracion");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(291, Short.MAX_VALUE)
-                .addComponent(btnIniciarPartida)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnConfiguración)
+                                .addGap(44, 44, 44))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnIniciarPartida)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(267, Short.MAX_VALUE)
-                .addComponent(btnIniciarPartida)
-                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnConfiguración)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(btnIniciarPartida))
+                .addGap(25, 25, 25))
         );
 
         pack();
@@ -75,6 +298,22 @@ public class PantallaLobby extends javax.swing.JFrame {
         // 3. Lo publicamos en el EventBus local del cliente
         eventos.EventBus.getInstance().publicar(eventoSalida);
     }//GEN-LAST:event_btnIniciarPartidaActionPerformed
+
+    private void jCheckBoxListoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxListoActionPerformed
+
+    private void jCheckBoxListo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxListo1ActionPerformed
+
+    private void jCheckBoxListo2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxListo2ActionPerformed
+
+    private void jCheckBoxListo3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxListo3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -112,6 +351,28 @@ public class PantallaLobby extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAceptarInvitación;
+    private javax.swing.JButton btnConfiguración;
     private javax.swing.JButton btnIniciarPartida;
+    private javax.swing.JButton btnRechazarInvitacion;
+    private javax.swing.JCheckBox jCheckBoxListo;
+    private javax.swing.JCheckBox jCheckBoxListo1;
+    private javax.swing.JCheckBox jCheckBoxListo2;
+    private javax.swing.JCheckBox jCheckBoxListo3;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JLabel lblIcono;
+    private javax.swing.JLabel lblIcono1;
+    private javax.swing.JLabel lblIcono2;
+    private javax.swing.JLabel lblIcono3;
+    private javax.swing.JLabel lblNombre;
+    private javax.swing.JLabel lblNombre1;
+    private javax.swing.JLabel lblNombre2;
+    private javax.swing.JLabel lblNombre3;
     // End of variables declaration//GEN-END:variables
 }

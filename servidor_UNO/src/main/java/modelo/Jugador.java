@@ -15,6 +15,7 @@ public class Jugador {
     private String avatar;
     private int puntaje;
     private boolean estadoUNO;
+    private boolean estaListo;
 
     public Jugador(Mano mano, String nombre, String avatar, int puntaje, boolean estadoUNO) {
         this.mano = mano;
@@ -87,6 +88,23 @@ public class Jugador {
         return mano;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public boolean isEstaListo() {
+        return estaListo;
+    }
+
+    public void setEstaListo(boolean estaListo) {
+        this.estaListo = estaListo;
+    }
+
+    
     
     @Override
     public String toString() {
