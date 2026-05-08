@@ -25,4 +25,9 @@ public class Numerica extends Carta {
     public String obtenerTipo() {
         return "NUMERICA";
     }
+    
+    @Override
+    public void aplicarEfecto(Partida partida) {
+        // Las cartas numéricas no hacen nada especial con los turnos
+    }
 }

@@ -11,11 +11,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import red.cliente.IClienteRed;
 /**
  *
  * @author ReneEzequiel23 & EdgarAcevedoAcosta
  */
-public class ClienteUNO implements Runnable {
+public class ClienteUNO implements Runnable, IClienteRed {
 
     private Socket socket;
     private ObjectOutputStream out;

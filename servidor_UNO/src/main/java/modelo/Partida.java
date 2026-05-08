@@ -151,6 +151,18 @@ public class Partida {
         
         return carta;
     }
+    
+    public void penalizarSiguienteJugador(int cantidadCartas) {
+        Jugador victima = obtenerSiguienteJugador();
+        for (int i = 0; i < cantidadCartas; i++) {
+            Carta castigo = robarCartaSeguro();
+            if (castigo != null) {
+                victima.getMano().agregarCarta(castigo);
+                victima.quitarUNO(); 
+            }
+        }
+    }
+
 
     public List<Jugador> getJugadores() {
         return jugadores;

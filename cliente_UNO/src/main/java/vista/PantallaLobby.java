@@ -6,7 +6,7 @@ package vista;
 
 import eventos.IEvento;
 import java.util.List;
-import red.cliente.ClienteUNO;
+import red.cliente.IClienteRed;
 
 /**
  *
@@ -15,7 +15,7 @@ import red.cliente.ClienteUNO;
 public class PantallaLobby extends javax.swing.JFrame implements eventos.IEventoListener {
 
     String miNombre;
-    private red.cliente.ClienteUNO cliente;
+    private IClienteRed cliente;
     private eventos.IEventBus busLocal;
     private boolean actualizandoUI = false;
     private boolean partidaIniciada = false;
@@ -23,7 +23,7 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
     /**
      * Creates new form PantallaLobby
      */
-    public PantallaLobby(red.cliente.ClienteUNO cliente, eventos.IEventBus busLocal, String idJugadorLocal) {
+    public PantallaLobby(IClienteRed cliente, eventos.IEventBus busLocal, String idJugadorLocal) {
         this.cliente = cliente;
         this.busLocal = busLocal;
         this.miNombre = idJugadorLocal;

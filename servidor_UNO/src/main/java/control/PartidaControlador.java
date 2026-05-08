@@ -78,7 +78,7 @@ public class PartidaControlador implements IObserver {
             // =========================================================
 
             // 4. Efectos (Saltos, Robar cartas)
-            aplicarEfectoCarta(cartaAJugar);
+            cartaAJugar.aplicarEfecto(this.partida);
 
             // 5. Verificamos si ganó
             if (verificarVictoria(jugador)) {
@@ -93,36 +93,6 @@ public class PartidaControlador implements IObserver {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Identifica si la carta es un Comodín y aplica sus reglas a la Partida.
-     */
-    private void aplicarEfectoCarta(Carta carta) {
-        if (carta instanceof Comodin) {
-            Comodin comodin = (Comodin) carta;
-
-            switch (comodin.obtenerAccion()) {
-                case REVERSA:
-                    partida.getTurno().cambiarSentido();
-                    break;
-                case BLOQUEO:
-                    // Le decimos a la partida que el siguiente jugador pierde su turno
-                    partida.saltarSiguienteTurno();
-                    break;
-                case TOMA2:
-                    penalizarSiguienteJugador(2);
-                    partida.saltarSiguienteTurno(); // El que roba, pierde su turno
-                    break;
-                case TOMA4:
-                    penalizarSiguienteJugador(4);
-                    partida.saltarSiguienteTurno(); // El que roba, pierde su turno
-                    break;
-                case CAMBIOCOLOR:
-                    // No hace nada extra a los turnos, el cambio de color ya se hizo en jugarCarta()
-                    break;
-            }
-        }
     }
 
     /**

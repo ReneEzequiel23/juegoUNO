@@ -7,6 +7,7 @@ package vista;
 import eventos.IEvento;
 import java.awt.Color;
 import java.util.List;
+import red.cliente.IClienteRed;
 
 /**
  *
@@ -15,13 +16,13 @@ import java.util.List;
 public class PantallaPartida extends javax.swing.JFrame implements eventos.IEventoListener {
 
     // El controlador que validará las acciones
-    private red.cliente.ClienteUNO cliente;
+    private IClienteRed cliente;
     private eventos.IEventBus busLocal; // Agregamos esta variable
 
     // Identificador del jugador local (quien está viendo esta pantalla)
     private String idJugadorLocal;
 
-    public PantallaPartida(red.cliente.ClienteUNO cliente, eventos.IEventBus busLocal, String idJugadorLocal, dtos.EstadoMesaDTO estadoInicial) {
+    public PantallaPartida(IClienteRed cliente, eventos.IEventBus busLocal, String idJugadorLocal, dtos.EstadoMesaDTO estadoInicial) {
         this.cliente = cliente;
         this.busLocal = busLocal;
         this.idJugadorLocal = idJugadorLocal;
