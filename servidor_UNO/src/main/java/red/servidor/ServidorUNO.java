@@ -2,66 +2,45 @@ package red.servidor;
 
 import control.PartidaControlador;
 import eventos.EventBus;
-import eventos.IEventBus;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
-import modelo.IObserver;
-import modelo.Jugador;
 import modelo.Partida;
+import red.servidor.ManejadorCliente;
 
 public class ServidorUNO {
 
-    private IEventBus eventBusCentral;
-    private PartidaControlador controladorCentral;
-    private Partida partidaCentral;
-
-    public ServidorUNO() {
-        this.eventBusCentral = new EventBus();
-        inicializarJuegoEnServidor();
-    }
-
-    private void inicializarJuegoEnServidor() {
-        // 1. Creamos la partida (Temporalmente con 3 jugadores fijos para la prueba)
-        List<Jugador> jugadores = new ArrayList<>();
-        jugadores.add(new Jugador("Rene", "avatar_rene.png"));
-        jugadores.add(new Jugador("Edgar", "avatar_edgar.png"));
-
-        partidaCentral = new Partida(jugadores);
-        controladorCentral = new PartidaControlador(partidaCentral);
-
-        // 2. EL PUENTE CLAVE: El Modelo (Partida) avisa al EventBus cuando cambia
-        partidaCentral.agregarObservador(new IObserver() {
-            @Override
-            public void actualizar() {
-                // Cuando alguien tira una carta, gritamos "¡LA MESA CAMBIÓ!" al EventBus
-                // Nota: Usamos un evento temporal simple que crearemos enseguida
-                eventBusCentral.publicar(new eventos.tipos.EventoNotificacion("ACTUALIZAR_MESAS"));
-            }
-        });
-
-        // Repartimos las cartas e iniciamos (esto disparará el primer 'actualizar')
-        partidaCentral.iniciarJuego();
-    }
-
-    public void iniciarServidor() {
-        try (ServerSocket serverSocket = new ServerSocket(5050)) {
-            System.out.println("=== SERVIDOR INICIADO - JUEGO EN CURSO ===");
-            while (true) {
-                Socket socketCliente = serverSocket.accept();
-
-                // ¡Ya no pasamos "Rene"! El manejador lo leerá de la red.
-                ManejadorCliente manejador = new ManejadorCliente(socketCliente, eventBusCentral, controladorCentral, partidaCentral);
-                new Thread(manejador).start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
-        new ServidorUNO().iniciarServidor();
+        int puerto = 12345;
+        
+        // 1. Inicializamos el cerebro del servidor (Solo 1 para todos)
+        EventBus busGlobal = EventBus.getInstance();
+        Partida partidaCentral = new Partida(new ArrayList<>()); // Inicia sin jugadores
+        PartidaControlador controlador = new PartidaControlador(partidaCentral);
+
+        System.out.println("======================================");
+        System.out.println("   SERVIDOR UNO INICIADO EN PUERTO " + puerto);
+        System.out.println("======================================");
+
+        try (ServerSocket serverSocket = new ServerSocket(puerto)) {
+            
+            // 2. El ciclo infinito que acepta conexiones
+            while (true) {
+                System.out.println("Esperando nuevos jugadores...");
+                
+                // El programa se pausa en esta línea hasta que un ClienteUNO hace "new Socket()"
+                Socket socketCliente = serverSocket.accept(); 
+                
+                System.out.println("¡Cliente detectado! IP: " + socketCliente.getInetAddress());
+
+                // 3. Contratamos a un "Trabajador" para este cliente y lo lanzamos en su propio hilo
+                ManejadorCliente trabajador = new ManejadorCliente(socketCliente, busGlobal, controlador, partidaCentral);
+                new Thread(trabajador).start();
+            }
+            
+        } catch (IOException e) {
+            System.err.println("Error grave en el servidor: " + e.getMessage());
+        }
     }
 }

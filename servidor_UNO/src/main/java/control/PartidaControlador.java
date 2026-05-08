@@ -262,6 +262,14 @@ public class PartidaControlador implements IObserver{
         if (jugador == null && comando.getTipoAccion() != dtos.TipoAccion.SOLICITAR_INICIO) return;
 
         switch (comando.getTipoAccion()) {
+            case SOLICITAR_INICIO:
+                // El Host fuerza el inicio (mínimo 2 jugadores)
+                if (partida.getJugadores().size() >= 2) {
+                    System.out.println("[Controlador] El Host ha forzado el inicio de la partida.");
+                    iniciarYNotificar(); // Reutilizamos este método que ya inicia y avisa
+                }
+                break;
+                
             case ENTRAR_LOBBY:
                 // Alguien nuevo entró y pidió la lista, se la mandamos a todos
                 System.out.println("[Lobby] " + jugador.getNombre() + " solicita ver el lobby.");
@@ -306,28 +314,14 @@ public class PartidaControlador implements IObserver{
         }
     }
     
-    // =======================================================
-    // 2. LA SALIDA HACIA LA RED CORREGIDA (Usando EventoEstadoMesa)
-    // =======================================================
     @Override
     public void actualizar() {
-        System.out.println("[Controlador] Generando DTOs para la red...");
+        System.out.println("[Controlador] Notificando a los hilos de red que la mesa cambió...");
         
-        for (Jugador jugadorDestino : partida.getJugadores()) {
-            
-            // 1. Creamos la vista con "Niebla de Guerra" usando tu Traductor
-            EstadoMesaDTO estadoNieblaGuerra = red.servidor.TraductorDTO.generarEstadoParaJugador(partida, jugadorDestino.getNombre());
-            
-            // 2. Empaquetamos el DTO dentro de tu clase específica de evento
-            eventos.IEvento eventoSalida = new eventos.tipos.EventoEstadoMesa(estadoNieblaGuerra);
-            
-            // 3. Lo publicamos en el Bus de Eventos.
-            // OJO: Si tu EventBus no es un Singleton (no tiene getInstance()), 
-            // asegúrate de pasarle la instancia del EventBus al PartidaControlador en su constructor 
-            // para que puedas llamar a: this.eventBus.publicar(eventoSalida);
-            
-            EventBus.getInstance().publicar(eventoSalida); 
-        }
+        // Solo gritamos UNA vez. Los Manejadores de Cliente escucharán este grito 
+        // y cada uno usará su propio TraductorDTO para mandarle la mesa a su jugador.
+        eventos.IEvento eventoAviso = new eventos.tipos.EventoEstadoMesa(null);
+        eventos.EventBus.getInstance().publicar(eventoAviso); 
     }
     
     /**

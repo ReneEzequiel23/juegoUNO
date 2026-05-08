@@ -16,18 +16,20 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
 
     String miNombre;
     private red.cliente.ClienteUNO cliente;
-    private eventos.IEventBus busLocal; // Agregamos esta variable
+    private eventos.IEventBus busLocal;
+    private boolean actualizandoUI = false;
+    private boolean partidaIniciada = false;
 
     /**
      * Creates new form PantallaLobby
      */
-
     public PantallaLobby(red.cliente.ClienteUNO cliente, eventos.IEventBus busLocal, String idJugadorLocal) {
         this.cliente = cliente;
         this.busLocal = busLocal;
         this.miNombre = idJugadorLocal;
 
         initComponents();
+        panelSolicitud.setVisible(false);
         // ¡LA CLAVE ESTABA AQUÍ! Suscribirse a los DOS eventos
         this.busLocal.suscribir(eventos.tipos.EventoEstadoLobby.TIPO, this); // Para actualizar la lista
         this.busLocal.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);  // Para saltar al juego
@@ -330,31 +332,22 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
 
     private void jCheckBoxListoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListoActionPerformed
         // TODO add your handling code here:
-        // 1. Vemos si el jugador puso o quitó la palomita
-        dtos.TipoAccion accionActual = jCheckBoxListo.isSelected()
-                ? dtos.TipoAccion.MARCAR_LISTO
-                : dtos.TipoAccion.DESMARCAR_LISTO;
-
-        // 2. ¡CORREGIDO! Usamos "accionActual" en lugar de SOLICITAR_INICIO
-        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-                this.miNombre,
-                accionActual, 
-                null, null, null
-        );
-
-        this.cliente.enviarComando(comando);
+        enviarComandoListo(jCheckBoxListo);
     }//GEN-LAST:event_jCheckBoxListoActionPerformed
 
     private void jCheckBoxListo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo1ActionPerformed
         // TODO add your handling code here:
+        enviarComandoListo(jCheckBoxListo1);
     }//GEN-LAST:event_jCheckBoxListo1ActionPerformed
 
     private void jCheckBoxListo2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo2ActionPerformed
         // TODO add your handling code here:
+        enviarComandoListo(jCheckBoxListo2);
     }//GEN-LAST:event_jCheckBoxListo2ActionPerformed
 
     private void jCheckBoxListo3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo3ActionPerformed
         // TODO add your handling code here:
+        enviarComandoListo(jCheckBoxListo3);
     }//GEN-LAST:event_jCheckBoxListo3ActionPerformed
 
     private void btnAceptarInvitaciónActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarInvitaciónActionPerformed
@@ -404,18 +397,23 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
             });
         } // CASO 2: El juego ha iniciado
         else if (evento instanceof eventos.tipos.EventoEstadoMesa) {
-            dtos.EstadoMesaDTO mesaInicial = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
+        // ¡EL CERROJO! Si ya iniciamos una vez, ignoramos cualquier evento duplicado
+        if (partidaIniciada) return;
+        
+        partidaIniciada = true; // Marcamos que ya estamos en proceso de cambio
+        
+        dtos.EstadoMesaDTO mesaInicial = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
 
-            javax.swing.SwingUtilities.invokeLater(() -> {
-                vista.PantallaPartida partidaUI = new vista.PantallaPartida(this.cliente, this.busLocal, this.miNombre, mesaInicial);
-                partidaUI.setVisible(true);
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            vista.PantallaPartida partidaUI = new vista.PantallaPartida(this.cliente, this.busLocal, this.miNombre, mesaInicial);
+            partidaUI.setVisible(true);
 
-                // Limpieza
-                this.busLocal.desuscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
-                this.busLocal.desuscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
-                this.dispose();
-            });
-        }
+            // Desuscripción y cierre
+            this.busLocal.desuscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
+            this.busLocal.desuscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
+            this.dispose();
+        });
+    }
     }
 
     /**
@@ -424,6 +422,7 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
      */
     private void actualizarInterfazLobby(dtos.EstadoLobbyDTO estado) {
         // Actualizamos el código de sala
+        actualizandoUI = true;
         this.lblCodigoSala.setText("Codigo de sala: " + estado.getCodigoSala());
 
         List<dtos.JugadorLobbyDTO> lista = estado.getJugadoresEnSala();
@@ -437,19 +436,50 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
         // Arreglo con tus checkboxes
         javax.swing.JCheckBox[] checks = {jCheckBoxListo, jCheckBoxListo1, jCheckBoxListo2, jCheckBoxListo3};
 
+        boolean soyHost = false; // Bandera para saber si tengo el poder
+
         for (int i = 0; i < filas.length; i++) {
             if (i < lista.size()) {
-                // Si hay un jugador para esta fila, la mostramos y llenamos datos
                 dtos.JugadorLobbyDTO jDTO = lista.get(i);
                 filas[i].setVisible(true);
                 nombres[i].setText(jDTO.getNombre() + (jDTO.isEsHost() ? " (Host)" : ""));
 
-                // Actualizamos el check sin disparar eventos de red de nuevo
+                // Actualizamos visualmente la palomita
                 checks[i].setSelected(jDTO.isEstaListo());
+
+                // ¿Este jugador soy yo?
+                if (jDTO.getNombre().equals(this.miNombre)) {
+                    checks[i].setEnabled(true); // Solo puedo darle clic a MI casilla
+                    if (jDTO.isEsHost()) {
+                        soyHost = true; // Descubrí que yo soy el host
+                    }
+                } else {
+                    checks[i].setEnabled(false); // Bloqueo las casillas de los demás
+                }
+
             } else {
-                // Si no hay jugador (ej. solo hay 2 personas), ocultamos la fila
                 filas[i].setVisible(false);
             }
         }
+
+        // Si no soy el host, me desaparecen los botones de control
+        btnIniciarPartida.setVisible(soyHost);
+        btnConfiguración.setVisible(soyHost);
+        actualizandoUI = false;
+    }
+    
+    private void enviarComandoListo(javax.swing.JCheckBox miCheck) {
+        // Si el programa está pintando la palomita, abortamos el envío a la red.
+        if (actualizandoUI) return; 
+
+        dtos.TipoAccion accionActual = miCheck.isSelected()
+                ? dtos.TipoAccion.MARCAR_LISTO
+                : dtos.TipoAccion.DESMARCAR_LISTO;
+
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+                this.miNombre, accionActual, null, null, null
+        );
+
+        this.cliente.enviarComando(comando);
     }
 }
