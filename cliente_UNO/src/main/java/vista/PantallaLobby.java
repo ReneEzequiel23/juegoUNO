@@ -4,13 +4,16 @@
  */
 package vista;
 
+import eventos.IEvento;
+import java.util.List;
+
 /**
  *
  * @author ReneEzequiel23 & EdgarAcevedoAcosta
  */
-public class PantallaLobby extends javax.swing.JFrame {
+public class PantallaLobby extends javax.swing.JFrame implements eventos.IEventoListener{
 
-    String miNombreDeJugador;
+    String miNombre;
     /**
      * Creates new form PantallaLobby
      */
@@ -28,7 +31,7 @@ public class PantallaLobby extends javax.swing.JFrame {
     private void initComponents() {
 
         btnIniciarPartida = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        panelListaJugadores = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         lblIcono = new javax.swing.JLabel();
         lblNombre = new javax.swing.JLabel();
@@ -45,10 +48,11 @@ public class PantallaLobby extends javax.swing.JFrame {
         lblIcono3 = new javax.swing.JLabel();
         lblNombre3 = new javax.swing.JLabel();
         jCheckBoxListo3 = new javax.swing.JCheckBox();
-        jPanel2 = new javax.swing.JPanel();
+        panelSolicitud = new javax.swing.JPanel();
         btnRechazarInvitacion = new javax.swing.JButton();
         btnAceptarInvitación = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        lblTextoSolicitud = new javax.swing.JLabel();
+        lblCodigoSala = new javax.swing.JLabel();
         btnConfiguración = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -60,8 +64,8 @@ public class PantallaLobby extends javax.swing.JFrame {
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-        jPanel1.setLayout(new java.awt.GridLayout(4, 1));
+        panelListaJugadores.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        panelListaJugadores.setLayout(new java.awt.GridLayout(4, 1));
 
         lblIcono.setText("Icono");
 
@@ -97,12 +101,13 @@ public class PantallaLobby extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel3);
+        panelListaJugadores.add(jPanel3);
 
         lblIcono1.setText("Icono");
 
         lblNombre1.setText("Nombre");
 
+        jCheckBoxListo1.setEnabled(false);
         jCheckBoxListo1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBoxListo1ActionPerformed(evt);
@@ -133,12 +138,13 @@ public class PantallaLobby extends javax.swing.JFrame {
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel4);
+        panelListaJugadores.add(jPanel4);
 
         lblIcono2.setText("Icono");
 
         lblNombre2.setText("Nombre");
 
+        jCheckBoxListo2.setEnabled(false);
         jCheckBoxListo2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBoxListo2ActionPerformed(evt);
@@ -169,12 +175,13 @@ public class PantallaLobby extends javax.swing.JFrame {
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel5);
+        panelListaJugadores.add(jPanel5);
 
         lblIcono3.setText("Icono");
 
         lblNombre3.setText("Nombre");
 
+        jCheckBoxListo3.setEnabled(false);
         jCheckBoxListo3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBoxListo3ActionPerformed(evt);
@@ -205,35 +212,48 @@ public class PantallaLobby extends javax.swing.JFrame {
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel6);
+        panelListaJugadores.add(jPanel6);
 
-        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 3, true));
+        panelSolicitud.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 3, true));
 
         btnRechazarInvitacion.setText("Rechazar");
 
         btnAceptarInvitación.setText("Aceptar");
+        btnAceptarInvitación.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAceptarInvitaciónActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        lblTextoSolicitud.setText("Juanito 777 desea unirse");
+
+        javax.swing.GroupLayout panelSolicitudLayout = new javax.swing.GroupLayout(panelSolicitud);
+        panelSolicitud.setLayout(panelSolicitudLayout);
+        panelSolicitudLayout.setHorizontalGroup(
+            panelSolicitudLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelSolicitudLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnAceptarInvitación)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addComponent(btnRechazarInvitacion)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelSolicitudLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTextoSolicitud)
+                .addGap(34, 34, 34))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 92, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        panelSolicitudLayout.setVerticalGroup(
+            panelSolicitudLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelSolicitudLayout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addComponent(lblTextoSolicitud)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addGroup(panelSolicitudLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRechazarInvitacion)
                     .addComponent(btnAceptarInvitación)))
         );
 
-        jLabel1.setText("Codigo de sala: XPLASF");
+        lblCodigoSala.setText("Codigo de sala: XPLASF");
 
         btnConfiguración.setText("Configuracion");
 
@@ -245,16 +265,16 @@ public class PantallaLobby extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(15, 15, 15)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(panelListaJugadores, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(panelSolicitud, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(btnConfiguración)
                                 .addGap(44, 44, 44))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(64, 64, 64)
-                        .addComponent(jLabel1)
+                        .addComponent(lblCodigoSala)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnIniciarPartida)))
                 .addContainerGap())
@@ -265,15 +285,15 @@ public class PantallaLobby extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(49, 49, 49)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
+                        .addComponent(panelListaJugadores, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnConfiguración)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(panelSolicitud, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(lblCodigoSala)
                     .addComponent(btnIniciarPartida))
                 .addGap(25, 25, 25))
         );
@@ -283,24 +303,40 @@ public class PantallaLobby extends javax.swing.JFrame {
 
     private void btnIniciarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarPartidaActionPerformed
         // 1. Instanciamos el DTO usando tu constructor completo.
-        // Como solo estamos solicitando iniciar, no hay carta jugada, ni color, ni denunciado.
-        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-            miNombreDeJugador,               // idJugador
-            dtos.TipoAccion.SOLICITAR_INICIO, // TipoAccion
-            null,                            // idCartaJugada
-            null,                            // colorElegido
-            null                             // idJugadorDenunciado
-        );
-
-        // 2. Lo empaquetamos en nuestra clase de evento
-        eventos.IEvento eventoSalida = new eventos.tipos.EventoComando(comando);
+        // Asumiendo que tienes una variable de clase con el nombre del jugador local
+        // por ejemplo: private String miNombre = "Rene"; 
         
-        // 3. Lo publicamos en el EventBus local del cliente
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+            this.miNombre, 
+            dtos.TipoAccion.SOLICITAR_INICIO, 
+            null, 
+            null, 
+            null
+        );
+        
+        eventos.IEvento eventoSalida = new eventos.tipos.EventoComando(comando);
         eventos.EventBus.getInstance().publicar(eventoSalida);
     }//GEN-LAST:event_btnIniciarPartidaActionPerformed
 
     private void jCheckBoxListoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListoActionPerformed
         // TODO add your handling code here:
+        // 1. Vemos si el jugador puso o quitó la palomita
+        dtos.TipoAccion accionActual = jCheckBoxListo.isSelected() 
+                                       ? dtos.TipoAccion.MARCAR_LISTO 
+                                       : dtos.TipoAccion.DESMARCAR_LISTO;
+        
+        // 2. Armamos el comando
+        dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
+            this.miNombre, 
+            accionActual, 
+            null, 
+            null, 
+            null
+        );
+        
+        // 3. Lo publicamos en el bus
+        eventos.IEvento eventoSalida = new eventos.tipos.EventoComando(comando);
+        eventos.EventBus.getInstance().publicar(eventoSalida);
     }//GEN-LAST:event_jCheckBoxListoActionPerformed
 
     private void jCheckBoxListo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo1ActionPerformed
@@ -314,6 +350,11 @@ public class PantallaLobby extends javax.swing.JFrame {
     private void jCheckBoxListo3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBoxListo3ActionPerformed
+
+    private void btnAceptarInvitaciónActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarInvitaciónActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnAceptarInvitaciónActionPerformed
 
     /**
      * @param args the command line arguments
@@ -359,13 +400,11 @@ public class PantallaLobby extends javax.swing.JFrame {
     private javax.swing.JCheckBox jCheckBoxListo1;
     private javax.swing.JCheckBox jCheckBoxListo2;
     private javax.swing.JCheckBox jCheckBoxListo3;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JLabel lblCodigoSala;
     private javax.swing.JLabel lblIcono;
     private javax.swing.JLabel lblIcono1;
     private javax.swing.JLabel lblIcono2;
@@ -374,5 +413,65 @@ public class PantallaLobby extends javax.swing.JFrame {
     private javax.swing.JLabel lblNombre1;
     private javax.swing.JLabel lblNombre2;
     private javax.swing.JLabel lblNombre3;
+    private javax.swing.JLabel lblTextoSolicitud;
+    private javax.swing.JPanel panelListaJugadores;
+    private javax.swing.JPanel panelSolicitud;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+public void onEvent(eventos.IEvento evento) {
+    // CASO 1: Actualización de los jugadores en el Lobby
+    if (evento instanceof eventos.tipos.EventoEstadoLobby) {
+        dtos.EstadoLobbyDTO estado = ((eventos.tipos.EventoEstadoLobby) evento).getEstadoLobbyDTO();
+        actualizarInterfazLobby(estado);
+    } 
+    
+    // CASO 2: El juego ha iniciado (Recibimos la primera mesa)
+    else if (evento instanceof eventos.tipos.EventoEstadoMesa) {
+        dtos.EstadoMesaDTO mesaInicial = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
+        
+        // Transición a la pantalla de partida
+        PantallaPartida partidaUI = new PantallaPartida(mesaInicial);
+        partidaUI.setVisible(true);
+        
+        // Limpieza: nos desuscribimos y cerramos el lobby
+        eventos.EventBus.getInstance().desuscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
+        eventos.EventBus.getInstance().desuscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
+        this.dispose();
+    }
+}
+
+/**
+ * Mapea los datos del DTO hacia tus componentes de NetBeans (jPanel3, jPanel4, etc.)
+ */
+private void actualizarInterfazLobby(dtos.EstadoLobbyDTO estado) {
+    // Actualizamos el código de sala
+    this.lblCodigoSala.setText("Codigo de sala: " + estado.getCodigoSala());
+
+    List<dtos.JugadorLobbyDTO> lista = estado.getJugadoresEnSala();
+    
+    // Arreglo con tus paneles de fila para iterar fácilmente
+    javax.swing.JPanel[] filas = {jPanel3, jPanel4, jPanel5, jPanel6};
+    
+    // Arreglo con tus labels de nombre
+    javax.swing.JLabel[] nombres = {lblNombre, lblNombre1, lblNombre2, lblNombre3};
+    
+    // Arreglo con tus checkboxes
+    javax.swing.JCheckBox[] checks = {jCheckBoxListo, jCheckBoxListo1, jCheckBoxListo2, jCheckBoxListo3};
+
+    for (int i = 0; i < filas.length; i++) {
+        if (i < lista.size()) {
+            // Si hay un jugador para esta fila, la mostramos y llenamos datos
+            dtos.JugadorLobbyDTO jDTO = lista.get(i);
+            filas[i].setVisible(true);
+            nombres[i].setText(jDTO.getNombre() + (jDTO.isEsHost() ? " (Host)" : ""));
+            
+            // Actualizamos el check sin disparar eventos de red de nuevo
+            checks[i].setSelected(jDTO.isEstaListo());
+        } else {
+            // Si no hay jugador (ej. solo hay 2 personas), ocultamos la fila
+            filas[i].setVisible(false);
+        }
+    }
+}
 }
