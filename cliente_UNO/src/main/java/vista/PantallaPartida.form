@@ -63,11 +63,11 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
       <SubComponents>
+        <Component class="vista.JugadorUI" name="jugadorUI">
+        </Component>
         <Component class="vista.JugadorUI" name="jugadorUI2">
         </Component>
         <Component class="vista.JugadorUI" name="jugadorUI3">
-        </Component>
-        <Component class="vista.JugadorUI" name="jugadorUI1">
         </Component>
       </SubComponents>
     </Container>

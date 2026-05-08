@@ -273,6 +273,10 @@ public class PartidaControlador implements IObserver{
             case ENTRAR_LOBBY:
                 // Alguien nuevo entró y pidió la lista, se la mandamos a todos
                 System.out.println("[Lobby] " + jugador.getNombre() + " solicita ver el lobby.");
+                
+                // ¡EL FIX! Revisamos si con este jugador ya llegamos a 4 para iniciar
+                verificarCondicionesDeInicio(); 
+                
                 notificarCambioEnLobby();
                 break;
             case MARCAR_LISTO:
@@ -331,6 +335,14 @@ public class PartidaControlador implements IObserver{
         List<Jugador> lista = partida.getJugadores();
         int cantidad = lista.size();
 
+        // REGLA 1: Si la sala está llena (4 jugadores), iniciamos de inmediato
+        if (cantidad == 4) {
+            System.out.println("[Lobby] Sala llena. Iniciando partida automáticamente...");
+            iniciarYNotificar();
+            return; // Salimos para no evaluar lo demás
+        }
+        
+        // REGLA 2: Si hay entre 2 y 3, esperamos a que todos estén listos
         if (cantidad >= 2 && cantidad <= 4) {
             boolean todosListos = true;
             for (Jugador j : lista) {
@@ -364,13 +376,9 @@ public class PartidaControlador implements IObserver{
             listaLobby.add(new dtos.JugadorLobbyDTO(j.getNombre(), esHost, j.isEstaListo()));
         }
 
-        // 2. Armamos el paquete (puedes usar un código de sala fijo por ahora o el de tu lógica)
-        dtos.EstadoLobbyDTO estadoLobby = new dtos.EstadoLobbyDTO("XPLASF", listaLobby);
+        dtos.EstadoLobbyDTO estadoLobby = new dtos.EstadoLobbyDTO(partida.getCodigoSala(), listaLobby);
         
-        // 3. Lo envolvemos en el evento que creamos antes
         eventos.IEvento eventoLobby = new eventos.tipos.EventoEstadoLobby(estadoLobby);
-        
-        // 4. ¡Broadcast!
         eventos.EventBus.getInstance().publicar(eventoLobby);
     }
 }

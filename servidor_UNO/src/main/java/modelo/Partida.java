@@ -18,17 +18,17 @@ public class Partida {
     private final PilaDescartes pilaDescartes;
     private final Mazo mazo;
     private Color colorActivo;
+    private String codigoSala;
 
     private static final int CARTAS_POR_JUGADOR = 7;
     private final List<IObserver> observadores;
 
     public Partida(List<Jugador> jugadores) {
         this.jugadores = jugadores;
-        this.mazo = new Mazo(); // El constructor de Mazo ya inicializa y baraja
+        this.codigoSala = generarCodigoAleatorio(); // El código se genera aquí
+        this.mazo = new Mazo(); 
         this.pilaDescartes = new PilaDescartes();
         this.observadores = new ArrayList<>();
-
-        
     }
     
     public void agregarObservador(IObserver observador) {
@@ -42,6 +42,22 @@ public class Partida {
         }
     }
 
+    public String getCodigoSala() {
+        return codigoSala;
+    }
+    
+    private String generarCodigoAleatorio() {
+    String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    StringBuilder sb = new StringBuilder();
+    java.util.Random random = new java.util.Random();
+    
+    for (int i = 0; i < 6; i++) {
+        int index = random.nextInt(caracteres.length());
+        sb.append(caracteres.charAt(index));
+    }
+    return sb.toString();
+}
+    
     /**
      * reparte cartas y coloca la primera en la pila.
      */

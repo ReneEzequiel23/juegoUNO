@@ -105,8 +105,8 @@ public class ManoUI extends JPanel {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     if (pantallaPadre != null) {
-                        // Devolvemos el ID de la carta clicada
-                        pantallaPadre.alHacerClicEnCarta(carta.getIdCarta());
+                        // ¡CORRECCIÓN! Pasamos el ID y el Color
+                        pantallaPadre.alHacerClicEnCarta(carta.getIdCarta(), carta.getColor());
                     }
                 }
             });
