@@ -5,7 +5,7 @@ import dtos.ComandoJugadorDTO;
 import eventos.IEventBus;
 import eventos.IEvento;
 import eventos.IEventoListener;
-import eventos.tipos.EventoEstadoMesa; 
+import eventos.tipos.EventoEstadoMesa;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,9 +22,9 @@ public class ManejadorCliente implements Runnable, IEventoListener {
 
     private PartidaControlador controladorCentral;
     private Partida partidaCentral;
-    
+
     // ¡NUEVO! Guardamos quién es el dueño de este socket
-    private String nombreJugador; 
+    private String nombreJugador;
 
     // ¡CORREGIDO! Ahora pedimos el nombre del jugador en el constructor
     // 1. Quitamos "String nombreJugador" de los parámetros
@@ -34,7 +34,6 @@ public class ManejadorCliente implements Runnable, IEventoListener {
         this.controladorCentral = controladorCentral;
         this.partidaCentral = partidaCentral;
         this.conectado = true;
-
         try {
             this.out = new ObjectOutputStream(socket.getOutputStream());
             this.out.flush();
@@ -53,10 +52,9 @@ public class ManejadorCliente implements Runnable, IEventoListener {
             this.eventBus.suscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
             this.eventBus.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
 
-            // ¡NUEVO! Le decimos al controlador que actualice el Lobby para todos
+            // ¡CORREGIDO! Usamos ENTRAR_LOBBY para que no se marquen con palomita automáticamente
             this.controladorCentral.procesarComandoRed(new dtos.ComandoJugadorDTO(
-                this.nombreJugador, dtos.TipoAccion.MARCAR_LISTO, null, null, null 
-                // Usamos MARCAR_LISTO o algún comando de "ENTRAR_LOBBY" para forzar el broadcast
+                this.nombreJugador, dtos.TipoAccion.ENTRAR_LOBBY, null, null, null
             ));
         } catch (IOException | ClassNotFoundException e) { // <-- IMPORTANTE AÑADIR ESTO AL CATCH
             System.err.println("Error conectando con el cliente: " + e.getMessage());
@@ -64,7 +62,6 @@ public class ManejadorCliente implements Runnable, IEventoListener {
     }
 
     // (Constructor Zombie eliminado)
-
     @Override
     public void run() {
         while (conectado) {
@@ -87,35 +84,39 @@ public class ManejadorCliente implements Runnable, IEventoListener {
 
     @Override
     public void onEvent(IEvento evento) {
-        // Solo por seguridad, verificamos que sea el grito correcto
-        if (evento.getTipoEvento().equals("ACTUALIZAR_MESAS")) {
-            try {
-                if (evento instanceof eventos.tipos.EventoEstadoLobby) {
+        try {
+            // Si el evento es del LOBBY, lo mandamos directo al cliente
+            if (evento.getTipoEvento().equals(eventos.tipos.EventoEstadoLobby.TIPO)) {
                 out.writeObject(evento);
                 out.reset();
                 out.flush();
             } 
-            else if (evento instanceof eventos.tipos.EventoEstadoMesa) {
-                // Aquí aplicamos tu traductor para asegurar la Niebla de Guerra
-                dtos.EstadoMesaDTO miEstado = TraductorDTO.generarEstadoParaJugador(partidaCentral, this.nombreJugador);
+            // Si el evento es de la MESA, lo traducimos con la Niebla de Guerra
+            else if (evento.getTipoEvento().equals(eventos.tipos.EventoEstadoMesa.TIPO)) {
+                dtos.EstadoMesaDTO miEstado = red.servidor.TraductorDTO.generarEstadoParaJugador(partidaCentral, this.nombreJugador);
                 out.writeObject(new eventos.tipos.EventoEstadoMesa(miEstado));
                 out.reset();
                 out.flush();
             }
-            } catch (IOException e) {
-                System.err.println("No se pudo enviar el evento al cliente " + nombreJugador);
-            }
+        } catch (IOException e) {
+            System.err.println("No se pudo enviar el evento al cliente " + nombreJugador);
         }
     }
 
     private void desconectar() {
         conectado = false;
         // ¡CORREGIDO! Limpiamos la basura de la suscripción correcta
-        eventBus.desuscribir("ACTUALIZAR_MESAS", this); 
+        eventBus.desuscribir("ACTUALIZAR_MESAS", this);
         try {
-            if (in != null) in.close();
-            if (out != null) out.close();
-            if (socket != null) socket.close();
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.close();
+            }
+            if (socket != null) {
+                socket.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

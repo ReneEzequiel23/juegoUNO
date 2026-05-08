@@ -262,6 +262,11 @@ public class PartidaControlador implements IObserver{
         if (jugador == null && comando.getTipoAccion() != dtos.TipoAccion.SOLICITAR_INICIO) return;
 
         switch (comando.getTipoAccion()) {
+            case ENTRAR_LOBBY:
+                // Alguien nuevo entró y pidió la lista, se la mandamos a todos
+                System.out.println("[Lobby] " + jugador.getNombre() + " solicita ver el lobby.");
+                notificarCambioEnLobby();
+                break;
             case MARCAR_LISTO:
                 jugador.setEstaListo(true);
                 System.out.println("[Lobby] " + jugador.getNombre() + " está listo.");

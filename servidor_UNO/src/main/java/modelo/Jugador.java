@@ -40,6 +40,13 @@ public class Jugador {
 
     public Jugador(String nombre) {
         this.nombre = nombre;
+        
+        // ¡LA SOLUCIÓN AL ERROR! Si no inicializamos la mano, no pueden recibir cartas.
+        this.mano = new Mano(); 
+        
+        this.puntaje = 0;
+        this.estadoUNO = false;
+        this.estaListo = false; 
     }
     
     

@@ -16,5 +16,6 @@ public enum TipoAccion {
     DENUNCIAR,
     SOLICITAR_INICIO,
     MARCAR_LISTO,
-    DESMARCAR_LISTO
+    DESMARCAR_LISTO,
+    ENTRAR_LOBBY
 }

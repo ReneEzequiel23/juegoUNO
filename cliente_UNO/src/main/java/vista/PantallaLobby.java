@@ -12,11 +12,12 @@ import red.cliente.ClienteUNO;
  *
  * @author ReneEzequiel23 & EdgarAcevedoAcosta
  */
-public class PantallaLobby extends javax.swing.JFrame implements eventos.IEventoListener{
+public class PantallaLobby extends javax.swing.JFrame implements eventos.IEventoListener {
 
     String miNombre;
     private red.cliente.ClienteUNO cliente;
     private eventos.IEventBus busLocal; // Agregamos esta variable
+
     /**
      * Creates new form PantallaLobby
      */
@@ -25,10 +26,13 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
         this.cliente = cliente;
         this.busLocal = busLocal;
         this.miNombre = idJugadorLocal;
-        
+
         initComponents();
+        // ¡LA CLAVE ESTABA AQUÍ! Suscribirse a los DOS eventos
+        this.busLocal.suscribir(eventos.tipos.EventoEstadoLobby.TIPO, this); // Para actualizar la lista
+        this.busLocal.suscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);  // Para saltar al juego
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -315,31 +319,30 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
 
     private void btnIniciarPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarPartidaActionPerformed
         dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-        this.miNombre, 
-        dtos.TipoAccion.SOLICITAR_INICIO, // o MARCAR_LISTO
-        null, null, null
-    );
-    
-    // En lugar del EventBus, llamamos directo al cliente (igual que en PantallaPartida)
-    this.cliente.enviarComando(comando);
+                this.miNombre,
+                dtos.TipoAccion.SOLICITAR_INICIO, // o MARCAR_LISTO
+                null, null, null
+        );
+
+        // En lugar del EventBus, llamamos directo al cliente (igual que en PantallaPartida)
+        this.cliente.enviarComando(comando);
     }//GEN-LAST:event_btnIniciarPartidaActionPerformed
 
     private void jCheckBoxListoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListoActionPerformed
         // TODO add your handling code here:
         // 1. Vemos si el jugador puso o quitó la palomita
-        dtos.TipoAccion accionActual = jCheckBoxListo.isSelected() 
-                                       ? dtos.TipoAccion.MARCAR_LISTO 
-                                       : dtos.TipoAccion.DESMARCAR_LISTO;
-        
-        // 2. Armamos el comando
+        dtos.TipoAccion accionActual = jCheckBoxListo.isSelected()
+                ? dtos.TipoAccion.MARCAR_LISTO
+                : dtos.TipoAccion.DESMARCAR_LISTO;
+
+        // 2. ¡CORREGIDO! Usamos "accionActual" en lugar de SOLICITAR_INICIO
         dtos.ComandoJugadorDTO comando = new dtos.ComandoJugadorDTO(
-        this.miNombre, 
-        dtos.TipoAccion.SOLICITAR_INICIO, // o MARCAR_LISTO
-        null, null, null
-    );
-    
-    // En lugar del EventBus, llamamos directo al cliente (igual que en PantallaPartida)
-    this.cliente.enviarComando(comando);
+                this.miNombre,
+                accionActual, 
+                null, null, null
+        );
+
+        this.cliente.enviarComando(comando);
     }//GEN-LAST:event_jCheckBoxListoActionPerformed
 
     private void jCheckBoxListo1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxListo1ActionPerformed
@@ -356,7 +359,7 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
 
     private void btnAceptarInvitaciónActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarInvitaciónActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_btnAceptarInvitaciónActionPerformed
 
 
@@ -388,63 +391,65 @@ public class PantallaLobby extends javax.swing.JFrame implements eventos.IEvento
     // End of variables declaration//GEN-END:variables
 
     @Override
-public void onEvent(eventos.IEvento evento) {
-    // CASO 1: Actualización de los jugadores en el Lobby
-    if (evento instanceof eventos.tipos.EventoEstadoLobby) {
-        dtos.EstadoLobbyDTO estado = ((eventos.tipos.EventoEstadoLobby) evento).getEstadoLobbyDTO();
-        actualizarInterfazLobby(estado);
-    } 
-    
-    // CASO 2: El juego ha iniciado (Recibimos la primera mesa)
-    else if (evento instanceof eventos.tipos.EventoEstadoMesa) {
-        dtos.EstadoMesaDTO mesaInicial = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
-        
-        // ¡LA SOLUCIÓN! Le pasamos los 4 parámetros:
-        // 1. Tu variable de ClienteUNO (asegúrate de tenerla en el Lobby)
-        // 2. La instancia del EventBus
-        // 3. Tu nombre de jugador
-        // 4. El estado inicial que acabamos de recibir
-        PantallaPartida partidaUI = new PantallaPartida(this.cliente, eventos.EventBus.getInstance(), this.miNombre, mesaInicial);
-        partidaUI.setVisible(true);
-        
-        // Limpieza: nos desuscribimos y cerramos el lobby
-        eventos.EventBus.getInstance().desuscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
-        eventos.EventBus.getInstance().desuscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
-        this.dispose();
-    }
-}
+    public void onEvent(eventos.IEvento evento) {
+        System.out.println("[PantallaLobby] Evento recibido: " + evento.getTipoEvento()); // Para depurar en consola
 
-/**
- * Mapea los datos del DTO hacia tus componentes de NetBeans (jPanel3, jPanel4, etc.)
- */
-private void actualizarInterfazLobby(dtos.EstadoLobbyDTO estado) {
-    // Actualizamos el código de sala
-    this.lblCodigoSala.setText("Codigo de sala: " + estado.getCodigoSala());
+        // CASO 1: Actualización de los jugadores en el Lobby
+        if (evento instanceof eventos.tipos.EventoEstadoLobby) {
+            dtos.EstadoLobbyDTO estado = ((eventos.tipos.EventoEstadoLobby) evento).getEstadoLobbyDTO();
 
-    List<dtos.JugadorLobbyDTO> lista = estado.getJugadoresEnSala();
-    
-    // Arreglo con tus paneles de fila para iterar fácilmente
-    javax.swing.JPanel[] filas = {jPanel3, jPanel4, jPanel5, jPanel6};
-    
-    // Arreglo con tus labels de nombre
-    javax.swing.JLabel[] nombres = {lblNombre, lblNombre1, lblNombre2, lblNombre3};
-    
-    // Arreglo con tus checkboxes
-    javax.swing.JCheckBox[] checks = {jCheckBoxListo, jCheckBoxListo1, jCheckBoxListo2, jCheckBoxListo3};
+            // Forzamos la actualización visual en el hilo de la interfaz
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                actualizarInterfazLobby(estado);
+            });
+        } // CASO 2: El juego ha iniciado
+        else if (evento instanceof eventos.tipos.EventoEstadoMesa) {
+            dtos.EstadoMesaDTO mesaInicial = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
 
-    for (int i = 0; i < filas.length; i++) {
-        if (i < lista.size()) {
-            // Si hay un jugador para esta fila, la mostramos y llenamos datos
-            dtos.JugadorLobbyDTO jDTO = lista.get(i);
-            filas[i].setVisible(true);
-            nombres[i].setText(jDTO.getNombre() + (jDTO.isEsHost() ? " (Host)" : ""));
-            
-            // Actualizamos el check sin disparar eventos de red de nuevo
-            checks[i].setSelected(jDTO.isEstaListo());
-        } else {
-            // Si no hay jugador (ej. solo hay 2 personas), ocultamos la fila
-            filas[i].setVisible(false);
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                vista.PantallaPartida partidaUI = new vista.PantallaPartida(this.cliente, this.busLocal, this.miNombre, mesaInicial);
+                partidaUI.setVisible(true);
+
+                // Limpieza
+                this.busLocal.desuscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
+                this.busLocal.desuscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
+                this.dispose();
+            });
         }
     }
-}
+
+    /**
+     * Mapea los datos del DTO hacia tus componentes de NetBeans (jPanel3,
+     * jPanel4, etc.)
+     */
+    private void actualizarInterfazLobby(dtos.EstadoLobbyDTO estado) {
+        // Actualizamos el código de sala
+        this.lblCodigoSala.setText("Codigo de sala: " + estado.getCodigoSala());
+
+        List<dtos.JugadorLobbyDTO> lista = estado.getJugadoresEnSala();
+
+        // Arreglo con tus paneles de fila para iterar fácilmente
+        javax.swing.JPanel[] filas = {jPanel3, jPanel4, jPanel5, jPanel6};
+
+        // Arreglo con tus labels de nombre
+        javax.swing.JLabel[] nombres = {lblNombre, lblNombre1, lblNombre2, lblNombre3};
+
+        // Arreglo con tus checkboxes
+        javax.swing.JCheckBox[] checks = {jCheckBoxListo, jCheckBoxListo1, jCheckBoxListo2, jCheckBoxListo3};
+
+        for (int i = 0; i < filas.length; i++) {
+            if (i < lista.size()) {
+                // Si hay un jugador para esta fila, la mostramos y llenamos datos
+                dtos.JugadorLobbyDTO jDTO = lista.get(i);
+                filas[i].setVisible(true);
+                nombres[i].setText(jDTO.getNombre() + (jDTO.isEsHost() ? " (Host)" : ""));
+
+                // Actualizamos el check sin disparar eventos de red de nuevo
+                checks[i].setSelected(jDTO.isEstaListo());
+            } else {
+                // Si no hay jugador (ej. solo hay 2 personas), ocultamos la fila
+                filas[i].setVisible(false);
+            }
+        }
+    }
 }

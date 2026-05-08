@@ -3,6 +3,8 @@
  */
 package com.mycompany.cliente_uno;
 
+import eventos.EventBus;
+import red.cliente.ClienteUNO;
 import vista.PantallaLobby;
 
 /**
@@ -12,18 +14,39 @@ import vista.PantallaLobby;
 public class Cliente_UNO {
 
     public static void main(String[] args) {
-        // 1. Creamos el bus local y el cliente
-        eventos.IEventBus busLocal = eventos.EventBus.getInstance();
-        red.cliente.ClienteUNO cliente = new red.cliente.ClienteUNO(busLocal);
+        
+        // 1. Pedimos un nombre dinámico para no tener duplicados
+        String miNombre = javax.swing.JOptionPane.showInputDialog(
+                null, 
+                "Ingresa tu nombre de jugador:", 
+                "Bienvenido a UNO", 
+                javax.swing.JOptionPane.QUESTION_MESSAGE
+        );
 
-// 2. Nos conectamos (Esto hace el handshake)
-        cliente.conectar("localhost", 12345, "Rene");
+        // Si el usuario cancela, cerramos
+        if (miNombre == null || miNombre.trim().isEmpty()) {
+            System.exit(0);
+        }
 
-// 3. ¡MUY IMPORTANTE! Arrancamos el hilo para que se quede escuchando
+        // 2. Inicializamos la red local
+        eventos.IEventBus busLocal = EventBus.getInstance();
+        ClienteUNO cliente = new ClienteUNO(busLocal);
+
+        // 3. ¡EL TRUCO! Creamos la pantalla ANTES de conectar
+        // Así la pantalla ya está suscrita al EventBus lista para escuchar
+        PantallaLobby lobby = new PantallaLobby(cliente, busLocal, miNombre);
+
+        // 4. Ahora sí, nos conectamos y arrancamos el hilo
+        cliente.conectar("localhost", 12345, miNombre);
         new Thread(cliente).start();
+        
+        // ¡NUEVO! Le decimos al servidor "Ya entré, mándame la lista del Lobby actual"
+        dtos.ComandoJugadorDTO comandoEntrar = new dtos.ComandoJugadorDTO(
+                miNombre, dtos.TipoAccion.ENTRAR_LOBBY, null, null, null
+        );
+        cliente.enviarComando(comandoEntrar);
 
-// 4. Abrimos el Lobby pasándole las dependencias
-        PantallaLobby lobby = new PantallaLobby(cliente, busLocal, "Rene");
+        // 5. Mostramos la pantalla
         lobby.setVisible(true);
     }
 }

@@ -14,7 +14,7 @@ import java.util.List;
 public class Partida {
 
     private final List<Jugador> jugadores;
-    private final Turno turno;
+    private Turno turno;
     private final PilaDescartes pilaDescartes;
     private final Mazo mazo;
     private Color colorActivo;
@@ -28,8 +28,7 @@ public class Partida {
         this.pilaDescartes = new PilaDescartes();
         this.observadores = new ArrayList<>();
 
-        // Inicializamos el primer turno con el primer jugador de la lista
-        this.turno = new Turno(jugadores.get(0), true, 30, 30);
+        
     }
     
     public void agregarObservador(IObserver observador) {
@@ -47,6 +46,8 @@ public class Partida {
      * reparte cartas y coloca la primera en la pila.
      */
     public void iniciarJuego() {
+        // Inicializamos el primer turno con el primer jugador de la lista
+        this.turno = new Turno(jugadores.get(0), true, 30, 30);
         repartirCartasIniciales();
         colocarPrimeraCarta();
     }
