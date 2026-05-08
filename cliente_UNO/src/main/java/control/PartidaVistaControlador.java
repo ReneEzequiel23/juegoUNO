@@ -16,15 +16,13 @@ import vista.PantallaPartida;
  * @author ReneEzequiel23 & EdgarAcevedoAcosta
  */
 public class PartidaVistaControlador implements IEventoListener {
-    private final IClienteRed clienteRed;
     private final IEventBus eventBus;
     private final String nombreJugador;
     
     // Necesitamos una referencia a la pantalla para decirle cuándo actualizarse
     private PantallaPartida vista; 
 
-    public PartidaVistaControlador(IClienteRed clienteRed, IEventBus eventBus, String nombreJugador) {
-        this.clienteRed = clienteRed;
+    public PartidaVistaControlador(IEventBus eventBus, String nombreJugador) {
         this.eventBus = eventBus;
         this.nombreJugador = nombreJugador;
         
@@ -44,28 +42,28 @@ public class PartidaVistaControlador implements IEventoListener {
         ComandoJugadorDTO comando = new ComandoJugadorDTO(
                 nombreJugador, TipoAccion.JUGAR_CARTA, idCarta, colorElegido, null
         );
-        clienteRed.enviarComando(comando);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
     }
 
     public void robarCarta() {
         ComandoJugadorDTO comando = new ComandoJugadorDTO(
                 nombreJugador, TipoAccion.ROBAR, null, null, null
         );
-        clienteRed.enviarComando(comando);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
     }
 
     public void gritarUno() {
         ComandoJugadorDTO comando = new ComandoJugadorDTO(
                 nombreJugador, TipoAccion.GRITAR_UNO, null, null, null
         );
-        clienteRed.enviarComando(comando);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
     }
 
     public void denunciar() {
         ComandoJugadorDTO comando = new ComandoJugadorDTO(
                 nombreJugador, TipoAccion.DENUNCIAR, null, null, null
         );
-        clienteRed.enviarComando(comando);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
     }
 
     // =======================================================

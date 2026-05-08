@@ -15,15 +15,13 @@ import red.cliente.IClienteRed;
  * @author ReneEzequiel23
  */
 public class LobbyVistaControlador implements IEventoListener{
-    private final IClienteRed clienteRed;
     private final IEventBus eventBus;
     private final String nombreJugador;
     
     private vista.PantallaLobby vista; 
     private boolean partidaIniciada = false;
 
-    public LobbyVistaControlador(IClienteRed clienteRed, IEventBus eventBus, String nombreJugador) {
-        this.clienteRed = clienteRed;
+    public LobbyVistaControlador(IEventBus eventBus, String nombreJugador) {
         this.eventBus = eventBus;
         this.nombreJugador = nombreJugador;
         
@@ -39,13 +37,13 @@ public class LobbyVistaControlador implements IEventoListener{
     // --- MÉTODOS DE SALIDA (LOS QUE YA TENÍAS) ---
     public void solicitarInicioPartida() {
         ComandoJugadorDTO comando = new ComandoJugadorDTO(nombreJugador, TipoAccion.SOLICITAR_INICIO, null, null, null);
-        clienteRed.enviarComando(comando);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
     }
 
     public void cambiarEstadoListo(boolean estaListo) {
         TipoAccion accion = estaListo ? TipoAccion.MARCAR_LISTO : TipoAccion.DESMARCAR_LISTO;
         ComandoJugadorDTO comando = new ComandoJugadorDTO(nombreJugador, accion, null, null, null);
-        clienteRed.enviarComando(comando);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
     }
 
     // --- MÉTODOS DE ENTRADA (MUDADOS DESDE LA VISTA) ---
@@ -67,7 +65,7 @@ public class LobbyVistaControlador implements IEventoListener{
             dtos.EstadoMesaDTO mesaInicial = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
 
             // 1. Preparamos el controlador de la siguiente pantalla
-            PartidaVistaControlador partidaCtrl = new PartidaVistaControlador(this.clienteRed, this.eventBus, this.nombreJugador);
+            PartidaVistaControlador partidaCtrl = new PartidaVistaControlador(this.eventBus, this.nombreJugador);
 
             // 2. Le decimos a la vista que haga el salto
             if (vista != null) {
@@ -93,6 +91,6 @@ public class LobbyVistaControlador implements IEventoListener{
                 dtos.TipoAccion.ENTRAR_LOBBY, 
                 null, null, null
         );
-        clienteRed.enviarComando(comando);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
     }
 }

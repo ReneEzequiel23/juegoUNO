@@ -29,7 +29,7 @@ public class Cliente_UNO {
 
         // 3. Inicializamos el Controlador de la Vista (Cerebro)
         // Inyectamos la red y el bus al controlador
-        LobbyVistaControlador lobbyCtrl = new LobbyVistaControlador(clienteRed, busLocal, nombre);
+        LobbyVistaControlador lobbyCtrl = new LobbyVistaControlador(busLocal, nombre);
 
         // 4. Inicializamos la Vista pasándole el controlador y el nombre
         vista.PantallaLobby lobbyVista = new vista.PantallaLobby(lobbyCtrl, nombre);
