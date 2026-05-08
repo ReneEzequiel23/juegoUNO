@@ -36,7 +36,7 @@ public class ConfiguracionController {
 
     public void cambiarNumeroCartas(int numCartas) {
         int cartasActuales = numCartas;
-        //int cartasPartida = partida.getJugadores().get
+        //int cartasPartida = partida.getJugadores().get.
         // obtienes jugadores, y a cada
     }
 
