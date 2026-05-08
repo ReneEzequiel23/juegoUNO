@@ -13,5 +13,8 @@ public enum TipoAccion {
     JUGAR_CARTA,
     ROBAR,
     GRITAR_UNO,
-    DENUNCIAR
+    DENUNCIAR,
+    SOLICITAR_INICIO,
+    MARCAR_LISTO,
+    DESMARCAR_LISTO
 }

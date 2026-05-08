@@ -15,6 +15,7 @@ import java.util.Map;
 public class EventBus implements IEventBus {
 
     // Nuestro archivero: Llave = Nombre del Evento, Valor = Lista de escuchas
+    private static EventBus instancia;
     private final Map<String, List<IEventoListener>> mapaListeners;
 
     public EventBus() {
@@ -58,5 +59,12 @@ public class EventBus implements IEventBus {
         } else {
             System.out.println("[EventBus] Nadie está escuchando el evento: " + tipo);
         }
+    }
+    
+    public static EventBus getInstance() {
+        if (instancia == null) {
+            instancia = new EventBus();
+        }
+        return instancia;
     }
 }
