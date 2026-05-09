@@ -4,6 +4,8 @@
 
 package com.mycompany.cliente_uno;
 
+import vista.PantallaInicio;
+
 /**
  *
  * @author ReneEzequiel23 & EdgarAcevedoAcosta
@@ -12,5 +14,7 @@ public class Cliente_UNO {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
+        PantallaInicio frm=new PantallaInicio();
+        frm.setVisible(true);
     }
 }

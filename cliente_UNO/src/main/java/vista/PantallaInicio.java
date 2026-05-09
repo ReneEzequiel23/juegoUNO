@@ -4,17 +4,24 @@
  */
 package vista;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author edgar
  */
 public class PantallaInicio extends javax.swing.JFrame {
-
+    private String nombreElegido;
+    private int avatar;
     /**
      * Creates new form PantallaInicio
      */
     public PantallaInicio() {
         initComponents();
+        nombreElegido="DefaultName";
+        avatar=0;
     }
 
     /**
@@ -114,8 +121,18 @@ public class PantallaInicio extends javax.swing.JFrame {
 
     private void btnConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfigActionPerformed
         // TODO add your handling code here:
-        PantallaConfiguracion frm=new PantallaConfiguracion();
+        PantallaConfiguracion frm=new PantallaConfiguracion(nombreElegido,avatar);
         frm.setVisible(true);
+        
+        frm.btnCancelar.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              nombreElegido=frm.devolverNombre();
+              avatar=frm.devolverAvatar();
+              frm.dispose();
+            }
+        
+        });
     }//GEN-LAST:event_btnConfigActionPerformed
 
     private void btnUnirseParidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnirseParidaActionPerformed
@@ -124,6 +141,9 @@ public class PantallaInicio extends javax.swing.JFrame {
 
     private void btnCrearPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearPartidaActionPerformed
         // TODO add your handling code here:
+        if(nombreElegido=="DefaultName"){
+            JOptionPane.showConfirmDialog(this, "No puedes jugar con este nombre de jugador", "Error!", JOptionPane.OK_OPTION);
+        }
     }//GEN-LAST:event_btnCrearPartidaActionPerformed
     
     

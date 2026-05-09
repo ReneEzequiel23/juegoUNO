@@ -4,6 +4,8 @@
  */
 package vista;
 
+import javax.swing.JComboBox;
+
 
 
 /**
@@ -11,11 +13,12 @@ package vista;
  * @author edgar
  */
 public class PantallaEditarJugador extends javax.swing.JFrame {
- 
+    private String nombres;
+    private String avatars;
     /**
      * Creates new form EditarJugador
      */
-    public PantallaEditarJugador() {
+    public PantallaEditarJugador(String nombre, int avatar) {
    
         initComponents();
     }
@@ -43,9 +46,11 @@ public class PantallaEditarJugador extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Emoji", 0, 36)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Editar Jugador");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI Emoji", 0, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Nombre:");
 
         txtNombre.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
@@ -54,25 +59,16 @@ public class PantallaEditarJugador extends javax.swing.JFrame {
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Atras");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
-            }
-        });
 
         btnAceptar.setBackground(new java.awt.Color(86, 203, 86));
         btnAceptar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnAceptar.setForeground(new java.awt.Color(0, 0, 0));
         btnAceptar.setText("Aceptar");
-        btnAceptar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAceptarActionPerformed(evt);
-            }
-        });
 
-        cbxAvatar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxAvatar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Artic Monkeys", "Monopoly", "Pokebola", "Solitario", "Swords", "Trebol", "Visual Studio" }));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 0, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Avatar");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -145,21 +141,33 @@ public class PantallaEditarJugador extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
-        dispose();
-    }//GEN-LAST:event_btnCancelarActionPerformed
-
-    private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        // TODO add your handling code here:
-        if(txtNombre.getText()!=null){
-//            player.setNombre(txtNombre.getText());
-//            player.setAvatar(String.valueOf(cbxAvatar.getSelectedItem()));
-        }
-    }//GEN-LAST:event_btnAceptarActionPerformed
-
+    /**
+     * Creo que no es necesario
+     */
+    public void cambiarImagen(){
+        JComboBox<String> combo = (JComboBox<String>) getContentPane().getComponent(0);
+        int indice = combo.getSelectedIndex();
+    }
+    
+    /**
+     * Metodo temporal para devolver el nombre del jugador
+     * @return el nombre
+     */
+    public String devolverNombre(){
+        nombres=txtNombre.getText();
+        return nombres;
+    }
+    
+    /**
+     * Metodo para devolver el index del avatar.
+     * @return cual foto eligio segun su index
+     */
+    public int devolverIndex(){
+        int i= cbxAvatar.getSelectedIndex();
+        return i;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAceptar;
+    public javax.swing.JButton btnAceptar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JComboBox<String> cbxAvatar;
     private javax.swing.JLabel jLabel1;

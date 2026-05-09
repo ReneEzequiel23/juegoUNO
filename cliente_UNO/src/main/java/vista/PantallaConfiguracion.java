@@ -4,17 +4,25 @@
  */
 package vista;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author edgar
  */
 public class PantallaConfiguracion extends javax.swing.JFrame {
-
+    private String nombre;
+    private int avatar;
     /**
      * Creates new form PantallaConfiguracion
      */
-    public PantallaConfiguracion() {
+    public PantallaConfiguracion(String nombre, int avatar) {
+        this.nombre=nombre;
+        this.avatar=avatar;
         initComponents();
+        clienteUI1.pintarJugador(nombre, avatar);
         
 //        btnAceptar.setVisible(false);
 //        btnAvatar.setEnabled(false);
@@ -70,11 +78,6 @@ public class PantallaConfiguracion extends javax.swing.JFrame {
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Atras");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
-            }
-        });
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -83,15 +86,16 @@ public class PantallaConfiguracion extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(clienteUI1, javax.swing.GroupLayout.DEFAULT_SIZE, 642, Short.MAX_VALUE))
+                .addGap(34, 34, 34)
+                .addComponent(clienteUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 582, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(56, Short.MAX_VALUE)
-                .addComponent(clienteUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addComponent(clienteUI1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -144,17 +148,42 @@ public class PantallaConfiguracion extends javax.swing.JFrame {
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         // TODO add your handling code here:
-        
+        PantallaEditarJugador frm = new PantallaEditarJugador(nombre, avatar);
+        frm.setVisible(true);
+        frm.btnAceptar.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(frm.devolverNombre() !=null){
+                    nombre=frm.devolverNombre();                    
+                    avatar=frm.devolverIndex();
+                    clienteUI1.pintarJugador(nombre, avatar);
+                    frm.dispose();
+                }else{
+                    JOptionPane.showMessageDialog(null, "No ingresó un nombre válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                    frm.dispose();
+                }
+            }
+        });
     }//GEN-LAST:event_btnEditarActionPerformed
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
-        dispose();
-    }//GEN-LAST:event_btnCancelarActionPerformed
-
+    /**
+     * Metodo temporal para devolver el nombre del jugador
+     * @return el nombre
+     */
+    public String devolverNombre(){
+        return nombre;
+    }
+    
+    /**
+     * Metodo temporal para devolver el avatar del jugador
+     * @return el avatar
+     */
+    public int devolverAvatar(){
+        return avatar;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancelar;
+    public javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEditar;
     private vista.ClienteUI clienteUI1;
     private javax.swing.JLabel jLabel1;
