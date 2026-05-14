@@ -18,7 +18,7 @@ import red.cliente.IClienteRed;
  */
 public class PantallaLobby extends javax.swing.JFrame {
 
-    String miNombre;
+    public String miNombre;
     private LobbyVistaControlador controlador;
 
     public PantallaLobby(LobbyVistaControlador controlador, String miNombre) {

@@ -150,6 +150,8 @@ public class PantallaInicio extends javax.swing.JFrame {
 
     private void btnUnirseParidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnirseParidaActionPerformed
         // TODO add your handling code here:
+        PantallaBusqueda frm=new PantallaBusqueda(nombreElegido,avatar);
+        frm.setVisible(true);
     }//GEN-LAST:event_btnUnirseParidaActionPerformed
 
     private void btnCrearPartidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearPartidaActionPerformed
