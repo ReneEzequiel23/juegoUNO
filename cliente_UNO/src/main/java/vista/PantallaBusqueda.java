@@ -49,6 +49,7 @@ public class PantallaBusqueda extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Buscar Partida");
 
+        txtBuscar.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
         txtBuscar.setToolTipText("");
 
         btnCancelar.setBackground(new java.awt.Color(245, 73, 73));
@@ -131,6 +132,7 @@ public class PantallaBusqueda extends javax.swing.JFrame {
         }else{
             // hacer una busqueda por su codigo y devuelve una entidad partida o el codigo y numero de jugadores 
             // Y actualiza el BusquedaUI
+            
             
         }
         

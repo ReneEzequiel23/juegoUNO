@@ -23,8 +23,9 @@ public class BusquedaUI extends JPanel{
 
     public BusquedaUI() {
         setPreferredSize(new Dimension(390, 56));
+        setBackground(new java.awt.Color(51, 51, 51));
         JPanel panelInfo = new JPanel();
-        panelInfo.setOpaque(false);
+//        panelInfo.setOpaque(false);
         panelInfo.setBackground(new java.awt.Color(51, 51, 51));
         setLayout(new FlowLayout(FlowLayout.LEFT));
         lblNombreSala = new JLabel("No existe esa Partida");

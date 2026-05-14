@@ -22,8 +22,6 @@ public class PantallaInicio extends javax.swing.JFrame {
     private IEventBus busLocal;
     private ClienteUNO clienteRed;
 
-        
-
     /**
      * Creates new form PantallaInicio
      */
@@ -60,7 +58,9 @@ public class PantallaInicio extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("UNO");
 
+        btnCrearPartida.setBackground(new java.awt.Color(222, 37, 37));
         btnCrearPartida.setFont(new java.awt.Font("Segoe UI Emoji", 0, 24)); // NOI18N
+        btnCrearPartida.setForeground(new java.awt.Color(255, 255, 255));
         btnCrearPartida.setText("Crear Partida");
         btnCrearPartida.setPreferredSize(new java.awt.Dimension(600, 23));
         btnCrearPartida.addActionListener(new java.awt.event.ActionListener() {
@@ -69,7 +69,9 @@ public class PantallaInicio extends javax.swing.JFrame {
             }
         });
 
+        btnUnirseParida.setBackground(new java.awt.Color(222, 37, 37));
         btnUnirseParida.setFont(new java.awt.Font("Segoe UI Emoji", 0, 24)); // NOI18N
+        btnUnirseParida.setForeground(new java.awt.Color(255, 255, 255));
         btnUnirseParida.setText("Unirse a una Partida");
         btnUnirseParida.setPreferredSize(new java.awt.Dimension(600, 23));
         btnUnirseParida.addActionListener(new java.awt.event.ActionListener() {
@@ -78,7 +80,9 @@ public class PantallaInicio extends javax.swing.JFrame {
             }
         });
 
+        btnConfig.setBackground(new java.awt.Color(222, 37, 37));
         btnConfig.setFont(new java.awt.Font("Segoe UI Emoji", 0, 24)); // NOI18N
+        btnConfig.setForeground(new java.awt.Color(255, 255, 255));
         btnConfig.setText("Configuración");
         btnConfig.setPreferredSize(new java.awt.Dimension(600, 23));
         btnConfig.addActionListener(new java.awt.event.ActionListener() {

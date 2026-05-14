@@ -31,6 +31,8 @@ public class DespachadorComandos {
             case MARCAR_LISTO:
             case DESMARCAR_LISTO:
             case SOLICITAR_INICIO:
+            case BUSCAR_LOBBY:
+            case SOLICITAR_UNIRSE:
                 lobbyCtrl.procesarComando(comando, jugador);
                 break;
                 

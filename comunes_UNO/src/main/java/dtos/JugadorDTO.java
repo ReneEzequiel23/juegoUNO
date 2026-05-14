@@ -11,6 +11,7 @@ import java.io.Serializable;
  * @author edgar
  */
 public class JugadorDTO implements Serializable{
+    private static final long serialVersionUID = 1L;
     private String idJugador;
     private String nombre;
     private String avatar;
@@ -25,6 +26,10 @@ public class JugadorDTO implements Serializable{
         this.idJugador = idJugador;
         this.nombre = nombre;
         this.avatar = avatar;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     public String getIdJugador() {
