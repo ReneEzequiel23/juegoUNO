@@ -3,6 +3,7 @@ package dtos;
 import java.io.Serializable;
 
 public class OponenteDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String idJugador;
     private String nombre;
     private int cantidadCartas;

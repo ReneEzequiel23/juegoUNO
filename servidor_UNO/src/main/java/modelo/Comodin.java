@@ -25,4 +25,28 @@ public class Comodin extends Carta {
     public String obtenerTipo() {
         return "COMODIN";
     }
+    
+    // Dentro de Comodin.java
+    @Override
+    public void aplicarEfecto(Partida partida) {
+        switch (this.obtenerAccion()) {
+            case REVERSA:
+                partida.getTurno().cambiarSentido();
+                break;
+            case BLOQUEO:
+                partida.saltarSiguienteTurno();
+                break;
+            case TOMA2:
+                partida.penalizarSiguienteJugador(2);
+                partida.saltarSiguienteTurno();
+                break;
+            case TOMA4:
+                partida.penalizarSiguienteJugador(4);
+                partida.saltarSiguienteTurno();
+                break;
+            case CAMBIOCOLOR:
+                // El cambio de color ya se maneja al tirarla
+                break;
+        }
+    }
 }

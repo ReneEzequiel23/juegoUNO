@@ -64,7 +64,7 @@ public class ManoUI extends JPanel {
     public void setPantallaPadre(PantallaPartida pantallaPadre) {
         this.pantallaPadre = pantallaPadre;
     }
-    
+
     // Método para cargar la información del jugador local (avatar y nombre)
     public void cargarDatosJugador(String nombre, ImageIcon avatar) {
         lblNombre.setText(nombre);
@@ -74,11 +74,11 @@ public class ManoUI extends JPanel {
             lblAvatar.setIcon(new ImageIcon(img));
         }
     }
-    
+
     // Nuevo método adaptado para la Red
     public void pintarCartasDTO(java.util.List<dtos.CartaDTO> cartasDTO) {
         JPanel panelCartas = (JPanel) ((BorderLayout) this.getLayout()).getLayoutComponent(BorderLayout.CENTER);
-        panelCartas.removeAll(); 
+        panelCartas.removeAll();
 
         for (dtos.CartaDTO carta : cartasDTO) {
             JLabel lblCarta = new JLabel();
@@ -87,18 +87,26 @@ public class ManoUI extends JPanel {
             lblCarta.setBackground(Color.WHITE);
             lblCarta.setForeground(Color.BLACK);
             lblCarta.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
-            
+
             // Usamos los datos simples del DTO para dibujar
             String textoHtml = "<html><center><b style='font-size:16px;'>" + carta.getValor() + "</b><br>" + carta.getColor() + "</center></html>";
+            // ...
+            lblCarta.setOpaque(true);
+            // En lugar de Color.WHITE, usamos nuestro traductor:
+            lblCarta.setBackground(obtenerColorAwt(carta.getColor()));
+
+            // Y para que el texto resalte mejor si la carta es oscura:
+            lblCarta.setForeground(carta.getColor().equals("AMARILLO") ? Color.BLACK : Color.WHITE);
+            // ...
             lblCarta.setText(textoHtml);
             lblCarta.setHorizontalAlignment(SwingConstants.CENTER);
-            
+
             lblCarta.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
                     if (pantallaPadre != null) {
-                        // Devolvemos el ID de la carta clicada
-                        pantallaPadre.alHacerClicEnCarta(carta.getIdCarta());
+                        // ¡CORRECCIÓN! Pasamos el ID y el Color
+                        pantallaPadre.alHacerClicEnCarta(carta.getIdCarta(), carta.getColor());
                     }
                 }
             });
@@ -108,5 +116,26 @@ public class ManoUI extends JPanel {
 
         this.revalidate();
         this.repaint();
+    }
+
+    private Color obtenerColorAwt(String colorDTO) {
+        if (colorDTO == null) {
+            return Color.WHITE;
+        }
+
+        switch (colorDTO.toUpperCase()) {
+            case "ROJO":
+                return new Color(255, 85, 85);     // Rojo UNO
+            case "AZUL":
+                return new Color(85, 85, 255);     // Azul UNO
+            case "VERDE":
+                return new Color(85, 170, 85);    // Verde UNO
+            case "AMARILLO":
+                return new Color(255, 170, 0); // Amarillo UNO
+            case "NEGRO":
+                return new Color(40, 40, 40);     // Negro Comodín
+            default:
+                return Color.WHITE;
+        }
     }
 }

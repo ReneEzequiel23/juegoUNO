@@ -26,4 +26,5 @@ public abstract class Carta {
     }
     
     public abstract String obtenerTipo();
+    public abstract void aplicarEfecto(Partida partida);
 }

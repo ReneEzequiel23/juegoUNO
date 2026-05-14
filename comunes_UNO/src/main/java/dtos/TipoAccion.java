@@ -14,7 +14,10 @@ public enum TipoAccion {
     ROBAR,
     GRITAR_UNO,
     DENUNCIAR,
-    
+    SOLICITAR_INICIO,
+    MARCAR_LISTO,
+    DESMARCAR_LISTO,
+    ENTRAR_LOBBY,
     AGREGARJ,
     EDITARJ
 }

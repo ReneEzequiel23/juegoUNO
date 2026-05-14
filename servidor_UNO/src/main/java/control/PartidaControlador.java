@@ -4,47 +4,39 @@
  */
 package control;
 
+import dtos.EstadoMesaDTO;
+import eventos.EventBus;
+import eventos.Protocolo;
+import java.util.ArrayList;
+import java.util.List;
 import modelo.*;
+import red.servidor.TraductorDTO;
 
 /**
  *
  * @author renee, edgar
  */
-public class PartidaControlador {
-    /*Dividan los metodos por el tipo de clase que sea, y si se puede por el
-    flujo normal
-    Entran Flujos, validaciones basicas, metodos
-    supongan que en las clases estan el metodo directo y aqui el que va a hacer una validacion 
-    basica.
-    By Edgar Acevedo
-     */
-  
-    /*
-    --------------- Lista de Control ------------------
-    27 -- Flujo NOrmal
-    etc
-    */
-    
-    
-    //Flujo Normal
-    //Partida
-    //Jugador
-    //Mano
-    //Turno
-    //Mazo
-    //Carta
-    //PilaDescartes
-    
+public class PartidaControlador implements IObserver {
+
     private final Partida partida;
+    private final TraductorDTO traductor; // Necesitamos el traductor
 
     public PartidaControlador(Partida partida) {
         this.partida = partida;
+        this.traductor = new TraductorDTO(); // Inicializamos el traductor
+
+        // 2. EL CONTROLADOR SE SUSCRIBE A LA PARTIDA
+        this.partida.agregarObservador(this);
     }
 
     public boolean validarJugada(Carta cartaAJugar) {
         // (El mismo código de validación que ya hicimos antes se mantiene aquí)
-        if (cartaAJugar.getColor() == Color.NEGRO) return true;
-        if (cartaAJugar.getColor() == partida.getColorActivo()) return true;
+        if (cartaAJugar.getColor() == Color.NEGRO) {
+            return true;
+        }
+        if (cartaAJugar.getColor() == partida.getColorActivo()) {
+            return true;
+        }
         Carta cartaEnMesa = partida.getPilaDescartes().obtenerCartaSuperior();
         if (cartaAJugar instanceof Numerica && cartaEnMesa instanceof Numerica) {
             return ((Numerica) cartaAJugar).obtenerValor() == ((Numerica) cartaEnMesa).obtenerValor();
@@ -57,76 +49,50 @@ public class PartidaControlador {
 
     public boolean jugarCarta(Jugador jugador, String idCarta, Color colorElegido) {
         // 1. Validamos que sea su turno y tenga la carta
-        if (!partida.getTurno().getJugadorActual().equals(jugador)) return false;
+        if (!partida.getTurno().getJugadorActual().equals(jugador)) {
+            return false;
+        }
 
         Carta cartaAJugar = jugador.getMano().obtenerCartaPorId(idCarta);
-        if (cartaAJugar == null) return false;
+        if (cartaAJugar == null) {
+            return false;
+        }
 
         // 2. Validamos las reglas (Aquí el controlador checa el número y el Color Activo)
         if (validarJugada(cartaAJugar)) {
-            
+
             // 3. Movemos la carta de la mano a la mesa
             jugador.getMano().eliminarCarta(idCarta);
             partida.getPilaDescartes().agregarCarta(cartaAJugar);
-            
+
             // =========================================================
             // EL FIX: AQUÍ ACTUALIZAMOS EL CEREBRO DEL JUEGO
             // =========================================================
             if (cartaAJugar.getColor() == Color.NEGRO) {
                 // Si es un +4 o Cambio de Color, toma el color del JOptionPane
-                partida.actualizarColorActivo(colorElegido); 
+                partida.actualizarColorActivo(colorElegido);
             } else {
                 // Si es una carta normal, el color activo cambia al color de esta carta
-                partida.actualizarColorActivo(cartaAJugar.getColor()); 
+                partida.actualizarColorActivo(cartaAJugar.getColor());
             }
             // =========================================================
 
             // 4. Efectos (Saltos, Robar cartas)
-            aplicarEfectoCarta(cartaAJugar);
+            cartaAJugar.aplicarEfecto(this.partida);
 
             // 5. Verificamos si ganó
             if (verificarVictoria(jugador)) {
                 calcularPuntajeVictoria(jugador);
                 partida.notificarObservadores(); // Avisamos a la pantalla
-                return true; 
+                return true;
             }
 
             // 6. Pasamos el turno y avisamos a la pantalla
-            partida.avanzarTurno(); 
-            partida.notificarObservadores(); 
+            partida.avanzarTurno();
+            partida.notificarObservadores();
             return true;
         }
         return false;
-    }
-
-    /**
-     * Identifica si la carta es un Comodín y aplica sus reglas a la Partida.
-     */
-    private void aplicarEfectoCarta(Carta carta) {
-        if (carta instanceof Comodin) {
-            Comodin comodin = (Comodin) carta;
-            
-            switch (comodin.obtenerAccion()) {
-                case REVERSA:
-                    partida.getTurno().cambiarSentido();
-                    break;
-                case BLOQUEO:
-                    // Le decimos a la partida que el siguiente jugador pierde su turno
-                    partida.saltarSiguienteTurno();
-                    break;
-                case TOMA2:
-                    penalizarSiguienteJugador(2);
-                    partida.saltarSiguienteTurno(); // El que roba, pierde su turno
-                    break;
-                case TOMA4:
-                    penalizarSiguienteJugador(4);
-                    partida.saltarSiguienteTurno(); // El que roba, pierde su turno
-                    break;
-                case CAMBIOCOLOR:
-                    // No hace nada extra a los turnos, el cambio de color ya se hizo en jugarCarta()
-                    break;
-            }
-        }
     }
 
     /**
@@ -134,10 +100,10 @@ public class PartidaControlador {
      */
     private void penalizarSiguienteJugador(int cantidadCartas) {
         Jugador victima = partida.obtenerSiguienteJugador();
-        
+
         for (int i = 0; i < cantidadCartas; i++) {
             Carta castigo = partida.robarCartaSeguro(); // Usamos el método seguro
-            
+
             if (castigo != null) {
                 victima.getMano().agregarCarta(castigo);
                 victima.quitarUNO(); // O jugador.quitarUNO()
@@ -145,13 +111,14 @@ public class PartidaControlador {
                 // Si castigo es null aquí, significa que ni reciclando la pila alcanzó 
                 // para completar el castigo (un caso rarísimo pero posible).
                 System.out.println("No hay suficientes cartas para completar el castigo.");
-                break; 
+                break;
             }
         }
     }
-    
+
     /**
-     * Acción que se dispara cuando un jugador decide robar una carta del mazo en su turno.
+     * Acción que se dispara cuando un jugador decide robar una carta del mazo
+     * en su turno.
      */
     public boolean robarCartaEnTurno(Jugador jugador) {
         if (!partida.getTurno().getJugadorActual().equals(jugador)) {
@@ -159,36 +126,36 @@ public class PartidaControlador {
         }
 
         Carta cartaRobada = partida.robarCartaSeguro();
-        
+
         if (cartaRobada != null) {
             jugador.getMano().agregarCarta(cartaRobada);
-            jugador.quitarUNO(); 
+            jugador.quitarUNO();
             partida.avanzarTurno();
-            
+
             // ¡NOTIFICAMOS QUE ALGUIEN ROBÓ Y CAMBIÓ EL TURNO!
             partida.notificarObservadores();
             return true;
         }
         return false;
     }
-    
+
     /**
-     * El jugador presiona el botón de "¡UNO!".
-     * Regla digital común: Puedes protegerte si tienes 2 cartas (a punto de tirar) o 1 carta.
+     * El jugador presiona el botón de "¡UNO!". Regla digital común: Puedes
+     * protegerte si tienes 2 cartas (a punto de tirar) o 1 carta.
      */
     public boolean gritarUNO(Jugador jugador) {
         int cantidadCartas = jugador.getMano().contarCartas();
-        
+
         // Solo puede gritar UNO si está en peligro de quedarse con 1 carta o ya tiene 1
         if (cantidadCartas <= 2) {
             jugador.marcarUNO();
             System.out.println(jugador.getNombre() + " ha gritado ¡UNO!");
-            
+
             // ¡NUEVO! Avisamos a la interfaz que el estado cambió
-            partida.notificarObservadores(); 
+            partida.notificarObservadores();
             return true;
         }
-        
+
         System.out.println("No puedes gritar UNO todavía.");
         return false;
     }
@@ -198,21 +165,21 @@ public class PartidaControlador {
      */
     public boolean denunciarFaltaUNO(Jugador denunciante, Jugador acusado) {
         if (acusado.getMano().contarCartas() == 1 && !acusado.isEstadoUNO()) {
-            
+
             for (int i = 0; i < 2; i++) {
                 Carta castigo = partida.robarCartaSeguro();
                 if (castigo != null) {
                     acusado.getMano().agregarCarta(castigo);
                 }
             }
-            
+
             // ¡NOTIFICAMOS EL CASTIGO!
             partida.notificarObservadores();
             return true;
         }
         return false;
     }
-    
+
     /**
      * Verifica si un jugador se ha quedado sin cartas.
      */
@@ -221,8 +188,8 @@ public class PartidaControlador {
     }
 
     /**
-     * Calcula los puntos del ganador sumando el valor de las cartas 
-     * restantes en las manos de los demás jugadores.
+     * Calcula los puntos del ganador sumando el valor de las cartas restantes
+     * en las manos de los demás jugadores.
      */
     private void calcularPuntajeVictoria(Jugador ganador) {
         int puntosTotales = 0;
@@ -249,30 +216,14 @@ public class PartidaControlador {
         System.out.println("¡" + ganador.getNombre() + " gana la ronda y suma " + puntosTotales + " puntos!");
     }
     
-    /**
-     * Busca y devuelve el objeto Jugador basándose en su ID o nombre.
-     */
-    public Jugador obtenerJugador(String idJugador) {
-        for (Jugador j : partida.getJugadores()) {
-            // Asumiendo que por ahora usas el nombre como ID (como hicimos en el Main)
-            if (j.getNombre().equals(idJugador)) { 
-                return j;
-            }
-        }
-        return null; // Si no lo encuentra
-    }
-    
     public Carta obtenerCartaEnMesa() {
         return partida.getPilaDescartes().obtenerCartaSuperior();
     }
-    
-    // Este método es el puente entre la Red y tus reglas de negocio (DDD)
-    public void procesarComandoRed(dtos.ComandoJugadorDTO comando) {
-        // Buscamos al jugador real en la memoria del servidor
-        Jugador jugador = obtenerJugador(comando.getIdJugador());
-        if (jugador == null) return;
 
-        System.out.println("[Controlador] Ejecutando acción: " + comando.getTipoAccion() + " para " + jugador.getNombre());
+    public void procesarComando(dtos.ComandoJugadorDTO comando, Jugador jugador) {
+        if (jugador == null) {
+            return;
+        }
 
         switch (comando.getTipoAccion()) {
             case JUGAR_CARTA:
@@ -282,24 +233,25 @@ public class PartidaControlador {
                 }
                 jugarCarta(jugador, comando.getIdCartaJugada(), colorNuevo);
                 break;
-                
             case ROBAR:
                 robarCartaEnTurno(jugador);
                 break;
-                
             case GRITAR_UNO:
                 gritarUNO(jugador);
                 break;
-                
             case DENUNCIAR:
-                // Para simplificar, buscamos si alguien tiene 1 carta y lo castigamos
-                for (Jugador oponente : partida.getJugadores()) {
-                    if (!oponente.equals(jugador) && oponente.getMano().contarCartas() == 1 && !oponente.isEstadoUNO()) {
-                        denunciarFaltaUNO(jugador, oponente);
-                        break;
-                    }
-                }
+                // Tu lógica de denunciar
                 break;
         }
+    }
+
+    @Override
+    public void actualizar() {
+        System.out.println("[Controlador] Notificando a los hilos de red que la mesa cambió...");
+
+        // Solo gritamos UNA vez. Los Manejadores de Cliente escucharán este grito 
+        // y cada uno usará su propio TraductorDTO para mandarle la mesa a su jugador.
+        eventos.IEvento eventoAviso = new eventos.tipos.EventoEstadoMesa(null);
+        eventos.EventBus.getInstance().publicar(eventoAviso);
     }
 }

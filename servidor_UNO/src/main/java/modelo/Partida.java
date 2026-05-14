@@ -14,22 +14,21 @@ import java.util.List;
 public class Partida {
 
     private final List<Jugador> jugadores;
-    private final Turno turno;
+    private Turno turno;
     private final PilaDescartes pilaDescartes;
     private final Mazo mazo;
     private Color colorActivo;
+    private String codigoSala;
 
     private static final int CARTAS_POR_JUGADOR = 7;
     private final List<IObserver> observadores;
 
     public Partida(List<Jugador> jugadores) {
         this.jugadores = jugadores;
-        this.mazo = new Mazo(); // El constructor de Mazo ya inicializa y baraja
+        this.codigoSala = generarCodigoAleatorio(); // El código se genera aquí
+        this.mazo = new Mazo(); 
         this.pilaDescartes = new PilaDescartes();
         this.observadores = new ArrayList<>();
-
-        // Inicializamos el primer turno con el primer jugador de la lista
-        this.turno = new Turno(jugadores.get(0), true, 30, 30);
     }
     
     public void agregarObservador(IObserver observador) {
@@ -43,10 +42,28 @@ public class Partida {
         }
     }
 
+    public String getCodigoSala() {
+        return codigoSala;
+    }
+    
+    private String generarCodigoAleatorio() {
+    String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    StringBuilder sb = new StringBuilder();
+    java.util.Random random = new java.util.Random();
+    
+    for (int i = 0; i < 6; i++) {
+        int index = random.nextInt(caracteres.length());
+        sb.append(caracteres.charAt(index));
+    }
+    return sb.toString();
+}
+    
     /**
      * reparte cartas y coloca la primera en la pila.
      */
     public void iniciarJuego() {
+        // Inicializamos el primer turno con el primer jugador de la lista
+        this.turno = new Turno(jugadores.get(0), true, 30, 30);
         repartirCartasIniciales();
         colocarPrimeraCarta();
     }
@@ -134,6 +151,18 @@ public class Partida {
         
         return carta;
     }
+    
+    public void penalizarSiguienteJugador(int cantidadCartas) {
+        Jugador victima = obtenerSiguienteJugador();
+        for (int i = 0; i < cantidadCartas; i++) {
+            Carta castigo = robarCartaSeguro();
+            if (castigo != null) {
+                victima.getMano().agregarCarta(castigo);
+                victima.quitarUNO(); 
+            }
+        }
+    }
+
 
     public List<Jugador> getJugadores() {
         return jugadores;
