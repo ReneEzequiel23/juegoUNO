@@ -70,4 +70,14 @@ public class ClienteUNO implements Runnable, IEventoListener {
             conexion.desconectar();
         }
     }
+    
+    public void enviarComando(ComandoJugadorDTO comando) {
+        try {
+            System.out.println("[ClienteUNO] Enviando comando a través de ConexionSocket: " + comando.getTipoAccion());
+            conexion.enviarObjeto(comando); // Ocultamos el try/catch feo del writeObject
+        } catch (Exception e) {
+            System.err.println("[ERROR - ClienteUNO] Falló al enviar comando:");
+            e.printStackTrace();
+        }
+    }
 }

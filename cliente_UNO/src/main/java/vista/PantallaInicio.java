@@ -4,9 +4,13 @@
  */
 package vista;
 
+import control.LobbyVistaControlador;
+import eventos.EventBus;
+import eventos.IEventBus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
+import red.cliente.ClienteUNO;
 
 /**
  *
@@ -15,11 +19,20 @@ import javax.swing.JOptionPane;
 public class PantallaInicio extends javax.swing.JFrame {
     private String nombreElegido;
     private int avatar;
+    private IEventBus busLocal;
+    private ClienteUNO clienteRed;
+
+        
+
     /**
      * Creates new form PantallaInicio
      */
     public PantallaInicio() {
         initComponents();
+        // Usamos el Bus Local para la comunicación interna entre hilos
+        busLocal = new EventBus();
+        // Inicializamos el cliente de red (implementa IClienteRed)
+        clienteRed = new ClienteUNO(busLocal);
         nombreElegido="DefaultName";
         avatar=0;
     }
@@ -143,6 +156,31 @@ public class PantallaInicio extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(nombreElegido=="DefaultName"){
             JOptionPane.showConfirmDialog(this, "No puedes jugar con este nombre de jugador", "Error!", JOptionPane.OK_OPTION);
+        }else{
+            // 3. Inicializamos el Controlador de la Vista (Cerebro)
+            // Inyectamos la red y el bus al controlador
+            LobbyVistaControlador lobbyCtrl = new LobbyVistaControlador(busLocal, nombreElegido);
+            // 4. Inicializamos la Vista pasándole el controlador y el nombre
+            vista.PantallaLobby lobbyVista = new vista.PantallaLobby(lobbyCtrl, nombreElegido);
+            Thread hiloRed = new Thread(clienteRed);
+            hiloRed.start();
+
+            java.awt.EventQueue.invokeLater(() -> {
+                lobbyVista.setVisible(true);
+                lobbyVista.setLocationRelativeTo(null);
+
+                // Automatización: Esperamos 300ms para que el Socket se estabilice 
+                // y luego enviamos el DTO de entrada automáticamente.
+                new java.util.Timer().schedule(new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        System.out.println("[Main] Ejecutando saludo automático...");
+                        lobbyCtrl.entrarAlLobby();
+                    }
+                }, 300);
+            });
+
+            System.out.println("[Main] Cliente " + nombreElegido + " iniciado y listo.");
         }
     }//GEN-LAST:event_btnCrearPartidaActionPerformed
     
