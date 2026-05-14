@@ -11,7 +11,7 @@ public class MainApp {
                 "Ingresa tu nombre para conectarte a la partida:", 
                 "UNO - Conexión Multijugador", 
                 javax.swing.JOptionPane.QUESTION_MESSAGE
-        );
+        );//
 
         // Si el usuario cancela o no escribe nada, cerramos el programa
         if (nombreElegido == null || nombreElegido.trim().isEmpty()) {

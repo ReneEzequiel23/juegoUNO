@@ -17,5 +17,7 @@ public enum TipoAccion {
     SOLICITAR_INICIO,
     MARCAR_LISTO,
     DESMARCAR_LISTO,
-    ENTRAR_LOBBY
+    ENTRAR_LOBBY,
+    AGREGARJ,
+    EDITARJ
 }
