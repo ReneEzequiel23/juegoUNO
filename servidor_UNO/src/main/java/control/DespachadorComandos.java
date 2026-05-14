@@ -55,4 +55,11 @@ public class DespachadorComandos {
         }
         return null;
     }
+    
+    private Partida obtenerPartida(String codigo){
+        if(partida.getCodigoSala()== codigo){
+            return partida;
+        }
+        return null;
+    }
 }

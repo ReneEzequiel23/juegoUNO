@@ -4,6 +4,7 @@
  */
 package vista;
 
+import dtos.EstadoLobbyDTO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
@@ -15,12 +16,14 @@ import javax.swing.JOptionPane;
 public class PantallaBusqueda extends javax.swing.JFrame {
     private String nombre;
     private int avatar;
+    public boolean mostrar;
     /**
      * Creates new form NewJFrame
      */
     public PantallaBusqueda(String nombre,int avatar) {
         this.nombre=nombre;
         this.avatar=avatar;
+        this.mostrar=false;
         initComponents();
         
     }
@@ -66,11 +69,6 @@ public class PantallaBusqueda extends javax.swing.JFrame {
         btnBuscar.setFont(new java.awt.Font("Segoe UI Black", 0, 14)); // NOI18N
         btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
         btnBuscar.setText("Buscar");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -125,19 +123,6 @@ public class PantallaBusqueda extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-        if(txtBuscar==null){
-            JOptionPane.showConfirmDialog(this, "Tienes la Busqueda vacia", "Error!", JOptionPane.OK_OPTION);
-        }else{
-            // hacer una busqueda por su codigo y devuelve una entidad partida o el codigo y numero de jugadores 
-            // Y actualiza el BusquedaUI
-            
-            
-        }
-        
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
         dispose();
@@ -149,17 +134,27 @@ public class PantallaBusqueda extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 // para solicitar unirse a la partida y unirse a la lobby, 
                 // te lo encargo :)
+                
             }
         
         });
     }
+    
+    public void actualizarBusqueda(EstadoLobbyDTO estado){
+        if(estado.getCodigoSala()==txtBuscar.getText()){
+            busquedaUI.actualizarInfo(estado.getCodigoSala(), estado.getJugadoresEnSala().size());
+        }else{
+            busquedaUI.noExisteEsaLobby();
+        }
+        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
+    public javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
     public vista.BusquedaUI busquedaUI;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtBuscar;
+    public javax.swing.JTextField txtBuscar;
     // End of variables declaration//GEN-END:variables
 }

@@ -54,6 +54,12 @@ public class LobbyControlador {
                     iniciarYNotificar();
                 }
                 break;
+            case BUSCAR_LOBBY:
+                if (partida.getCodigoSala()!=null) {
+                    System.out.println("[Lobby] " + jugador.getNombre() + " solicita buscar el lobby.");
+                    buscarLobbyEnServidor();
+                }
+                break;
         }
     }
 
@@ -80,6 +86,17 @@ public class LobbyControlador {
                 iniciarYNotificar();
             }
         }
+    }
+    
+    // No creo que sea asi, pero es un metodo temporal
+    private void buscarLobbyEnServidor(){
+        List<dtos.JugadorLobbyDTO> listaLobby = new ArrayList<>();
+        for (int i = 0; i < partida.getJugadores().size(); i++) {
+            Jugador j = partida.getJugadores().get(i);
+            listaLobby.add(new dtos.JugadorLobbyDTO(j.getNombre(), (i == 0), j.isEstaListo()));
+        }
+
+        dtos.EstadoLobbyDTO estadoLobby = new dtos.EstadoLobbyDTO(partida.getCodigoSala(), listaLobby);
     }
 
     private void iniciarYNotificar() {

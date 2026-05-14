@@ -15,11 +15,10 @@ import javax.swing.JPanel;
  * @author edgar
  */
 public class BusquedaUI extends JPanel{
-    private String codigo;
-    private JLabel lblNombreSala;
-    private JLabel lblNumeroPersonas;
+    public String codigo;
+    public JLabel lblNombreSala;
+    public JLabel lblNumeroPersonas;
     public JButton btnSolicitar;
-    private boolean existe;
 
     public BusquedaUI() {
         setPreferredSize(new Dimension(390, 56));
@@ -53,10 +52,16 @@ public class BusquedaUI extends JPanel{
         }
     }
     
-    public void actualizarInfo(String Codigo, int numeroParticipantes, boolean existe){
+    public void actualizarInfo(String Codigo, int numeroParticipantes){
         lblNombreSala.setText(Codigo);
         lblNumeroPersonas.setText(String.valueOf(numeroParticipantes)+"/ 4");
         btnSolicitar.setVisible(true);
+        
+    }
+    public void noExisteEsaLobby(){
+        lblNombreSala.setText("No existe esa Partida");
+//        lblNumeroPersonas.setText(String.valueOf(numeroParticipantes)+"/ 4");
+//        btnSolicitar.setVisible(true);
         
     }
     

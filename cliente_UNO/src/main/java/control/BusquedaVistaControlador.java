@@ -11,6 +11,9 @@ import dtos.TipoAccion;
 import eventos.IEventBus;
 import eventos.IEvento;
 import eventos.IEventoListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 import vista.PantallaBusqueda;
 
 /**
@@ -25,6 +28,9 @@ public class BusquedaVistaControlador implements IEventoListener{
     public BusquedaVistaControlador(IEventBus eventBus, String nombreJugador) {
         this.eventBus = eventBus;
         this.nombreJugador = nombreJugador;
+        
+        this.eventBus.suscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
+        
     }
     
     public void buscarLobby(String codigo){
@@ -33,25 +39,39 @@ public class BusquedaVistaControlador implements IEventoListener{
     }
     
     public void solicitarUnirse(){
-        ComandoJugadorDTO comando = new ComandoJugadorDTO(nombreJugador, TipoAccion.SOLICITAR_UNIRSE, null, null, null);
+        ComandoJugadorDTO comando = new ComandoJugadorDTO(nombreJugador, TipoAccion.ENTRAR_LOBBY, null, null, null);
         eventBus.publicar(new eventos.tipos.EventoComando(comando));
     }
     
     @Override
     public void onEvent(IEvento evento) {
-        if (evento instanceof eventos.tipos.EventoEstadoMesa) {
-            EstadoMesaDTO mesaDTO = ((eventos.tipos.EventoEstadoMesa) evento).getEstadoDTO();
+        if (evento instanceof eventos.tipos.EventoEstadoLobby) {
+            EstadoLobbyDTO estado = ((eventos.tipos.EventoEstadoLobby) evento).getEstadoLobbyDTO();
+            if (vista.txtBuscar.getText() == null) {
+                JOptionPane.showConfirmDialog(vista, "Tienes la Busqueda vacia", "Error!", JOptionPane.OK_OPTION);
+            } else {
+                // hacer una busqueda por su codigo y devuelve una entidad partida o el codigo y numero de jugadores 
+                // Y actualiza el BusquedaUI
+                vista.btnBuscar.addActionListener(new ActionListener(){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // para solicitar unirse a la partida y unirse a la lobby, 
+                        // Quien sabe si funcione
+                        if (vista != null && vista.txtBuscar.getText() != null) {
+                            javax.swing.SwingUtilities.invokeLater(() -> {
+                                vista.actualizarBusqueda(estado);
+                            });
+                        }
 
-            // Le pasamos los datos limpios a la vista en el hilo correcto
-            if (vista != null) {
-                javax.swing.SwingUtilities.invokeLater(() -> {
-//                    vista.actualizarInterfazConDTO(mesaDTO);
+                    }
                 });
-            }
+            }            
         }
     }
+    
+
     private void destruir() {
         this.eventBus.desuscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
-        this.eventBus.desuscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
+//        this.eventBus.desuscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
     }
 }
