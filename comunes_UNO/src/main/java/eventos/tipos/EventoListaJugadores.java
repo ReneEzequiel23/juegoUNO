@@ -14,15 +14,22 @@ import eventos.IEvento;
 public class EventoListaJugadores implements IEvento {
 
     public static final String TIPO = "LISTA_DE_JUGADORES_ACTUALIZADA";
+    private final EstadoConfiguracionDTO configuracion;
 
     public EventoListaJugadores(EstadoConfiguracionDTO configuracion) {
+        this.configuracion = configuracion;
     }
 
-    
-    
     @Override
     public String getTipoEvento() {
         return TIPO;
     }
 
+    public int getNumeroJugadores() {
+        return configuracion.getNumJugadores();
+    }
+
+    public EstadoConfiguracionDTO getConfiguracion() {
+        return configuracion;
+    }
 }

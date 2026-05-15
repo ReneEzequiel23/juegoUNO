@@ -11,17 +11,25 @@ import eventos.IEvento;
  *
  * @author Adrián
  */
-public class EventoTiempoConfigurado implements IEvento{
+public class EventoTiempoConfigurado implements IEvento {
 
     public static final String TIPO = "TIEMPO_CONFIGURADO";
+    private final EstadoConfiguracionDTO configuracion;
 
     public EventoTiempoConfigurado(EstadoConfiguracionDTO configuracion) {
+        this.configuracion = configuracion;
     }
 
-    
     @Override
     public String getTipoEvento() {
         return TIPO;
     }
 
+    public int getTiempo() {
+        return configuracion.getTiempoTotal();
+    }
+
+    public EstadoConfiguracionDTO getConfiguracion() {
+        return configuracion;
+    }
 }

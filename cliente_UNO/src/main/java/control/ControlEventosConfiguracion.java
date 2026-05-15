@@ -53,8 +53,26 @@ public class ControlEventosConfiguracion implements IEventoListener {
 
     @Override
     public void onEvent(IEvento evento) {
-        if (evento instanceof eventos.tipos.EventoEstadoMesa) {
-            EstadoConfiguracionDTO configDTO = ((eventos.tipos.EventoListaJugadores) evento).getTipoEvento();
+        if (evento instanceof eventos.tipos.EventoListaJugadores) {
+            EstadoConfiguracionDTO configDTO = ((eventos.tipos.EventoListaJugadores) evento).getConfiguracion();
+
+            // Le pasamos los datos limpios a la vista en el hilo correcto
+            if (vista != null) {
+                javax.swing.SwingUtilities.invokeLater(() -> {
+//                    vista.actualizarInterfazConDTO(mesaDTO);
+                });
+            }
+        } else if (evento instanceof eventos.tipos.EventoManoConfigurada) {
+            EstadoConfiguracionDTO configDTO = ((eventos.tipos.EventoListaJugadores) evento).getConfiguracion();
+
+            // Le pasamos los datos limpios a la vista en el hilo correcto
+            if (vista != null) {
+                javax.swing.SwingUtilities.invokeLater(() -> {
+//                    vista.actualizarInterfazConDTO(mesaDTO);
+                });
+            }
+        } else if (evento instanceof eventos.tipos.EventoTiempoConfigurado) {
+            EstadoConfiguracionDTO configDTO = ((eventos.tipos.EventoListaJugadores) evento).getConfiguracion();
 
             // Le pasamos los datos limpios a la vista en el hilo correcto
             if (vista != null) {

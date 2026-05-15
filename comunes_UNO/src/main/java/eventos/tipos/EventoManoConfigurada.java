@@ -14,18 +14,23 @@ import dtos.EstadoConfiguracionDTO;
 public class EventoManoConfigurada implements IEvento {
 
     public static final String TIPO = "TAMANIO_DE_MANO_CONFIGURADA";
+    private final EstadoConfiguracionDTO configuracion;
 
     public EventoManoConfigurada(EstadoConfiguracionDTO configuracion) {
+        this.configuracion = configuracion;
     }
 
     @Override
     public String getTipoEvento() {
         return TIPO;
     }
+
+    public int getManoCartas() {
+        return configuracion.getCartasMano();
+    }
     
-    @Override 
-    public int cambio(){
-        return int cambio =1;
+    public EstadoConfiguracionDTO getConfiguracion(){
+        return configuracion;
     }
 
 }
