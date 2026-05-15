@@ -4,6 +4,7 @@
  */
 package vista;
 
+import control.BusquedaVistaControlador;
 import dtos.EstadoLobbyDTO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,15 +18,30 @@ public class PantallaBusqueda extends javax.swing.JFrame {
     private String nombre;
     private int avatar;
     public boolean mostrar;
+    private BusquedaVistaControlador controlador;
     /**
      * Creates new form NewJFrame
      */
-    public PantallaBusqueda(String nombre,int avatar) {
-        this.nombre=nombre;
-        this.avatar=avatar;
-        this.mostrar=false;
+    public PantallaBusqueda(control.BusquedaVistaControlador controlador, String nombre, int avatar) {
+        this.controlador = controlador;
+        this.nombre = nombre;
+        this.avatar = avatar;
+        this.mostrar = false;
         initComponents();
         
+        this.controlador.setVista(this);
+
+        // AQUÍ ES DONDE CONECTAMOS LOS BOTONES AL CONTROLADOR
+        btnBuscar.addActionListener(e -> {
+            String codigo = txtBuscar.getText().trim();
+            if (!codigo.isEmpty()) {
+                controlador.buscarLobby(codigo);
+            }
+        });
+
+        busquedaUI.btnSolicitar.addActionListener(e -> {
+            controlador.solicitarUnirse(txtBuscar.getText().trim());
+        });
     }
 
     /**
@@ -141,12 +157,25 @@ public class PantallaBusqueda extends javax.swing.JFrame {
     }
     
     public void actualizarBusqueda(EstadoLobbyDTO estado){
-        if(estado.getCodigoSala()==txtBuscar.getText()){
+        if (estado.getCodigoSala() != null && estado.getCodigoSala().equals(txtBuscar.getText().trim())) {
             busquedaUI.actualizarInfo(estado.getCodigoSala(), estado.getJugadoresEnSala().size());
-        }else{
+        } else {
             busquedaUI.noExisteEsaLobby();
         }
         
+    }
+    
+    public void transicionALobby(EstadoLobbyDTO estado) {
+        // Creamos el controlador del Lobby usando el mismo EventBus de siempre
+        control.LobbyVistaControlador lobbyCtrl = new control.LobbyVistaControlador(controlador.getEventBus(), this.nombre);
+        
+        // Creamos la pantalla del lobby y le pasamos los datos
+        vista.PantallaLobby lobbyUI = new vista.PantallaLobby(lobbyCtrl, this.nombre);
+        lobbyUI.actualizarInterfazLobby(estado);
+        lobbyUI.setVisible(true);
+        
+        // Cerramos la pantalla de búsqueda
+        this.dispose();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -31,7 +31,7 @@ public class PantallaInicio extends javax.swing.JFrame {
         busLocal = new EventBus();
         // Inicializamos el cliente de red (implementa IClienteRed)
         clienteRed = new ClienteUNO(busLocal);
-        nombreElegido="DefaultName";
+        nombreElegido="Rene";
         avatar=0;
     }
 
@@ -154,7 +154,22 @@ public class PantallaInicio extends javax.swing.JFrame {
 
     private void btnUnirseParidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnirseParidaActionPerformed
         // TODO add your handling code here:
-        PantallaBusqueda frm=new PantallaBusqueda(nombreElegido,avatar);
+        if(nombreElegido.equals("DefaultName")){
+            JOptionPane.showConfirmDialog(this, "Por favor configura tu nombre primero", "Error!", JOptionPane.OK_OPTION);
+            return;
+        }
+
+        // 1. Creamos el cerebro (Controlador) para la búsqueda
+        control.BusquedaVistaControlador busquedaCtrl = new control.BusquedaVistaControlador(busLocal, nombreElegido);
+        
+        // 2. Creamos la vista y le inyectamos su controlador
+        vista.PantallaBusqueda frm = new vista.PantallaBusqueda(busquedaCtrl, nombreElegido, avatar);
+        
+        // 3. ¡MUY IMPORTANTE! Arrancamos el hilo de red para que pueda enviar/recibir comandos
+        Thread hiloRed = new Thread(clienteRed);
+        hiloRed.start();
+
+        frm.setLocationRelativeTo(null);
         frm.setVisible(true);
     }//GEN-LAST:event_btnUnirseParidaActionPerformed
 

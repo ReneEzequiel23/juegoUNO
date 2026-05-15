@@ -230,6 +230,11 @@ public class PantallaLobby extends javax.swing.JFrame {
         panelSolicitud.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(102, 102, 102), 3, true));
 
         btnRechazarInvitacion.setText("Rechazar");
+        btnRechazarInvitacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRechazarInvitacionActionPerformed(evt);
+            }
+        });
 
         btnAceptarInvitación.setText("Aceptar");
         btnAceptarInvitación.addActionListener(new java.awt.event.ActionListener() {
@@ -353,6 +358,10 @@ public class PantallaLobby extends javax.swing.JFrame {
         System.out.println("Clic manual detectado. Forzando entrada...");
         controlador.entrarAlLobby();
     }//GEN-LAST:event_btnConfiguraciónActionPerformed
+
+    private void btnRechazarInvitacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRechazarInvitacionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnRechazarInvitacionActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
