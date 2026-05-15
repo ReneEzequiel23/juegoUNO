@@ -11,6 +11,6 @@ import dtos.EstadoConfiguracionDTO;
  * @author Adrián
  */
 public interface IConfiguracionRed {
-       void enviarComando(EstadoConfiguracionDTO comando);
+       void enviarComando(EstadoConfiguracionDTO configuracion);
  
 }

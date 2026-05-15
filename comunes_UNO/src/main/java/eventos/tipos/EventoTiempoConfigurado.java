@@ -4,6 +4,7 @@
  */
 package eventos.tipos;
 
+import dtos.EstadoConfiguracionDTO;
 import eventos.IEvento;
 
 /**
@@ -14,10 +15,9 @@ public class EventoTiempoConfigurado implements IEvento{
 
     public static final String TIPO = "TIEMPO_CONFIGURADO";
 
-    public EventoTiempoConfigurado() {
+    public EventoTiempoConfigurado(EstadoConfiguracionDTO configuracion) {
     }
 
-    
     
     @Override
     public String getTipoEvento() {

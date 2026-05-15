@@ -4,6 +4,7 @@
  */
 package eventos.tipos;
 
+import dtos.EstadoConfiguracionDTO;
 import eventos.IEvento;
 
 /**
@@ -14,7 +15,7 @@ public class EventoListaJugadores implements IEvento {
 
     public static final String TIPO = "LISTA_DE_JUGADORES_ACTUALIZADA";
 
-    public EventoListaJugadores() {
+    public EventoListaJugadores(EstadoConfiguracionDTO configuracion) {
     }
 
     

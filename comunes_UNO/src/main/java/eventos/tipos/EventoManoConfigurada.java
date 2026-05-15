@@ -5,6 +5,7 @@
 package eventos.tipos;
 
 import eventos.IEvento;
+import dtos.EstadoConfiguracionDTO;
 
 /**
  *
@@ -14,12 +15,17 @@ public class EventoManoConfigurada implements IEvento {
 
     public static final String TIPO = "TAMANIO_DE_MANO_CONFIGURADA";
 
-    public EventoManoConfigurada() {
+    public EventoManoConfigurada(EstadoConfiguracionDTO configuracion) {
     }
 
     @Override
     public String getTipoEvento() {
         return TIPO;
+    }
+    
+    @Override 
+    public int cambio(){
+        return int cambio =1;
     }
 
 }
