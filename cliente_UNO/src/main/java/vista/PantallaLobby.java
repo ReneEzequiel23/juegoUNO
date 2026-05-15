@@ -20,6 +20,7 @@ public class PantallaLobby extends javax.swing.JFrame {
 
     public String miNombre;
     private LobbyVistaControlador controlador;
+    private String jugadorPendienteActual;
 
     public PantallaLobby(LobbyVistaControlador controlador, String miNombre) {
         this.controlador = controlador;
@@ -28,6 +29,16 @@ public class PantallaLobby extends javax.swing.JFrame {
 
         initComponents();
         panelSolicitud.setVisible(false);
+    }
+    
+    // Método para mostrar el panel
+    public void mostrarSolicitud(String nombrePendiente) {
+        // Validamos si soy el Host (solo el host tiene el botón de Iniciar visible)
+        if (btnIniciarPartida.isVisible()) { 
+            this.jugadorPendienteActual = nombrePendiente;
+            lblTextoSolicitud.setText(nombrePendiente + " desea unirse");
+            panelSolicitud.setVisible(true); // ¡Esto hace que salte la ventana!
+        }
     }
 
     /**
@@ -350,6 +361,11 @@ public class PantallaLobby extends javax.swing.JFrame {
 
     private void btnAceptarInvitaciónActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarInvitaciónActionPerformed
         // TODO add your handling code here:
+        panelSolicitud.setVisible(false); // Ocultamos la ventanita
+        if (jugadorPendienteActual != null) {
+            // Le avisamos al controlador que dijimos que SÍ
+            controlador.responderSolicitud(jugadorPendienteActual, true);
+        }
 
     }//GEN-LAST:event_btnAceptarInvitaciónActionPerformed
 
@@ -361,6 +377,8 @@ public class PantallaLobby extends javax.swing.JFrame {
 
     private void btnRechazarInvitacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRechazarInvitacionActionPerformed
         // TODO add your handling code here:
+        panelSolicitud.setVisible(false);
+        // controlador.responderSolicitud(jugadorPendienteActual, false);
     }//GEN-LAST:event_btnRechazarInvitacionActionPerformed
 
 
@@ -397,6 +415,10 @@ public class PantallaLobby extends javax.swing.JFrame {
      */
     public void actualizarInterfazLobby(EstadoLobbyDTO estado) {
         // Actualizamos el código de sala
+        if ("NO_EXISTE".equals(estado.getCodigoSala())) {
+            return; 
+        }
+        
         this.lblCodigoSala.setText("Codigo de sala: " + estado.getCodigoSala());
 
         List<dtos.JugadorLobbyDTO> lista = estado.getJugadoresEnSala();

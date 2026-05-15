@@ -5,13 +5,16 @@
 package control;
 
 import dtos.ComandoJugadorDTO;
+import static dtos.TipoAccion.ACEPTAR_JUGADOR;
 import modelo.Jugador;
 import modelo.Partida;
+
 /**
  *
  * @author ReneEzequiel23
  */
 public class DespachadorComandos {
+
     private final LobbyControlador lobbyCtrl;
     private final PartidaControlador juegoCtrl;
     private final Partida partida;
@@ -33,9 +36,11 @@ public class DespachadorComandos {
             case SOLICITAR_INICIO:
             case BUSCAR_LOBBY:
             case SOLICITAR_UNIRSE:
+                
+            case ACEPTAR_JUGADOR:
                 lobbyCtrl.procesarComando(comando, jugador);
                 break;
-                
+
             // Comandos de la Mesa de Juego
             case JUGAR_CARTA:
             case ROBAR:
@@ -55,9 +60,9 @@ public class DespachadorComandos {
         }
         return null;
     }
-    
-    private Partida obtenerPartida(String codigo){
-        if(partida.getCodigoSala()== codigo){
+
+    private Partida obtenerPartida(String codigo) {
+        if (partida.getCodigoSala() == codigo) {
             return partida;
         }
         return null;

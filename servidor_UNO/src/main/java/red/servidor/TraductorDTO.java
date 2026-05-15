@@ -5,7 +5,9 @@
 package red.servidor;
 
 import dtos.CartaDTO;
+import dtos.EstadoLobbyDTO;
 import dtos.EstadoMesaDTO;
+import dtos.JugadorLobbyDTO;
 import dtos.OponenteDTO;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +45,32 @@ public class TraductorDTO {
                 manoDTO.add(traducirCarta(c));
             }
         }
-
+        
         // 3. Traducimos la carta del centro de la mesa
         CartaDTO cartaCentroDTO = traducirCarta(partida.getPilaDescartes().obtenerCartaSuperior());
         String colorActivo = partida.getColorActivo() != null ? partida.getColorActivo().name() : "";
 
         // 4. Armamos el paquete final
         return new EstadoMesaDTO(idJugadorDestino, manoDTO, cartaCentroDTO, colorActivo, oponentesDTO, null);
+    }
+    
+    public static EstadoLobbyDTO generarEstadoLobby(Partida partida) {
+        
+        List<JugadorLobbyDTO> listaJugadoresDTO = new ArrayList<>();
+        
+        // El primer jugador de la lista siempre será considerado el Host
+        boolean esHost = true; 
+        
+        for (Jugador jugador : partida.getJugadores()) {
+            // Usamos exactamente tu constructor: (String nombre, boolean esHost, boolean estaListo)
+            JugadorLobbyDTO jDTO = new JugadorLobbyDTO(jugador.getNombre(), esHost, false);
+            
+            listaJugadoresDTO.add(jDTO);
+            esHost = false; // Los siguientes que evaluemos ya no serán host
+        }
+        
+        // Usamos exactamente tu constructor: (String codigoSala, List<JugadorLobbyDTO> jugadoresEnSala)
+        return new EstadoLobbyDTO(partida.getCodigoSala(), listaJugadoresDTO);
     }
 
     private static CartaDTO traducirCarta(Carta carta) {

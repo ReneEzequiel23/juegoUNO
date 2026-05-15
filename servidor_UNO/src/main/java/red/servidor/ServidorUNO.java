@@ -13,7 +13,7 @@ import red.servidor.ManejadorCliente;
 
 public class ServidorUNO {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
         int puerto = 12345;
         
         // 1. Inicializamos el cerebro del servidor (Solo 1 para todos)
@@ -22,7 +22,7 @@ public class ServidorUNO {
         
         // Ensamblamos la arquitectura limpia
         PartidaControlador juegoCtrl = new PartidaControlador(partidaCentral);
-        LobbyControlador lobbyCtrl = new LobbyControlador(partidaCentral);
+        LobbyControlador lobbyCtrl = new LobbyControlador(partidaCentral, busGlobal);
         DespachadorComandos despachador = new DespachadorComandos(partidaCentral, lobbyCtrl, juegoCtrl);
 
         try (ServerSocket serverSocket = new ServerSocket(puerto)) {

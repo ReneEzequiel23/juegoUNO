@@ -40,7 +40,8 @@ public class PantallaBusqueda extends javax.swing.JFrame {
         });
 
         busquedaUI.btnSolicitar.addActionListener(e -> {
-            controlador.solicitarUnirse(txtBuscar.getText().trim());
+            String codigo = txtBuscar.getText().trim();
+            controlador.solicitarUnirse(codigo);
         });
     }
 

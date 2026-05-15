@@ -11,16 +11,25 @@ import eventos.IEvento;
  * @author ReneEzequiel23 & EdgarAcevedoAcosta
  */
 public class EventoNotificacion implements IEvento {
-    
-    private final String tipoAviso;
 
-    public EventoNotificacion(String tipoAviso) {
-        this.tipoAviso = tipoAviso;
+    // 1. Agregamos la constante estática que pide NetBeans
+    public static final String TIPO = "NOTIFICACION";
+
+    // 2. Renombramos la variable para que sea más clara
+    private final String mensaje;
+
+    public EventoNotificacion(String mensaje) {
+        this.mensaje = mensaje;
+    }
+
+    // 3. Agregamos el método "getter" que pedía el Controlador
+    public String getMensaje() {
+        return mensaje;
     }
 
     @Override
     public String getTipoEvento() {
-        // En este caso, el mismo nombre del aviso (ej. "ACTUALIZAR_MESAS") es el tipo de evento
-        return tipoAviso; 
+        // Ahora devuelve la constante TIPO correctamente
+        return TIPO;
     }
 }

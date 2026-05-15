@@ -5,6 +5,7 @@ public class ComandoJugadorDTO implements Serializable {
     private String idJugador;
     private TipoAccion TipoAccion; // Enum: JUGAR_CARTA, ROBAR, GRITAR_UNO, DENUNCIAR
     
+    
     // Atributos opcionales (dependen de la acción)
     private String idCartaJugada; 
     private String colorElegido; // Solo si jugó una carta negra

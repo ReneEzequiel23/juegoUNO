@@ -31,7 +31,7 @@ public class PantallaInicio extends javax.swing.JFrame {
         busLocal = new EventBus();
         // Inicializamos el cliente de red (implementa IClienteRed)
         clienteRed = new ClienteUNO(busLocal);
-        nombreElegido="Rene";
+        nombreElegido="ran4";
         avatar=0;
     }
 

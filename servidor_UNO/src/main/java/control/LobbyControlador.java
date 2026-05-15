@@ -5,33 +5,31 @@
 package control;
 
 import dtos.ComandoJugadorDTO;
+import dtos.EstadoLobbyDTO;
+import dtos.JugadorLobbyDTO;
 import eventos.EventBus;
+import eventos.IEventBus;
+import eventos.IEvento;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Jugador;
 import modelo.Partida;
+
 /**
  *
  * @author ReneEzequiel23 & EdgarAcevedoAcosta
  */
 public class LobbyControlador {
-    private final Partida partida;
 
-    public LobbyControlador(Partida partida) {
+    private final Partida partida;
+    private final IEventBus eventBus; // Agrega esta línea si no la tienes
+
+    public LobbyControlador(Partida partida, IEventBus eventBus) {
         this.partida = partida;
+        this.eventBus = eventBus;
     }
 
     public void procesarComando(ComandoJugadorDTO comando, Jugador jugador) {
-        // 1. Si el jugador NO existe pero está pidiendo ENTRAR, lo creamos y lo unimos a la mesa
-        if (jugador == null && comando.getTipoAccion() == dtos.TipoAccion.ENTRAR_LOBBY) {
-            jugador = new Jugador(comando.getIdJugador());
-            partida.getJugadores().add(jugador);
-        }
-        // 2. Si sigue sin existir y NO es el Host forzando el inicio, entonces sí lo ignoramos
-        else if (jugador == null && comando.getTipoAccion() != dtos.TipoAccion.SOLICITAR_INICIO) {
-            return;
-        }
-        
         switch (comando.getTipoAccion()) {
             case ENTRAR_LOBBY:
                 System.out.println("[Lobby] " + jugador.getNombre() + " solicita ver el lobby.");
@@ -55,10 +53,44 @@ public class LobbyControlador {
                 }
                 break;
             case BUSCAR_LOBBY:
-                if (partida.getCodigoSala()!=null) {
-                    System.out.println("[Lobby] " + jugador.getNombre() + " solicita buscar el lobby.");
-                    buscarLobbyEnServidor();
+                String codigoBuscado = comando.getIdCartaJugada(); // El código viaja en este campo del DTO
+                
+                // Evitamos el NullPointerException y verificamos si la sala existe
+                if (codigoBuscado != null && codigoBuscado.equals(partida.getCodigoSala())) {
+                    // ¡La sala existe! Le enviamos el estado al cliente
+                    dtos.EstadoLobbyDTO estado = red.servidor.TraductorDTO.generarEstadoLobby(partida);
+                    eventBus.publicar(new eventos.tipos.EventoEstadoLobby(estado));
+                } else {
+                    // No existe. Mandamos un estado vacío para que la vista lo rechace
+                    dtos.EstadoLobbyDTO estadoVacio = new dtos.EstadoLobbyDTO("NO_EXISTE", new java.util.ArrayList<>());
+                    eventBus.publicar(new eventos.tipos.EventoEstadoLobby(estadoVacio));
                 }
+                break;
+            case SOLICITAR_UNIRSE:
+                // Publicamos directamente
+                eventBus.publicar(new eventos.tipos.EventoNotificacion("SOLICITUD:" + comando.getIdJugador()));
+                break;
+
+            case ACEPTAR_JUGADOR:
+                String jugadorAceptado = comando.getIdCartaJugada(); 
+                System.out.println("[Servidor] ¡El Host ha aceptado a " + jugadorAceptado + "!");
+                
+                // Evitamos duplicados por si el Host le da doble clic rápido
+                boolean yaExiste = false;
+                for(modelo.Jugador j : partida.getJugadores()){
+                    if(j.getNombre().equals(jugadorAceptado)){
+                        yaExiste = true;
+                        break;
+                    }
+                }
+                
+                if(!yaExiste){
+                    partida.getJugadores().add(new modelo.Jugador(jugadorAceptado));
+                }
+                
+                // Generamos el nuevo estado y lo gritamos a todos
+                dtos.EstadoLobbyDTO nuevoEstado = red.servidor.TraductorDTO.generarEstadoLobby(partida);
+                eventBus.publicar(new eventos.tipos.EventoEstadoLobby(nuevoEstado));
                 break;
         }
     }
@@ -87,9 +119,9 @@ public class LobbyControlador {
             }
         }
     }
-    
+
     // No creo que sea asi, pero es un metodo temporal
-    private void buscarLobbyEnServidor(){
+    private void buscarLobbyEnServidor() {
         List<dtos.JugadorLobbyDTO> listaLobby = new ArrayList<>();
         for (int i = 0; i < partida.getJugadores().size(); i++) {
             Jugador j = partida.getJugadores().get(i);
@@ -102,7 +134,7 @@ public class LobbyControlador {
     private void iniciarYNotificar() {
         partida.iniciarJuego();
         // Disparamos el evento de la mesa para todos
-        eventos.EventBus.getInstance().publicar(new eventos.tipos.EventoEstadoMesa(null)); 
+        eventos.EventBus.getInstance().publicar(new eventos.tipos.EventoEstadoMesa(null));
     }
 
     private void notificarCambioEnLobby() {
@@ -114,5 +146,24 @@ public class LobbyControlador {
 
         dtos.EstadoLobbyDTO estadoLobby = new dtos.EstadoLobbyDTO(partida.getCodigoSala(), listaLobby);
         eventos.EventBus.getInstance().publicar(new eventos.tipos.EventoEstadoLobby(estadoLobby));
+    }
+    
+    public static EstadoLobbyDTO generarEstadoLobby(Partida partida) {
+        
+        List<JugadorLobbyDTO> listaJugadoresDTO = new ArrayList<>();
+        
+        // El primer jugador de la lista siempre será considerado el Host
+        boolean esHost = true; 
+        
+        for (Jugador jugador : partida.getJugadores()) {
+            // Usamos exactamente tu constructor: (String nombre, boolean esHost, boolean estaListo)
+            JugadorLobbyDTO jDTO = new JugadorLobbyDTO(jugador.getNombre(), esHost, false);
+            
+            listaJugadoresDTO.add(jDTO);
+            esHost = false; // Los siguientes que evaluemos ya no serán host
+        }
+        
+        // Usamos exactamente tu constructor: (String codigoSala, List<JugadorLobbyDTO> jugadoresEnSala)
+        return new EstadoLobbyDTO(partida.getCodigoSala(), listaJugadoresDTO);
     }
 }
