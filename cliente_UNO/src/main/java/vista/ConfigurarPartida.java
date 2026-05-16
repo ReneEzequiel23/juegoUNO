@@ -4,6 +4,8 @@
  */
 package vista;
 
+import control.ControlEventosConfiguracion;
+import javax.swing.JComboBox;
 import red.cliente.ClienteUNO;
 
 /**
@@ -14,14 +16,21 @@ public class ConfigurarPartida extends javax.swing.JFrame {
 
     private eventos.IEventBus busLocal;
     private red.cliente.ClienteUNO cliente;
-    
+    private ControlEventosConfiguracion controlador;
+//    String jugadoresValue = jugadoresBox.getSelectedItem().toString();
+//    String tiempoValue = tiempoBox.getSelectedItem().toString();
+//    String manoValue = manoBox.getSelectedItem().toString();
+
     /**
      * Creates new form ConfigurarPartida
      */
     public ConfigurarPartida() {
         initComponents();
     }
-    
+
+    JComboBox<String> combo = (JComboBox<String>) getContentPane().getComponent(0);
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -55,6 +64,11 @@ public class ConfigurarPartida extends javax.swing.JFrame {
 
         jugadoresBox.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jugadoresBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4" }));
+        jugadoresBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jugadoresBoxActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Numero de jugadores:");
@@ -167,14 +181,23 @@ public class ConfigurarPartida extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void aceptarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aceptarBtnActionPerformed
-        
+
+        int jugadoresNuevos = Integer.parseInt(jugadoresBox.getSelectedItem().toString());
+        int manoNueva = Integer.parseInt(manoBox.getSelectedItem().toString());
+        int tiempoNuevo = Integer.parseInt(tiempoBox.getSelectedItem().toString());
+
+        controlador.cambiarNumeroJugadores(jugadoresNuevos);
+        controlador.configurarMano(manoNueva);
+        controlador.cambiarTiempoLimite(tiempoNuevo);
     }//GEN-LAST:event_aceptarBtnActionPerformed
 
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
         dispose();
-        
     }//GEN-LAST:event_cancelarBtnActionPerformed
 
+    private void jugadoresBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jugadoresBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jugadoresBoxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
