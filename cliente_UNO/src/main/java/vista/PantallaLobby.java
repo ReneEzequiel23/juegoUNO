@@ -4,11 +4,15 @@
  */
 package vista;
 
+import control.ControlEventosConfiguracion;
 import control.LobbyVistaControlador;
 import control.PartidaVistaControlador;
 import dtos.ComandoJugadorDTO;
 import dtos.EstadoLobbyDTO;
+import eventos.IEventBus;
 import eventos.IEvento;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import red.cliente.IClienteRed;
 
@@ -372,6 +376,23 @@ public class PantallaLobby extends javax.swing.JFrame {
     private void btnConfiguraciónActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfiguraciónActionPerformed
         // TODO add your handling code here:
         System.out.println("Clic manual detectado. Forzando entrada...");
+        IEventBus eventBus=controlador.getEventBus();
+        ControlEventosConfiguracion controladorC=new ControlEventosConfiguracion(eventBus, miNombre);
+        ConfigurarPartida frm=new ConfigurarPartida(controladorC, miNombre);
+        frm.setVisible(true);
+        frm.aceptarBtn.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int jugadoresNuevos = Integer.parseInt(frm.jugadoresBox.getSelectedItem().toString());
+                int manoNueva = Integer.parseInt(frm.manoBox.getSelectedItem().toString());
+                int tiempoNuevo = Integer.parseInt(frm.tiempoBox.getSelectedItem().toString());
+
+                controladorC.cambiarNumeroJugadores(jugadoresNuevos);
+                controladorC.configurarMano(manoNueva);
+                controladorC.cambiarTiempoLimite(tiempoNuevo);
+            }
+        
+        });
         controlador.entrarAlLobby();
     }//GEN-LAST:event_btnConfiguraciónActionPerformed
 
@@ -451,6 +472,7 @@ public class PantallaLobby extends javax.swing.JFrame {
                     }
                 } else {
                     checks[i].setEnabled(false); // Bloqueo las casillas de los demás
+                    btnConfiguración.setVisible(false);
                 }
 
             } else {

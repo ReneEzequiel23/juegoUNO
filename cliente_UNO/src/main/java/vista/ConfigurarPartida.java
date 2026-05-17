@@ -17,6 +17,7 @@ public class ConfigurarPartida extends javax.swing.JFrame {
     private eventos.IEventBus busLocal;
     private red.cliente.ClienteUNO cliente;
     private ControlEventosConfiguracion controlador;
+    private String miNombre;
 //    String jugadoresValue = jugadoresBox.getSelectedItem().toString();
 //    String tiempoValue = tiempoBox.getSelectedItem().toString();
 //    String manoValue = manoBox.getSelectedItem().toString();
@@ -24,7 +25,9 @@ public class ConfigurarPartida extends javax.swing.JFrame {
     /**
      * Creates new form ConfigurarPartida
      */
-    public ConfigurarPartida() {
+    public ConfigurarPartida(ControlEventosConfiguracion controlador, String miNombre) {
+        this.controlador=controlador;
+        this.miNombre=miNombre;
         initComponents();
     }
 
@@ -61,11 +64,6 @@ public class ConfigurarPartida extends javax.swing.JFrame {
 
         jugadoresBox.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jugadoresBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2", "3", "4" }));
-        jugadoresBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jugadoresBoxActionPerformed(evt);
-            }
-        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Numero de jugadores:");
@@ -75,11 +73,6 @@ public class ConfigurarPartida extends javax.swing.JFrame {
         aceptarBtn.setForeground(new java.awt.Color(0, 0, 0));
         aceptarBtn.setText("Aceptar");
         aceptarBtn.setActionCommand("aceptarBtn");
-        aceptarBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                aceptarBtnActionPerformed(evt);
-            }
-        });
 
         cancelarBtn.setBackground(new java.awt.Color(255, 0, 0));
         cancelarBtn.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -177,36 +170,22 @@ public class ConfigurarPartida extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void aceptarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aceptarBtnActionPerformed
-
-        int jugadoresNuevos = Integer.parseInt(jugadoresBox.getSelectedItem().toString());
-        int manoNueva = Integer.parseInt(manoBox.getSelectedItem().toString());
-        int tiempoNuevo = Integer.parseInt(tiempoBox.getSelectedItem().toString());
-
-        controlador.cambiarNumeroJugadores(jugadoresNuevos);
-        controlador.configurarMano(manoNueva);
-        controlador.cambiarTiempoLimite(tiempoNuevo);
-    }//GEN-LAST:event_aceptarBtnActionPerformed
-
     private void cancelarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelarBtnActionPerformed
         dispose();
     }//GEN-LAST:event_cancelarBtnActionPerformed
 
-    private void jugadoresBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jugadoresBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jugadoresBoxActionPerformed
-
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton aceptarBtn;
+    public javax.swing.JButton aceptarBtn;
     private javax.swing.JButton cancelarBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JComboBox<String> jugadoresBox;
-    private javax.swing.JComboBox<String> manoBox;
-    private javax.swing.JComboBox<String> tiempoBox;
+    public javax.swing.JComboBox<String> jugadoresBox;
+    public javax.swing.JComboBox<String> manoBox;
+    public javax.swing.JComboBox<String> tiempoBox;
     // End of variables declaration//GEN-END:variables
 }

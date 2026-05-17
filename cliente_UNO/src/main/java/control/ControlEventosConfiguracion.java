@@ -26,12 +26,17 @@ public class ControlEventosConfiguracion implements IEventoListener {
     private int numeroJugadores;
     private int temporizador;
 
-    public ControlEventosConfiguracion(IEventBus eventBus, String nombreJugador, int numeroCartas, int numeroJugadores, int temporizador) {
+    public ControlEventosConfiguracion(IEventBus eventBus, String nombreJugador) {
         this.eventBus = eventBus;
         this.nombreJugador = nombreJugador;
-        this.numeroCartas = numeroCartas;
-        this.numeroJugadores = numeroJugadores;
-        this.temporizador = temporizador;
+        
+        this.eventBus.suscribir(eventos.tipos.EventoListaJugadores.TIPO, this);
+        this.eventBus.suscribir(eventos.tipos.EventoManoConfigurada.TIPO, this);
+        this.eventBus.suscribir(eventos.tipos.EventoTiempoConfigurado.TIPO, this);
+    }
+
+    public void setVista(ConfigurarPartida vista) {
+        this.vista = vista;
     }
 
     public void cambiarNumeroJugadores(int numero) {

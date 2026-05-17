@@ -115,6 +115,10 @@ public class LobbyVistaControlador implements IEventoListener {
         }
     }
 
+    public IEventBus getEventBus() {
+        return eventBus;
+    }
+
     private void destruir() {
         this.eventBus.desuscribir(eventos.tipos.EventoEstadoLobby.TIPO, this);
         this.eventBus.desuscribir(eventos.tipos.EventoEstadoMesa.TIPO, this);
