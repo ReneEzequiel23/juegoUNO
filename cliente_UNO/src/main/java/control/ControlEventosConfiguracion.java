@@ -4,7 +4,9 @@
  */
 package control;
 
+import dtos.ComandoJugadorDTO;
 import dtos.EstadoConfiguracionDTO;
+import dtos.TipoAccion;
 import eventos.IEventBus;
 import eventos.IEvento;
 import eventos.IEventoListener;
@@ -40,19 +42,19 @@ public class ControlEventosConfiguracion implements IEventoListener {
     }
 
     public void cambiarNumeroJugadores(int numero) {
-        EstadoConfiguracionDTO configuracion = new EstadoConfiguracionDTO(nombreJugador, numeroCartas, temporizador, numero);
-        eventBus.publicar(new eventos.tipos.EventoListaJugadores(configuracion));
+        ComandoJugadorDTO comando = new ComandoJugadorDTO(nombreJugador, TipoAccion.CCNFIGURAR_PARTIDA, null, null, null);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
 
     }
 
     public void cambiarTiempoLimite(int numero) {
-        EstadoConfiguracionDTO configuracion = new EstadoConfiguracionDTO(nombreJugador, numeroCartas, numero, numeroJugadores);
-        eventBus.publicar(new eventos.tipos.EventoTiempoConfigurado(configuracion));
+        ComandoJugadorDTO comando = new ComandoJugadorDTO(nombreJugador, TipoAccion.CCNFIGURAR_PARTIDA, null, null, null);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
     }
 
     public void configurarMano(int numero) {
-        EstadoConfiguracionDTO configuracion = new EstadoConfiguracionDTO(nombreJugador, numero, numeroCartas, numeroJugadores);
-        eventBus.publicar(new eventos.tipos.EventoManoConfigurada(configuracion));
+        ComandoJugadorDTO comando = new ComandoJugadorDTO(nombreJugador, TipoAccion.CCNFIGURAR_PARTIDA, null, null, null);
+        eventBus.publicar(new eventos.tipos.EventoComando(comando));
 
     }
 

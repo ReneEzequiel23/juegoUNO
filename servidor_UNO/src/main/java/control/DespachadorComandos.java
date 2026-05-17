@@ -17,12 +17,14 @@ public class DespachadorComandos {
 
     private final LobbyControlador lobbyCtrl;
     private final PartidaControlador juegoCtrl;
+    private final ConfiguracionController Partidacontrl;
     private final Partida partida;
 
-    public DespachadorComandos(Partida partida, LobbyControlador lobbyCtrl, PartidaControlador juegoCtrl) {
-        this.partida = partida;
+    public DespachadorComandos(Partida partida, LobbyControlador lobbyCtrl, PartidaControlador juegoCtrl, ConfiguracionController Partidacontrl) {
         this.lobbyCtrl = lobbyCtrl;
         this.juegoCtrl = juegoCtrl;
+        this.Partidacontrl = Partidacontrl;
+        this.partida = partida;
     }
 
     public void procesar(ComandoJugadorDTO comando) {
@@ -47,6 +49,10 @@ public class DespachadorComandos {
             case GRITAR_UNO:
             case DENUNCIAR:
                 juegoCtrl.procesarComando(comando, jugador);
+                break;
+                
+            case CCNFIGURAR_PARTIDA:
+                Partidacontrl.procesarComando(comando, jugador);
                 break;
         }
     }

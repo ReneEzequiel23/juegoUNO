@@ -1,5 +1,7 @@
 package control;
 
+import dtos.ComandoJugadorDTO;
+import eventos.IEventBus;
 import modelo.*;
 
 /**
@@ -13,6 +15,7 @@ public class ConfiguracionController {
      * cartas máximo que un jugador puede tener en la mano
      */
     private final Partida partida;
+    private final IEventBus eventBus;
     int cartasPartida = Partida.getCARTAS_POR_JUGADOR();
 
     /**
@@ -20,8 +23,46 @@ public class ConfiguracionController {
      *
      * @param partida la partida que se configurará.
      */
-    public ConfiguracionController(Partida partida) {
+    
+    public ConfiguracionController(Partida partida, IEventBus eventBus) {
         this.partida = partida;
+        this.eventBus = eventBus;
+    }
+
+    public void procesarComando(ComandoJugadorDTO comando, Jugador jugador) {
+        switch (comando.getTipoAccion()) {
+            case CCNFIGURAR_PARTIDA:
+                String codigoBuscado = comando.getIdCartaJugada(); // El código viaja en este campo del DTO
+
+                // Evitamos el NullPointerException y verificamos si la sala existe
+                if (codigoBuscado != null && codigoBuscado.equals(partida.getCodigoSala())) {
+                    // ¡La sala existe! Le enviamos el estado al cliente
+                    dtos.EstadoLobbyDTO estado= red.servidor.TraductorDTO.generarEstadoLobby(partida);
+                    eventBus.publicar(new eventos.tipos.EventoEstadoLobby(estado));
+                }
+                break;
+            case ACEPTAR_JUGADOR:
+                String jugadorAceptado = comando.getIdCartaJugada();
+                System.out.println("[Servidor] ¡El Host ha aceptado a " + jugadorAceptado + "!");
+
+                // Evitamos duplicados por si el Host le da doble clic rápido
+                boolean yaExiste = false;
+                for (modelo.Jugador j : partida.getJugadores()) {
+                    if (j.getNombre().equals(jugadorAceptado)) {
+                        yaExiste = true;
+                        break;
+                    }
+                }
+
+                if (!yaExiste) {
+                    partida.getJugadores().add(new modelo.Jugador(jugadorAceptado));
+                }
+
+                // Generamos el nuevo estado y lo gritamos a todos
+                dtos.EstadoLobbyDTO nuevoEstado = red.servidor.TraductorDTO.generarEstadoLobby(partida);
+                eventBus.publicar(new eventos.tipos.EventoEstadoLobby(nuevoEstado));
+                break;
+        }
     }
 
     /**

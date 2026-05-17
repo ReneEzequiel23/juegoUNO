@@ -5,6 +5,7 @@
 package red.servidor;
 
 import dtos.CartaDTO;
+import dtos.EstadoConfiguracionDTO;
 import dtos.EstadoLobbyDTO;
 import dtos.EstadoMesaDTO;
 import dtos.JugadorLobbyDTO;
@@ -84,4 +85,5 @@ public class TraductorDTO {
         }
         return new CartaDTO(carta.getIdCarta(), carta.getColor().name(), valor);
     }
+    
 }

@@ -1,5 +1,6 @@
 package red.servidor;
 
+import control.ConfiguracionController;
 import control.DespachadorComandos;
 import control.LobbyControlador;
 import control.PartidaControlador;
@@ -23,7 +24,8 @@ public class ServidorUNO {
         // Ensamblamos la arquitectura limpia
         PartidaControlador juegoCtrl = new PartidaControlador(partidaCentral);
         LobbyControlador lobbyCtrl = new LobbyControlador(partidaCentral, busGlobal);
-        DespachadorComandos despachador = new DespachadorComandos(partidaCentral, lobbyCtrl, juegoCtrl);
+        ConfiguracionController partiContr=new ConfiguracionController(partidaCentral, busGlobal);
+        DespachadorComandos despachador = new DespachadorComandos(partidaCentral, lobbyCtrl, juegoCtrl, partiContr);
 
         try (ServerSocket serverSocket = new ServerSocket(puerto)) {
             
